@@ -1,4 +1,4 @@
-from _fixed_step_solver import fixed_step_solver
+from ._fixed_step_solver import fixed_step_solver
 import numpy as np
 
 """
@@ -31,16 +31,6 @@ class Euler(fixed_step_solver):
     
         return;
 
-    def __del__(self) -> None:
-
-        """
-        
-        """
-
-        print("'Euler solver' reference count has reached zero.");
-    
-        return;
-
     def step(self, model) -> np.ndarray:
 
         """
@@ -51,6 +41,7 @@ class Euler(fixed_step_solver):
 
         x = model.get_state();
         new_state = x + self.h * model.eval(self.t, x);
+        self._update_time_step();
 
         return new_state;
 
@@ -70,16 +61,6 @@ class Modified_Euler(fixed_step_solver):
 
         return;
 
-    def __del__(self) -> None:
-
-        """
-        
-        """
-
-        print("'Modified Euler solver' reference count has reached zero.");
-
-        return;
-
     def step(self, model) -> np.ndarray:
 
         """
@@ -92,6 +73,7 @@ class Modified_Euler(fixed_step_solver):
         K1 = self.h * model.eval(self.t, x);
         K2 = self.h * model.eval(self.t + self.h, x + K1);
         new_state = x + 1/2 * (K1 + K2);
+        self._update_time_step();
 
         return new_state;
 
@@ -111,16 +93,6 @@ class Heun(fixed_step_solver):
 
         return;
 
-    def __del__(self) -> None:
-
-        """
-        
-        """
-
-        print("'Heun solver' reference count has reached zero.");
-
-        return;
-
     def step(self, model) -> np.ndarray:
 
         """
@@ -134,6 +106,7 @@ class Heun(fixed_step_solver):
         K2 = self.h * model.eval(self.t + self.h / 3.0, x + 1/3 * K1);
         K3 = self.h * model.eval(self.t + 2/3 * self.h, x + 2/3 * K2);
         new_state = x + 1/4 * (K1 + 3 * K3);
+        self._update_time_step();
 
         return new_state;
 
@@ -153,16 +126,6 @@ class RK4(fixed_step_solver):
 
         return;
 
-    def __del__(self) -> None:
-
-        """
-        
-        """
-
-        print("'RK4 solver' reference count has reached zero.");
-
-        return;
-
     def step(self, model) -> np.ndarray:
 
         """
@@ -176,6 +139,7 @@ class RK4(fixed_step_solver):
         K3 = self.h * model.eval(self.t + self.h / 2.0, x + 1/2 * K2);
         K4 = self.h * model.eval(self.t + self.h, x + K3);
         new_state = x + 1/6 * (K1 + 2 * K2 + 2 * K3 + K4);
+        self._update_time_step();
 
         return new_state;
 

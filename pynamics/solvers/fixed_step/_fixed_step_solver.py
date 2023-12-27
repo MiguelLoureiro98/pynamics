@@ -23,7 +23,7 @@ class fixed_step_solver(ABC):
 
         return;
 
-    def update_time_step(self) -> None:
+    def _update_time_step(self) -> None:
 
         """
         
