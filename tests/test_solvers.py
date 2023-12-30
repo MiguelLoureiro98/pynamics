@@ -2,6 +2,7 @@ import unittest
 import numpy as np
 from pynamics.solvers.fixed_step._fixed_step_solvers import Euler, Modified_Euler, Heun, RK4
 from pynamics.solvers.variable_step._variable_step_solvers import RKF
+from pynamics.models.state_space_models import linearModel
 
 """
 Test cases to test every single solver supported by this package.
@@ -89,6 +90,10 @@ class TestSolvers(unittest.TestCase):
 
     def test_update_step_size(self) -> None:
 
+        """
+        Tests every possible case ... .
+        """
+
         print("Testing variable step solvers' 'update_step_size' method ...");
 
         q = [1, self.min_q - 1, self.max_q + 1, self.min_q, self.max_q, 1];
@@ -123,6 +128,7 @@ class TestSolvers(unittest.TestCase):
 
     def test_step(self) -> None:
 
+        #model = linearModel(np.zeros((3, 1)), np.zeros((3, 1)));
         pass
 
 if __name__ == "__main__":
