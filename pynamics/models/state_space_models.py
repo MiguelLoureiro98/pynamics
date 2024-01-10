@@ -5,7 +5,7 @@ import numpy as np
 class linearModel(model):
 
     """
-    
+    This class implements a generic linear state-space model. Its methods allow one to ... .
     """
 
     def __init__(self, initial_state: np.ndarray, initial_control: np.ndarray, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> None:
