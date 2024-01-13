@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+import pandas as pd
 from pynamics.solvers.fixed_step._fixed_step_solvers import Euler, Modified_Euler, Heun, RK4
 from pynamics.solvers.variable_step._variable_step_solvers import RKF
 from pynamics.models.state_space_models import linearModel
@@ -129,7 +130,10 @@ class TestSolvers(unittest.TestCase):
     def test_step(self) -> None:
 
         #model = linearModel(np.zeros((3, 1)), np.zeros((3, 1)));
-        pass
+        file = "ode45_test_10sec.csv";
+        path = f"J:/Projectos_e_relatorios/Project_repos/Pynamics/Pynamics/data/solver_validation_data/{file}";
+        example_data = pd.read_csv(path);
+        print(example_data.describe());
 
 if __name__ == "__main__":
 

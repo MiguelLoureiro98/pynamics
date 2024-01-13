@@ -1,5 +1,4 @@
-from numpy import ndarray
-from _model import model
+from ._model import model
 import numpy as np
 
 class linearModel(model):
@@ -39,7 +38,7 @@ class linearModel(model):
 
         return self.C * self.x;
 
-    def get_control(self) -> np.ndarray:
+    def get_input(self) -> np.ndarray:
 
         """
         
@@ -47,7 +46,7 @@ class linearModel(model):
 
         return self.u;
 
-    def set_control(self, u: np.ndarray) -> None:
+    def set_input(self, u: np.ndarray | float) -> None:
 
         """
         
