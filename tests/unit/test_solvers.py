@@ -27,6 +27,10 @@ class TestSolvers(unittest.TestCase):
 
     def setUp(self) -> None:
 
+        """
+        Define testing parameters.
+        """
+
         self.sig_digits = 5;
         self.h = 0.1;
         self.initial_t = 0.0;
@@ -61,6 +65,10 @@ class TestSolvers(unittest.TestCase):
 
     def test_initialisation(self) -> None:
 
+        """
+        Tests the initialisation procedure for every supported solver.
+        """
+
         print("Testing class initialisation methods ...");
 
         self.assertEqual(self.euler_solver.get_time_step(), self.initial_t);
@@ -76,6 +84,10 @@ class TestSolvers(unittest.TestCase):
         self.assertEqual(self.RKF_solver.get_step_size(), self.h);
         
     def test_update_time_step(self) -> None:
+
+        """
+        
+        """
 
         print("Testing 'update_time_step' method ...");
 
@@ -95,6 +107,10 @@ class TestSolvers(unittest.TestCase):
 
     def test_get_step_size(self) -> None:
 
+        """
+        
+        """
+
         print("Testing variable step solvers' 'get_step_size' method ...");
 
         self.assertEqual(self.RKF_solver.get_step_size(), self.h);
@@ -102,7 +118,15 @@ class TestSolvers(unittest.TestCase):
     def test_update_step_size(self) -> None:
 
         """
-        Tests every possible case ... .
+        Tests the update_step_size method of variable-step solvers.
+
+        6 cases are tested:
+        1 - The step size should stay the same;
+        2 - The step size update should be clipped to its minimum value;
+        3 - The step size update should be clipped to its maximum value;
+        4 - The step size should be clipped to the minimum step size;
+        5 - The step size should be clipped to the maximum step size;
+        6 - The step size should be the difference between the final time step and the current time step.
         """
 
         print("Testing variable step solvers' 'update_step_size' method ...");
