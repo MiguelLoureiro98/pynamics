@@ -7,7 +7,7 @@ class linearModel(model):
     This class implements a generic linear state-space model. Its methods allow one to ... .
     """
 
-    def __init__(self, initial_state: np.ndarray, initial_control: np.ndarray, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> None:
+    def __init__(self, initial_state: np.ndarray, initial_control: np.ndarray | float, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> None:
         
         """
         
@@ -18,6 +18,19 @@ class linearModel(model):
         self.B = B;
         self.C = C;
         self.D = D;
+
+        float_test = isinstance(initial_control, float);
+
+        if (float_test is True):
+
+            initial_control = np.array([initial_control]);
+
+        array_1D_test = isinstance(initial_control, np.ndarray) is True and initial_control.shape[0] == 1;
+
+        if (array_1D_test is True):
+
+            initial_control = np.expand_dims(initial_control, axis=1);
+        
         self.u = initial_control;
 
         return;
@@ -36,7 +49,7 @@ class linearModel(model):
         
         """
 
-        return self.C * self.x;
+        return np.matmul(self.C, self.x);
 
     def get_input(self) -> np.ndarray:
 
@@ -72,4 +85,4 @@ class linearModel(model):
         
         """
 
-        return self.A * x + self.B * self.u;
+        return np.matmul(self.A, x) + np.matmul(self.B, self.u);

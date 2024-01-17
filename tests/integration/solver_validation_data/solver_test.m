@@ -22,7 +22,7 @@ results = zeros(str2double(stop_time) / str2double(fixed_step_size) + 1, ...
                 2 * fixed_step_solvers);
 
 % Set parameters and run simulations for 10 second simulations.
-test_model = "test_solver_2022b";
+test_model = "test_solver";
 load_system(test_model);
 set_param(test_model, "StopTime", stop_time);
 figure
@@ -33,11 +33,20 @@ for i=1:length(solver)
     
     if(fixed(i) == true)
     
+        set_param(test_model, "SolverType", "Fixed-step");
         set_param(test_model, "FixedStep", fixed_step_size);
         sim_results = sim(test_model);
     
         results(:, i) = sim_results.tout;
         results(:, i+1) = sim_results.y;
+
+    else
+
+        set_param(test_model, "SolverType", "Variable-step");
+        set_param(test_model, "MinStep", "0.00001");
+        set_param(test_model, "MaxStep", "10");
+        set_param(test_model, "InitialStep", "0.001");
+        set_param(test_model, "AbsTol", "0.00001");
 
     end
     
@@ -77,11 +86,20 @@ for i=1:length(solver)
     
     if(fixed(i) == true)
     
+        set_param(test_model, "SolverType", "Fixed-step");
         set_param(test_model, "FixedStep", fixed_step_size);
         sim_results = sim(test_model);
     
         results(:, i) = sim_results.tout;
         results(:, i+1) = sim_results.y;
+
+    else
+
+        set_param(test_model, "SolverType", "Variable-step");
+        set_param(test_model, "MinStep", "0.00001");
+        set_param(test_model, "MaxStep", "10");
+        set_param(test_model, "InitialStep", "0.001");
+        set_param(test_model, "AbsTol", "0.00001");
 
     end
     
