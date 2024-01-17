@@ -130,10 +130,7 @@ class TestSolvers(unittest.TestCase):
     def test_step(self) -> None:
 
         #model = linearModel(np.zeros((3, 1)), np.zeros((3, 1)));
-        file = "ode45_test_10sec.csv";
-        path = f"J:/Projectos_e_relatorios/Project_repos/Pynamics/Pynamics/data/solver_validation_data/{file}";
-        example_data = pd.read_csv(path);
-        print(example_data.describe());
+        pass
 
 if __name__ == "__main__":
 
