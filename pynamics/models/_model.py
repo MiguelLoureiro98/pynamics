@@ -13,9 +13,18 @@ class model(ABC):
 
     Attributes
     ----------------------------------------------------------------------------------
+    x: np.ndarray
+    The system's state. Should be an array shaped (n, 1), where n is the number of
+    variables.
 
     Methods
-    ---------------------------------------------------------------------------------- 
+    ----------------------------------------------------------------------------------
+    __init__
+    get_state
+    get_output
+    get_input
+    set_input
+    eval 
     """
 
     def __init__(self, initial_state: np.ndarray) -> None:
@@ -43,7 +52,7 @@ class model(ABC):
     def get_state(self) -> np.ndarray:
 
         """
-        
+        Method to access the system's state.
         """
 
         pass
@@ -52,7 +61,7 @@ class model(ABC):
     def get_output(self) -> np.ndarray:
 
         """
-        
+        Method to access the system's output.
         """
 
         pass
@@ -61,7 +70,7 @@ class model(ABC):
     def get_input(self) -> np.ndarray:
 
         """
-        
+        Method to access the system's input.
         """
 
         pass
@@ -79,7 +88,7 @@ class model(ABC):
     def update_state(self) -> None:
 
         """
-        
+        Method to update the system's state.
         """
 
         pass

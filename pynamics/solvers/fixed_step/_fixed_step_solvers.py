@@ -10,6 +10,8 @@ List of fixed-step solvers supported by this library:
 -> Modified Euler method
 -> Heun method
 -> Runge-Kutta fourth-order method
+
+The solvers' implementation was based on the "Numerical Analysis" textbook, by R. Burden and J. Faires.
 """
 
 class Euler(fixed_step_solver):

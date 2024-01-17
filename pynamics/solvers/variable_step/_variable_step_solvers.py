@@ -2,7 +2,7 @@ from ._variable_step_solver import variable_step_solver
 import numpy as np
 
 """
-
+This solver's implementation was based on the "Numerical Analysis" textbook, by R. Burden and J. Faires.
 """
 
 class RKF(variable_step_solver):
