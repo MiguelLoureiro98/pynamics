@@ -182,30 +182,14 @@ class TestSolvers(unittest.TestCase):
         ode1_matlab = 0.001;
         ode2_matlab = 0.000996;
         ode4_matlab = np.round(0.000996003664875, self.sig_digits + 3);
-        ode45_matlab = np.round(0.000996003664875, self.sig_digits + 3);
 
         ode1_output = np.matmul(C, self.ode1.step(model)).item();
         ode2_output = np.matmul(C, self.ode2.step(model)).item();
         ode4_output = np.matmul(C, self.ode4.step(model)).item();
-        next_state = self.ode_DP.step(model);
-        odeRKF_output = np.matmul(C, next_state).item();
-
-        #print(odeRKF_output);
-        #print(self.ode_RKF.get_step_size());
-
-        for it in np.arange(0, 2):
-
-            print(self.ode_DP.h);
-            model.update_state(state=next_state);
-            next_next_state = self.ode_DP.step(model);
-            new_odeRKF_output = np.matmul(C, next_next_state).item();
-        
-        print(self.ode_DP.t);
 
         self.assertEqual(np.round(ode1_output, self.sig_digits + 3), ode1_matlab);
         self.assertEqual(np.round(ode2_output, self.sig_digits + 3), ode2_matlab);
         self.assertEqual(np.round(ode4_output, self.sig_digits + 3), ode4_matlab);
-        #self.assertEqual(np.round(odeRKF_output, self.sig_digits), ode45_matlab);
 
 if __name__ == "__main__":
 
