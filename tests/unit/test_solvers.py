@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import pandas as pd
 from pynamics.solvers.fixed_step._fixed_step_solvers import Euler, Modified_Euler, Heun, RK4
-from pynamics.solvers.variable_step._variable_step_solvers import RKF
+from pynamics.solvers.variable_step._variable_step_solvers import RKF, DP
 from pynamics.models.state_space_models import linearModel
 
 """
@@ -48,6 +48,8 @@ class TestSolvers(unittest.TestCase):
         self.RK4_solver = RK4(self.h, self.initial_t);
         self.RKF_solver = RKF(self.h, self.initial_t, max_step_size=self.max_h, min_step_size=self.min_h, 
                               min_update=self.min_q, max_update=self.max_q, tfinal=self.final_t);
+        self.DP_solver = DP(self.h, self.initial_t, max_step_size=self.max_h, min_step_size=self.min_h, 
+                              min_update=self.min_q, max_update=self.max_q, tfinal=self.final_t);
     
 
         # This should be moved to the setUpClass method.
@@ -58,6 +60,8 @@ class TestSolvers(unittest.TestCase):
         self.ode4 = RK4(self.sim_h, self.initial_t);
         self.ode_RKF = RKF(self.sim_h, self.initial_t, max_step_size=self.max_h, min_step_size=self.sim_hmin, 
                            min_update=1e-15, max_update=10000, tfinal=self.final_t);
+        self.ode_DP = DP(self.sim_h, self.initial_t, max_step_size=self.max_h, min_step_size=self.sim_hmin, 
+                            min_update=1e-15, max_update=10000, tfinal=self.final_t);
 
     def tearDown(self) -> None:
         
@@ -180,26 +184,23 @@ class TestSolvers(unittest.TestCase):
         ode4_matlab = np.round(0.000996003664875, self.sig_digits + 3);
         ode45_matlab = np.round(0.000996003664875, self.sig_digits + 3);
 
-        #print(np.matmul(C, self.ode1.step(model)).item());
         ode1_output = np.matmul(C, self.ode1.step(model)).item();
         ode2_output = np.matmul(C, self.ode2.step(model)).item();
         ode4_output = np.matmul(C, self.ode4.step(model)).item();
-        next_state = self.ode_RKF.step(model);
+        next_state = self.ode_DP.step(model);
         odeRKF_output = np.matmul(C, next_state).item();
 
-        print(odeRKF_output);
-        print(self.ode_RKF.get_step_size());
+        #print(odeRKF_output);
+        #print(self.ode_RKF.get_step_size());
 
         for it in np.arange(0, 2):
 
+            print(self.ode_DP.h);
             model.update_state(state=next_state);
-            next_next_state = self.ode_RKF.step(model);
+            next_next_state = self.ode_DP.step(model);
             new_odeRKF_output = np.matmul(C, next_next_state).item();
-
-            #print(new_odeRKF_output);
-            #print(self.ode_RKF.get_step_size());
         
-        #print(self.ode_RKF.t);
+        print(self.ode_DP.t);
 
         self.assertEqual(np.round(ode1_output, self.sig_digits + 3), ode1_matlab);
         self.assertEqual(np.round(ode2_output, self.sig_digits + 3), ode2_matlab);
