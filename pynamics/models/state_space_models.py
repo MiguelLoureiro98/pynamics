@@ -86,3 +86,7 @@ class linearModel(model):
         """
 
         return np.matmul(self.A, x) + np.matmul(self.B, self.u);
+
+class nonlinearModel(model):
+
+    pass
