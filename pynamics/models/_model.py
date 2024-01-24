@@ -47,6 +47,33 @@ class model(ABC):
         self.x = initial_state;
 
         return;
+
+    def _control_type_checks(self, control_action: np.ndarray | float) -> np.ndarray:
+
+        """
+        Internal helper method to perform the necessary checks when a new control action
+        is defined.
+
+        Arguments
+        ----------------------------------------------------------------------------------
+        control_action: np.ndarray | float
+        The new control action. It can be specified as a float, a flat array, or a ...
+
+        Returns
+        ----------------------------------------------------------------------------------
+        control_action: np.ndarray
+        The same control action ... [in the right format].
+        """
+
+        if (isinstance(control_action, float) is True):
+
+            control_action = np.array([control_action]);
+        
+        if(control_action.shape[0] == 1):
+
+            control_action = np.expand_dims(control_action, axis=1);
+
+        return control_action;
     
     @abstractmethod
     def get_state(self) -> np.ndarray:
