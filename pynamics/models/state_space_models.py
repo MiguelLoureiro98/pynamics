@@ -51,6 +51,21 @@ class linearModel(model):
         The system's initial state. Should be an array shaped (n, 1), where
         n is the number of variables.
 
+        A: np.ndarray
+
+
+        B: np.ndarray
+
+
+        C: np.ndarray
+
+
+        D: np.ndarray
+
+        
+        u: np.ndarray
+
+
         Returns
         ----------------------------------------------------------------------------------
         None
