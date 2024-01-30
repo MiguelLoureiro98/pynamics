@@ -63,10 +63,16 @@ class TestSolvers(unittest.TestCase):
     def tearDownClass(cls) -> None:
         
         """
-        Generic tearDownClass method. Empty in this case.
+        Generic tearDownClass method.
+        Deletes every attribute created by the setUpClass method.
         """
 
-        pass
+        del cls.sim_h;
+        print("Deleted sim_h.");
+        del cls.sim_hmin;
+        print("Deleted sim_hmin.");
+
+        return;
 
     def setUp(self) -> None:
 
@@ -165,10 +171,34 @@ class TestSolvers(unittest.TestCase):
     def tearDown(self) -> None:
         
         """
-        Generic tearDown method. Empty in this case.
+        Generic tearDown method.
+        Deletes every attribute created by the setUp method.
         """
 
-        pass
+        del self.sig_digits;
+        del self.h;
+        del self.initial_t;
+        del self.final_t;
+        del self.time_testing;
+        del self.max_min_residue;
+        del self.min_h;
+        del self.max_h;
+        del self.min_q;
+        del self.max_q;
+        del self.time_seq;
+        del self.euler_solver;
+        del self.RK2_solver;
+        del self.RK3_solver;
+        del self.RK4_solver;
+        del self.RKF_solver;
+        del self.DP_solver;
+        del self.ode1;
+        del self.ode2;
+        del self.ode4;
+        del self.ode_RKF;
+        del self.ode_DP;
+
+        return;
 
     def test_initialisation(self) -> None:
 
