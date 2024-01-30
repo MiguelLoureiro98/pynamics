@@ -2,9 +2,9 @@ from ._fixed_step_solver import fixed_step_solver
 import numpy as np
 
 """
-This file contains classes for all fixed-step solvers supported by this library.
+This file contains classes for all fixed-step solvers supported by this package.
 
-List of fixed-step solvers supported by this library:
+List of fixed-step solvers supported by this package:
 
 -> Euler method
 -> Modified Euler method
