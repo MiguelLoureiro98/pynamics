@@ -1,9 +1,0 @@
-License.txt
-README.md
-setup.cfg
-setup.py
-pynamics.egg-info/PKG-INFO
-pynamics.egg-info/SOURCES.txt
-pynamics.egg-info/dependency_links.txt
-pynamics.egg-info/top_level.txt
-tests/test_solvers.py

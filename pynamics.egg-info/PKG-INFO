@@ -1,7 +1,0 @@
-Metadata-Version: 2.1
-Name: pynamics
-Version: 0.1.0
-Summary: Python package intended to blend together control systems, machine learning, reinforcement learning, and optimisation algorithms.
-Author: Miguel Santos Loureiro
-Author-email: miguel.santos.loureiro@gmail.com
-License-File: License.txt
