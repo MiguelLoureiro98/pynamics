@@ -87,7 +87,7 @@ class linearModel(model):
         test_C = isinstance(C, np.ndarray);
         test_D = isinstance(D, np.ndarray);
 
-        if(test_A or test_B or test_C or test_D is False):
+        if((test_A and test_B and test_C and test_D) is False):
 
             raise TypeError("Matrices A, B, C and D must be of np.ndarray type.");
     

@@ -6,4 +6,4 @@ setup(name="pynamics",
       author="Miguel Santos Loureiro",
       author_email="miguel.santos.loureiro@gmail.com",
       packages=find_packages(["pynamics", "pynamics.*"]),
-      install_requires=["numpy>1.26.3"])
+      install_requires=["numpy>=1.26.3", "pandas>=2.1.4"])
