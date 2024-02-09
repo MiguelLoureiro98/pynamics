@@ -8,6 +8,13 @@ class solver(ABC):
 
     """
     Generic solver class to serve as [the] mother class to all solvers supported by this package.
+
+    Attributes
+    ----------------------------------------------------------------------------------
+
+    Methods
+    ----------------------------------------------------------------------------------
+    __init__
     """
 
     def __init__(self, step_size: float) -> None:
