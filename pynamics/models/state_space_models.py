@@ -1,6 +1,18 @@
 from ._model import model
 import numpy as np
 
+"""
+This module contains all state-space models supported by this package.
+
+These include:
+-> linearModel: a class for generic linear state-space models.
+-> LTVModel: yet to be implemented.
+-> LPVModel: yet to be implemented.
+-> nonlinearModel: a class for generic nonlinear state-space models. 
+                   Nonlinear time-varying systems can be defined using this class.
+-> nonlinearPVModel: yet to be implemented.
+"""
+
 class linearModel(model):
 
     """
@@ -51,6 +63,10 @@ class linearModel(model):
         The system's initial state. Should be an array shaped (n, 1), where
         n is the number of variables.
 
+        initial_control: np.ndarray
+        The inputs' initial value(s). Should be an array shaped (u, 1), where
+        u is the number of input variables.
+
         A: np.ndarray
 
 
@@ -71,16 +87,22 @@ class linearModel(model):
         None
         """
 
-        super().__init__(initial_state)
+        self._matrix_type_checks(A, B, C, D);
+        super().__init__(initial_state, B.shape[1], C.shape[0]);
+        self.u = self._control_type_checks(initial_control);
+        self._matrix_dim_checks(A, B, C, D);
         self.A = A;
         self.B = B;
         self.C = C;
         self.D = D;
-        self.u = self._control_type_checks(initial_control);
 
         return;
 
-    def _matrix_checks(self, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> None:
+    def _matrix_type_checks(self, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> None:
+
+        """
+        Helper method to ... .
+        """
 
         test_A = isinstance(A, np.ndarray);
         test_B = isinstance(B, np.ndarray);
@@ -90,8 +112,39 @@ class linearModel(model):
         if((test_A and test_B and test_C and test_D) is False):
 
             raise TypeError("Matrices A, B, C and D must be of np.ndarray type.");
+
+        return;
+
+    def _matrix_dim_checks(self, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> None:
+
+        """
+        Helper method to ... .        
+        """
+
+        if(A.shape[0] != A.shape[1]):
+
+            raise ValueError("A must be a square matrix.");
+
+        if(A.shape[0] != B.shape[0] or C.shape[0] != D.shape[0] or B.shape[1] != D.shape[1] or A.shape[1] != C.shape[1]):
+
+            raise ValueError("A must have the same number of rows as B, while C must have the same number of rows as D.\n \
+                             Finally, B and D must have the same number of columns, and the same applies to A and C.");
     
-        # Further testing: matrix dimensions -> check appropriate exception (value error?)
+        if(A.shape[0] != self.x.shape[0]):
+
+            raise ValueError("A and B must have as many rows as x (the state vector) has columns.");
+
+        if(B.shape[1] != self.u.shape[0]):
+
+            raise ValueError("B must have as many columns as u (the input vector) has rows. The same must happen for D and u, respectively.");
+
+        return;
+
+    def info(self) -> None:
+
+        """
+        
+        """
 
         return;
 
@@ -109,7 +162,7 @@ class linearModel(model):
         
         """
 
-        return np.matmul(self.C, self.x);
+        return np.matmul(self.C, self.x) + self.D;
 
     def get_input(self) -> np.ndarray:
 
@@ -184,7 +237,7 @@ class nonlinearModel(model):
     eval 
     """
 
-    def __init__(self, initial_state: np.ndarray, initial_control: np.ndarray, state_update_fcn: callable, state_output_fcn: callable) -> None:
+    def __init__(self, initial_state: np.ndarray, initial_control: np.ndarray, state_update_fcn: callable, state_output_fcn: callable, input_dim: int, output_dim: int) -> None:
         
         """
         Constructor method for the nonlinearModel class.
@@ -204,12 +257,18 @@ class nonlinearModel(model):
         state_output_fcn: callable
 
 
+        input_dim: int
+        Number of inputs.
+
+        output_dim: int
+        Number of outputs.
+
         Returns
         ----------------------------------------------------------------------------------
         None
         """
 
-        super().__init__(initial_state);
+        super().__init__(initial_state, input_dim, output_dim);
         self.state_equations = state_update_fcn;
         self.output_equations = state_output_fcn;
         self.u = self._control_type_checks(initial_control);

@@ -2,7 +2,7 @@ from ._fixed_step_solver import fixed_step_solver
 import numpy as np
 
 """
-This file contains classes for all fixed-step solvers supported by this package.
+This module contains classes for all fixed-step solvers supported by this package.
 
 List of fixed-step solvers supported by this package:
 

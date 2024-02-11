@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 """
-This file contains the model base class, which forms the template for every plant model supported by this package.
+This module contains the model base class, which forms the template for every plant model supported by this package.
 """
 
 class model(ABC):
@@ -15,7 +15,7 @@ class model(ABC):
     ----------------------------------------------------------------------------------
     x: np.ndarray
     The system's state. Should be an array shaped (n, 1), where n is the number of
-    variables.
+    state variables.
 
     Methods
     ----------------------------------------------------------------------------------
@@ -27,7 +27,8 @@ class model(ABC):
     eval 
     """
 
-    def __init__(self, initial_state: np.ndarray) -> None:
+    def __init__(self, initial_state: np.ndarray, input_dim: int, output_dim: int, \
+                 input_labels: list | None=None, output_labels: list | None=None, state_labels: list | None=None) -> None:
         
         """
         Class constructor. Receives the system's initial state as an input.
@@ -38,6 +39,18 @@ class model(ABC):
         The system's initial state. Should be an array shaped (n, 1), where
         n is the number of variables.
 
+        input_dim: int
+        Number of inputs.
+
+        output_dim: int
+        Number of outputs.
+
+        input_labels: list or None
+
+
+        output_labels: list or None
+
+        
         Returns
         ----------------------------------------------------------------------------------
         None
@@ -45,6 +58,25 @@ class model(ABC):
 
         super().__init__();
         self.x = initial_state;
+        self.input_dim = input_dim;
+        self.output_dim = output_dim;
+        self.state_dim = self.x.shape[0];
+
+        if(input_labels is None):
+
+            input_labels = [f"Input_{num}" for num in range(1, self.input_dim + 1)];
+        
+        if(output_labels is None):
+
+            output_labels = [f"Input_{num}" for num in range(1, self.output_dim + 1)];
+        
+        if(state_labels is None):
+
+            state_labels = [f"Input_{num}" for num in range(1, self.state_dim + 1)];
+        
+        self.input_labels = input_labels;
+        self.output_labels = output_labels;
+        self.state_labels = state_labels;
 
         return;
 
@@ -74,6 +106,15 @@ class model(ABC):
             control_action = np.expand_dims(control_action, axis=1);
 
         return control_action;
+
+    @abstractmethod
+    def info(self) -> None:
+
+        """
+        Method to provid general information regarding model structure, parameters, etc.
+        """
+
+        pass
     
     @abstractmethod
     def get_state(self) -> np.ndarray:
@@ -106,7 +147,7 @@ class model(ABC):
     def set_input(self, u: np.ndarray | float) -> None:
 
         """
-        
+        Method to set a new set of inputs (references, control actions, etc.).
         """
 
         pass
@@ -124,7 +165,7 @@ class model(ABC):
     def eval(self) -> np.ndarray:
 
         """
-        
+        Method used to compute the model's state derivative at a given time instant.
         """
 
         pass

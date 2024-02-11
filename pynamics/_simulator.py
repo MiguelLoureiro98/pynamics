@@ -92,7 +92,16 @@ class simulation(ABC):
         return solvers[solver];
 
     @abstractmethod
-    def step(self) -> any:
+    def summary(self) -> None:
+
+        """
+        
+        """
+
+        pass
+
+    @abstractmethod
+    def _step(self) -> any:
 
         """
         

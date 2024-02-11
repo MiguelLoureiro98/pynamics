@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 """
-This file containts the abstract 'fixed step solver' class from which all fixed step solvers inherit / derive.
+This module containts the abstract 'fixed step solver' class from which all fixed step solvers inherit / derive.
 """
 
 class fixed_step_solver(ABC):
