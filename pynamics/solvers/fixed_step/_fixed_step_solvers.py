@@ -1,3 +1,4 @@
+#from pynamics.solvers.fixed_step._fixed_step_solver import fixed_step_solver
 from ._fixed_step_solver import fixed_step_solver
 import numpy as np
 

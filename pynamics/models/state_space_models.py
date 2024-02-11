@@ -326,3 +326,7 @@ class nonlinearModel(model):
         """
 
         return self.state_equations(x, self.u, t);
+
+if __name__ == "__main__":
+
+    pass
