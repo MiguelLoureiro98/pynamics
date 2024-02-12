@@ -6,5 +6,5 @@ setup(name="pynamics",
       author="Miguel Santos Loureiro",
       author_email="miguel.santos.loureiro@gmail.com",
       #packages=find_packages(include=["pynamics", "pynamics.*"]),
-      packages=["pynamics", "pynamics.solvers"],
+      packages=["pynamics", "pynamics.solvers", "pynamics.solvers.fixed_step"],
       install_requires=["numpy>=1.26.3", "pandas>=2.1.4"])
