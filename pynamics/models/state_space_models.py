@@ -121,6 +121,14 @@ class linearModel(model):
         Helper method to ... .        
         """
 
+        if(len(C.shape) == 1):
+
+            C = np.expand_dims(C, axis=0);
+        
+        if(len(D.shape) == 1):
+
+            D = np.expand_dims(D, axis=1);
+
         if(A.shape[0] != A.shape[1]):
 
             raise ValueError("A must be a square matrix.");

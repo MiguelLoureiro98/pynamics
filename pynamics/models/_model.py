@@ -62,17 +62,17 @@ class model(ABC):
         self.output_dim = output_dim;
         self.state_dim = self.x.shape[0];
 
-        if(input_labels is None):
+        if(input_labels is None or len(input_labels) != self.input_dim):
 
-            input_labels = [f"Input_{num}" for num in range(1, self.input_dim + 1)];
+            input_labels = [f"u_{num}" for num in range(1, self.input_dim + 1)];
         
-        if(output_labels is None):
+        if(output_labels is None or len(output_labels) != self.output_dim):
 
-            output_labels = [f"Input_{num}" for num in range(1, self.output_dim + 1)];
+            output_labels = [f"y_{num}" for num in range(1, self.output_dim + 1)];
         
-        if(state_labels is None):
+        if(state_labels is None or len(state_labels) != self.state_dim):
 
-            state_labels = [f"Input_{num}" for num in range(1, self.state_dim + 1)];
+            state_labels = [f"x_{num}" for num in range(1, self.state_dim + 1)];
         
         self.input_labels = input_labels;
         self.output_labels = output_labels;
