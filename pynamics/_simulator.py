@@ -15,7 +15,7 @@ class simulation(ABC):
     
     """
 
-    def __init__(self, system: model, sim_options: dict={"t0": 0.0, "tfinal": 10.0}, solver: str="RK4", solver_options: dict={"step_size": 0.001, "t0": 0.0}) -> None:
+    def __init__(self, system: model, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001) -> None:
         
         """
         
@@ -24,11 +24,15 @@ class simulation(ABC):
         super().__init__();
         self.system = system;
 
+        sim_options = {"t0": t0, "tfinal": tfinal};
+        solver_options = {"t0": t0, "step_size": step_size};
+
         self._check_options(sim_options, solver_options);
 
         self.options = sim_options;
         self.solver = self._solver_selection(solver, solver_options);
         self.time = np.arange(self.options["t0"], self.options["tfinal"], solver_options["step_size"]);
+        #self.time = np.expand_dims(self.time, axis=0);
 
         return;
 

@@ -1,4 +1,4 @@
-from pynamics.models._model import model
+from models._model import model
 from ._simulator import simulation
 import numpy as np
 import pandas as pd
@@ -7,23 +7,26 @@ import pandas as pd
 
 """
 
-class SystemSim(simulation):
+class sim(simulation):
 
     """
     
     """
 
-    def __init__(self, system: model, input_signal: np.ndarray, sim_options: dict = ..., solver: str = "RK4", solver_options: dict = ...) -> None:
+    def __init__(self, system: model, input_signal: np.ndarray, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001, \
+                 mode: str="open_loop", controller: any | None=None) -> None:
 
         """
         
         """
 
-        super().__init__(system, sim_options, solver, solver_options);
+        super().__init__(system, t0, tfinal, solver, step_size);
         self._input_checks(input_signal);
         self.inputs = input_signal;
         self.states = np.zeros(shape=(self.system.state_dim, self.time.shape[0]));
         self.outputs = np.zeros(shape=(self.system.output_dim, self.time.shape[0]));
+        self.controller = controller;
+        self.control_actions = np.zeros(shape=(self.controller.output_dim, self.time.shape[0]));
 
         return;
 
@@ -49,6 +52,14 @@ class SystemSim(simulation):
 
         return;
 
+    def _no_control(self, ref: float | np.ndarray, y: float | np.ndarray) -> float | np.ndarray:
+
+        """
+        
+        """
+
+        return ref;
+
     def summary(self) -> None:
 
         """
@@ -57,7 +68,7 @@ class SystemSim(simulation):
 
         return;
 
-    def _step(self, t: float) -> np.ndarray:
+    def _step(self, t: float, ref: np.ndarray, y: np.ndarray) -> np.ndarray:
 
         """
         
@@ -75,19 +86,19 @@ class SystemSim(simulation):
 
         pass
 
-class ControlSim(simulation):
+class RLSim(simulation):
 
     """
     
     """
 
-    def __init__(self, system: model, sim_options: dict = ..., solver: str = "RK4", solver_options: dict = ...) -> None:
+    def __init__(self, system: model, t0: float=0.0, tfinal: float=10.0, solver: str = "RK4", step_size: float=0.001) -> None:
 
         """
         
         """
 
-        super().__init__(system, sim_options, solver, solver_options);
+        super().__init__(system, t0, tfinal, solver, step_size);
 
         return;
 
@@ -115,46 +126,5 @@ class ControlSim(simulation):
 
         pass
 
-class TimedControlSim(simulation):
-
-    """
-    
-    """
-
-    def __init__(self, system: model, sim_options: dict = ..., solver: str = "RK4", solver_options: dict = ...) -> None:
-
-        """
-        
-        """
-
-        super().__init__(system, sim_options, solver, solver_options);
-
-        return;
-
-    def summary(self) -> None:
-
-        """
-        
-        """
-        
-        return;
-
-    def _step(self) -> np.ndarray:
-
-        """
-        
-        """
-
-        pass
-
-    def run(self) -> pd.DataFrame:
-
-        """
-        
-        """
-
-        pass
-
-# EstimatorSim -> to see how a state estimator behaves?
 # Sim without any reference -> the inputs change, and the controllers are present, but no reference is passed (useful for when the goal is e.g. maximising power); 
 #    Hybrids are needed -> Custom sims for this sort of systems (e.g. wind turbine sim)? 
