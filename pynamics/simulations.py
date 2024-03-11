@@ -22,6 +22,7 @@ class SystemSim(simulation):
         super().__init__(system, sim_options, solver, solver_options);
         self._input_checks(input_signal);
         self.inputs = input_signal;
+        self.states = np.zeros(shape=(self.system.state_dim, self.time.shape[0]));
         self.outputs = np.zeros(shape=(self.system.output_dim, self.time.shape[0]));
 
         return;
@@ -56,13 +57,13 @@ class SystemSim(simulation):
 
         return;
 
-    def _step(self) -> np.ndarray:
+    def _step(self, t: float) -> np.ndarray:
 
         """
         
         """
 
-
+        
 
         return;
 
