@@ -28,7 +28,7 @@ class model(ABC):
     """
 
     def __init__(self, initial_state: np.ndarray, input_dim: int, output_dim: int, \
-                 input_labels: list | None=None, output_labels: list | None=None, state_labels: list | None=None) -> None:
+                 input_labels: list[str] | None=None, output_labels: list[str] | None=None) -> None:
         
         """
         Class constructor. Receives the system's initial state as an input.
@@ -70,13 +70,13 @@ class model(ABC):
 
             output_labels = [f"y_{num}" for num in range(1, self.output_dim + 1)];
         
-        if(state_labels is None or len(state_labels) != self.state_dim):
+        #if(state_labels is None or len(state_labels) != self.state_dim):
 
-            state_labels = [f"x_{num}" for num in range(1, self.state_dim + 1)];
+        #    state_labels = [f"x_{num}" for num in range(1, self.state_dim + 1)];
         
         self.input_labels = input_labels;
         self.output_labels = output_labels;
-        self.state_labels = state_labels;
+        #self.state_labels = state_labels;
 
         return;
 

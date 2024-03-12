@@ -36,6 +36,18 @@ class simulation(ABC):
 
         return;
 
+    def _model_check(self, system: model) -> None:
+
+        """
+        
+        """
+
+        if(isinstance(system, model) is False):
+
+            raise TypeError("'system' must be an instance of the 'model' class.");
+
+        return;
+
     def _check_options(self, sim_options: dict, solver_options: dict) -> None:
 
         """

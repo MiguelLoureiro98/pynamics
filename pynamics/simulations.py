@@ -1,4 +1,5 @@
 from models._model import model
+from _controllers import _dummy
 from ._simulator import simulation
 import numpy as np
 import pandas as pd
@@ -14,7 +15,7 @@ class sim(simulation):
     """
 
     def __init__(self, system: model, input_signal: np.ndarray, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001, \
-                 mode: str="open_loop", controller: any | None=None) -> None:
+                 mode: str="open_loop", controller: any | None=None, reference_labels: list[str] | None=None) -> None:
 
         """
         
@@ -22,13 +23,63 @@ class sim(simulation):
 
         super().__init__(system, t0, tfinal, solver, step_size);
         self._input_checks(input_signal);
-        self.inputs = input_signal;
-        self.states = np.zeros(shape=(self.system.state_dim, self.time.shape[0]));
+        self.inputs = self._input_reformatting(input_signal);
+        #self.states = np.zeros(shape=(self.system.state_dim, self.time.shape[0]));
         self.outputs = np.zeros(shape=(self.system.output_dim, self.time.shape[0]));
         self.controller = controller;
+
+        self._mode_check(mode);
+
+        if(mode == "open_loop"):
+
+            self.controller = _dummy(self.inputs.shape[0], self.system.input_dim);
+
         self.control_actions = np.zeros(shape=(self.controller.output_dim, self.time.shape[0]));
+        self.ref_labels = self._labels_check(reference_labels);
 
         return;
+
+    def _mode_check(self, mode: str) -> None:
+
+        """
+        
+        """
+
+        if(isinstance(mode, str) is False):
+
+            raise TypeError("'mode' should be a string.");
+    
+        else:
+
+            if(mode != "open_loop" and mode != "closed_loop"):
+
+                raise ValueError("Please select either 'open_loop' or 'closed_loop' as simulation mode.");
+
+        return;
+
+    def _labels_check(self, labels: list[str] | None) -> list[str]:
+
+        """
+        
+        """
+
+        if(labels is None):
+
+            new_labels = [f"Ref_{num}" for num in self.inputs.shape[0]];
+        
+        else:
+
+            if(isinstance(labels, list) is False):
+
+                raise TypeError("'reference_labels' must be a list.");
+    
+            elif(len(labels) != self.inputs.shape[0]):
+
+                raise ValueError("The number of reference labels must be the same as the number of reference signals.");
+    
+            new_labels = labels;
+
+        return new_labels;
 
     def _input_checks(self, input_signal: np.ndarray) -> None:
 
@@ -52,13 +103,19 @@ class sim(simulation):
 
         return;
 
-    def _no_control(self, ref: float | np.ndarray, y: float | np.ndarray) -> float | np.ndarray:
+    def _input_reformatting(self, input_signal: np.ndarray) -> np.ndarray:
 
         """
         
         """
 
-        return ref;
+        input_shape_length = len(input_signal.shape);
+
+        if(input_shape_length == 1):
+
+            input_signal = np.expand_dims(input_signal, axis=0);
+
+        return input_signal;
 
     def summary(self) -> None:
 
@@ -68,15 +125,26 @@ class sim(simulation):
 
         return;
 
-    def _step(self, t: float, ref: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def _step(self, t: float, ref: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
         """
         
         """
 
-        
+        if(t % self.controller.Ts == 0):
 
-        return;
+            control_actions = self.controller.control(ref, y); # This should only be done when t % Ts = 0 (i.e. if this instant happens to coincide with a sampling instant)
+            self.system.set_input(control_actions);
+        
+        else:
+
+            control_actions = self.system.get_input();
+        
+        new_state = self.solver.step(self.system);
+        self.system.update_state(new_state); # Add time -> it is important for time varying systems (is it really?)
+        outputs = self.system.get_output();
+
+        return (outputs, control_actions);
 
     def run(self) -> pd.DataFrame:
 
@@ -84,7 +152,31 @@ class sim(simulation):
         
         """
 
-        pass
+        print("-----------------------------------------------------------------");
+        print("Simulation details...");
+        print("-----------------------------------------------------------------");
+
+        self.control_actions[:, 0] = self.system.get_input();
+        self.outputs[:, 0] = self.system.get_output();
+
+        for ind, (t, ref, y, u) in enumerate(zip(self.time[:-1], self.inputs[:, :-1], self.outputs[:, :-1], self.control_actions[:, :-1])):
+
+            self.outputs[:, ind+1], self.control_actions[:, ind+1] = self._step(t, ref, y);
+        
+        # Create results data frame
+        names = ["Time"];
+        names.extend(self.ref_labels);
+        names.extend(self.system.input_labels);
+        names.extend(self.system.output_labels);
+
+        results = self.time.T;
+        results = np.hstack((results, self.inputs.T));
+        results = np.hstack((results, self.control_actions.T));
+        results = np.hstack((results, self.outputs.T));
+
+        sim_data = pd.DataFrame(results, columns=names);
+
+        return sim_data;
 
 class RLSim(simulation):
 
@@ -92,7 +184,7 @@ class RLSim(simulation):
     
     """
 
-    def __init__(self, system: model, t0: float=0.0, tfinal: float=10.0, solver: str = "RK4", step_size: float=0.001) -> None:
+    def __init__(self, system: model, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001) -> None:
 
         """
         
@@ -100,7 +192,7 @@ class RLSim(simulation):
 
         super().__init__(system, t0, tfinal, solver, step_size);
 
-        return;
+        raise NotImplementedError("RL simulations haven't been implemented yet.");
 
     def summary(self) -> None:
 

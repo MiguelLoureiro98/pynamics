@@ -20,7 +20,7 @@ class Euler(fixed_step_solver):
     """
     This class implements the Euler method for solving ODEs.
 
-    The class contains a constructor, a destructor, and a 'step' method that
+    The class provides a constructor and a 'step' method that
     performs a single iteration of the method given ... [values and derivative].
     """
 

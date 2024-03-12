@@ -50,7 +50,8 @@ class linearModel(model):
     eval 
     """
 
-    def __init__(self, initial_state: np.ndarray, initial_control: np.ndarray | float, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> None:
+    def __init__(self, initial_state: np.ndarray, initial_control: np.ndarray | float, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray,\
+                 input_labels: list[str] | None=None, output_labels: list[str] | None=None) -> None:
         
         """
         Constructor method for the linearModel class.
@@ -88,7 +89,7 @@ class linearModel(model):
         """
 
         self._matrix_type_checks(A, B, C, D);
-        super().__init__(initial_state, B.shape[1], C.shape[0]);
+        super().__init__(initial_state, B.shape[1], C.shape[0], input_labels, output_labels);
         self.u = self._control_type_checks(initial_control);
         self._matrix_dim_checks(A, B, C, D);
         self.A = A;
