@@ -58,24 +58,12 @@ class model(ABC):
 
         super().__init__();
         self.x = initial_state;
+        self._dim_checks(input_dim, output_dim);
         self.input_dim = input_dim;
         self.output_dim = output_dim;
         self.state_dim = self.x.shape[0];
-
-        if(input_labels is None or len(input_labels) != self.input_dim):
-
-            input_labels = [f"u_{num}" for num in range(1, self.input_dim + 1)];
-        
-        if(output_labels is None or len(output_labels) != self.output_dim):
-
-            output_labels = [f"y_{num}" for num in range(1, self.output_dim + 1)];
-        
-        #if(state_labels is None or len(state_labels) != self.state_dim):
-
-        #    state_labels = [f"x_{num}" for num in range(1, self.state_dim + 1)];
-        
-        self.input_labels = input_labels;
-        self.output_labels = output_labels;
+        self.input_labels = self._labels_check(input_labels, self.input_dim);
+        self.output_labels = self._labels_check(output_labels, self.output_dim);
         #self.state_labels = state_labels;
 
         return;
@@ -106,6 +94,42 @@ class model(ABC):
             control_action = np.expand_dims(control_action, axis=1);
 
         return control_action;
+
+    def _dim_checks(self, input_dim: int, output_dim: int) -> None:
+
+        """
+        
+        """
+
+        if((isinstance(input_dim, int) and isinstance(output_dim, int)) is False):
+
+            raise TypeError("Both the input and output dimensions should be integers.");
+
+        return;
+
+    def _labels_check(self, labels: list[str], dim: int) -> list[str]:
+
+        """
+        
+        """
+
+        if(labels is None):
+
+            new_labels = [f"u_{num}" for num in range(1, dim + 1)];
+        
+        else:
+
+            if(isinstance(labels, list) is False):
+
+                raise TypeError("Both 'input_labels' and 'output_labels' must be lists.");
+    
+            elif(len(labels) != dim):
+
+                raise ValueError("The number of labels does not match the dimensions.");
+    
+            new_labels = labels;
+
+        return new_labels;
 
     @abstractmethod
     def info(self) -> None:

@@ -22,6 +22,7 @@ class simulation(ABC):
         """
 
         super().__init__();
+        self._model_check(system);
         self.system = system;
 
         sim_options = {"t0": t0, "tfinal": tfinal};
