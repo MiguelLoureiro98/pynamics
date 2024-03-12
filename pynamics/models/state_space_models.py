@@ -284,6 +284,14 @@ class nonlinearModel(model):
 
         return;
 
+    def info(self) -> None:
+
+        """
+        
+        """
+
+        return;
+
     def get_state(self) -> np.ndarray:
         
         """

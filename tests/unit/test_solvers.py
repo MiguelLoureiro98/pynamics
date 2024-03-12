@@ -22,13 +22,13 @@ class TestSolvers(unittest.TestCase):
 
     @classmethod
     tearDownClass:
-    Empty.
+    Deletes the attributes created by the setUpClass method.
 
     setUp:
     Defines several parameters used in a multitude of tests.
 
     tearDown:
-    Empty.
+    Deletes the parameters created by the setUp method.
 
     test_initialisation:
     Tests every solvers' initialisation procedure.
@@ -56,8 +56,6 @@ class TestSolvers(unittest.TestCase):
         cls.sim_h = 0.001;
         cls.sim_hmin = 1e-5;
 
-        return;
-
     @classmethod
     def tearDownClass(cls) -> None:
         
@@ -70,8 +68,6 @@ class TestSolvers(unittest.TestCase):
         print("Deleted sim_h.");
         del cls.sim_hmin;
         print("Deleted sim_hmin.");
-
-        return;
 
     def setUp(self) -> None:
 
@@ -196,8 +192,6 @@ class TestSolvers(unittest.TestCase):
         del self.ode4;
         del self.ode_RKF;
         del self.ode_DP;
-
-        return;
 
     def test_initialisation(self) -> None:
 
