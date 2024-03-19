@@ -106,6 +106,10 @@ class TestModels(unittest.TestCase):
 
     def setUp(self) -> None:
 
+        """
+        
+        """
+
         # SISO models
 
         A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
@@ -137,14 +141,18 @@ class TestModels(unittest.TestCase):
 
     def tearDown(self) -> None:
         
+        """
+        
+        """
+
         del self.linear_model
-        print("Deleted linear model.");
-    
         del self.nonlinear_model;
-        print("Deleted nonlinear model.");
-    
         del self.time_varying_model;
-        print("Deleted time-varying model.");
+        del self.MIMO_linear;
+        del self.MIMO_nonlinear;
+        del self.MIMO_time_varying;
+
+        print("Deleted every testing variable.");
 
     def test_initialisation(self) -> None:
 
