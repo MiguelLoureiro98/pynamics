@@ -152,7 +152,96 @@ class TestModels(unittest.TestCase):
         
         """
 
-        pass
+        new_linear = linearModel(np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, \
+                                 input_labels=["Input"], output_labels=["Output"]);
+        new_nonlinear = nonlinearModel(np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, input_labels=["Input"], output_labels=["Output"]);
+
+        new_MIMO_linear = linearModel(np.zeros((3, 1)), np.array([[0], [0]]), self.MIMO_linear.A, self.MIMO_linear.B, self.MIMO_linear.C, self.MIMO_linear.D, \
+                                      input_labels=["Input_1", "Input_2"], output_labels=["Output_1", "Output_2", "Output_3"]);
+        new_MIMO_nonlinear = nonlinearModel(np.zeros((3, 1)), np.array([[0], [0]]), MIMO_state_function_test, MIMO_output_function_test, 2, 2, \
+                                            input_labels=["Input_1", "Input_2"], output_labels=["Output_1", "Output_2"]);
+
+        # Parameters
+
+        # SISO models
+
+        self.assertEqual(self.linear_model.input_dim, 1);
+        self.assertEqual(self.linear_model.output_dim, 1);
+        self.assertEqual(self.linear_model.state_dim, 3);
+        self.assertEqual(self.linear_model.input_labels[0], "u_1");
+        self.assertEqual(self.linear_model.output_labels[0], "y_1");
+    
+        self.assertEqual(self.nonlinear_model.input_dim, 1);
+        self.assertEqual(self.nonlinear_model.output_dim, 1);
+        self.assertEqual(self.nonlinear_model.state_dim, 2);
+        self.assertEqual(self.nonlinear_model.input_labels[0], "u_1");
+        self.assertEqual(self.nonlinear_model.output_labels[0], "y_1");
+    
+        self.assertEqual(self.time_varying_model.input_dim, 1);
+        self.assertEqual(self.time_varying_model.output_dim, 1);
+        self.assertEqual(self.time_varying_model.state_dim, 2);
+        self.assertEqual(self.time_varying_model.input_labels[0], "u_1");
+        self.assertEqual(self.time_varying_model.output_labels[0], "y_1");
+
+        self.assertListEqual(new_linear.input_labels, ["Input"]);
+        self.assertListEqual(new_linear.output_labels, ["Output"]);
+        self.assertListEqual(new_nonlinear.input_labels, ["Input"]);
+        self.assertListEqual(new_nonlinear.output_labels, ["Output"]);
+    
+        # MIMO models
+    
+        self.assertEqual(self.MIMO_linear.input_dim, 2);
+        self.assertEqual(self.MIMO_linear.output_dim, 3);
+        self.assertEqual(self.MIMO_linear.state_dim, 3);
+        self.assertListEqual(self.MIMO_linear.input_labels, ["u_1", "u_2"]);
+        self.assertListEqual(self.MIMO_linear.output_labels, ["y_1", "y_2", "y_3"]);
+
+        self.assertEqual(self.MIMO_nonlinear.input_dim, 2);
+        self.assertEqual(self.MIMO_nonlinear.output_dim, 2);
+        self.assertEqual(self.MIMO_nonlinear.state_dim, 3);
+        self.assertListEqual(self.MIMO_nonlinear.input_labels, ["u_1", "u_2"]);
+        self.assertListEqual(self.MIMO_nonlinear.output_labels, ["y_1", "y_2"]);
+
+        self.assertEqual(self.MIMO_time_varying.input_dim, 2);
+        self.assertEqual(self.MIMO_time_varying.output_dim, 2);
+        self.assertEqual(self.MIMO_time_varying.state_dim, 3);
+        self.assertListEqual(self.MIMO_time_varying.input_labels, ["u_1", "u_2"]);
+        self.assertListEqual(self.MIMO_time_varying.output_labels, ["y_1", "y_2"]);
+
+        self.assertListEqual(new_MIMO_linear.input_labels, ["Input_1", "Input_2"]);
+        self.assertListEqual(new_MIMO_linear.output_labels, ["Output_1", "Output_2", "Output_3"]);
+        self.assertListEqual(new_MIMO_nonlinear.input_labels, ["Input_1", "Input_2"]);
+        self.assertListEqual(new_MIMO_nonlinear.output_labels, ["Output_1", "Output_2"]);
+
+        # Exceptions
+    
+        self.assertRaises(TypeError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1.4, 1);
+        self.assertRaises(TypeError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1.7);
+
+        self.assertRaises(TypeError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, input_labels=1);
+        self.assertRaises(TypeError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, output_labels=1);
+    
+        self.assertRaises(ValueError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, input_labels=["1", "2"]);
+        self.assertRaises(ValueError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, output_labels=["1", "2"]);
+    
+        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), 1, self.linear_model.B, self.linear_model.C, self.linear_model.D);
+        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, 1, self.linear_model.C, self.linear_model.D);
+        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, 1, self.linear_model.D);
+        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, 1);
+    
+        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), np.zeros((3, 2)), self.linear_model.B, self.linear_model.C, self.linear_model.D);
+        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), np.zeros((4, 4)), self.linear_model.B, self.linear_model.C, self.linear_model.D);
+        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, np.zeros((3, 2)), self.linear_model.C, self.linear_model.D);
+        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, np.zeros((2, 1)), self.linear_model.C, self.linear_model.D);
+        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, np.zeros((2, 3)), self.linear_model.D);
+        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, np.zeros((1, 3)));
+        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, np.zeros((1, 5)), self.linear_model.D);
+    
+        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, input_labels=1);
+        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, output_labels=1);
+    
+        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, input_labels=["1", "2"]);
+        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, output_labels=["1", "2"]);
 
     def test_getters(self) -> None:
 
@@ -160,49 +249,53 @@ class TestModels(unittest.TestCase):
         
         """
 
+        zero = np.array([0]);
+        one = np.array([1]);
+
         # SISO models
 
-        self.assertEqual(self.linear_model.get_input(), np.array([0]));
-        self.assertEqual(self.nonlinear_model.get_input(), np.array([0]));
-        self.assertEqual(self.time_varying_model.get_input(), np.array([0]));
+        self.assertEqual(self.linear_model.get_input(), zero);
+        self.assertEqual(self.nonlinear_model.get_input(), zero);
+        self.assertEqual(self.time_varying_model.get_input(), zero);
     
-        self.assertEqual(self.linear_model.get_state()[0], np.array([0]));
-        self.assertEqual(self.linear_model.get_state()[1], np.array([0]));
-        self.assertEqual(self.linear_model.get_state()[2], np.array([0]));
-        self.assertEqual(self.nonlinear_model.get_state()[0], np.array([0]));
-        self.assertEqual(self.nonlinear_model.get_state()[1], np.array([0]));
-        self.assertEqual(self.time_varying_model.get_state()[0], np.array([0]));
-        self.assertEqual(self.time_varying_model.get_state()[1], np.array([0]));
+        self.assertEqual(self.linear_model.get_state()[0], zero);
+        self.assertEqual(self.linear_model.get_state()[1], zero);
+        self.assertEqual(self.linear_model.get_state()[2], zero);
+        #self.assertListEqual(self.linear_model.get_state().tolist(), [0.0, 0.0, 0.0]); -> Don't do this -- formatting problems (unless we flatten the array)
+        self.assertEqual(self.nonlinear_model.get_state()[0], zero);
+        self.assertEqual(self.nonlinear_model.get_state()[1], zero);
+        self.assertEqual(self.time_varying_model.get_state()[0], zero);
+        self.assertEqual(self.time_varying_model.get_state()[1], zero);
     
-        self.assertEqual(self.linear_model.get_output(), np.array([0]));
-        self.assertEqual(self.nonlinear_model.get_output(), np.array([1]));
-        self.assertEqual(self.time_varying_model.get_output(), np.array([1]));
+        self.assertEqual(self.linear_model.get_output(), zero);
+        self.assertEqual(self.nonlinear_model.get_output(), one);
+        self.assertEqual(self.time_varying_model.get_output(), one);
     
         # MIMO models
     
-        self.assertEqual(self.MIMO_linear.get_input()[0], np.array([0]));
-        self.assertEqual(self.MIMO_linear.get_input()[1], np.array([0]));
-        self.assertEqual(self.MIMO_nonlinear.get_input()[0], np.array([0]));
-        self.assertEqual(self.MIMO_nonlinear.get_input()[1], np.array([0]));
-        self.assertEqual(self.MIMO_time_varying.get_input()[0], np.array([0]));
-        self.assertEqual(self.MIMO_time_varying.get_input()[1], np.array([0]));
+        self.assertEqual(self.MIMO_linear.get_input()[0], zero);
+        self.assertEqual(self.MIMO_linear.get_input()[1], zero);
+        self.assertEqual(self.MIMO_nonlinear.get_input()[0], zero);
+        self.assertEqual(self.MIMO_nonlinear.get_input()[1], zero);
+        self.assertEqual(self.MIMO_time_varying.get_input()[0], zero);
+        self.assertEqual(self.MIMO_time_varying.get_input()[1], zero);
     
-        self.assertEqual(self.MIMO_linear.get_state()[0], np.array([0]));
-        self.assertEqual(self.MIMO_linear.get_state()[1], np.array([0]));
-        self.assertEqual(self.MIMO_linear.get_state()[2], np.array([0]));
-        self.assertEqual(self.MIMO_nonlinear.get_state()[0], np.array([0]));
-        self.assertEqual(self.MIMO_nonlinear.get_state()[1], np.array([0]));
-        self.assertEqual(self.MIMO_nonlinear.get_state()[2], np.array([0]));
-        self.assertEqual(self.MIMO_time_varying.get_state()[0], np.array([0]));
-        self.assertEqual(self.MIMO_time_varying.get_state()[1], np.array([0]));
-        self.assertEqual(self.MIMO_time_varying.get_state()[2], np.array([0]));
+        self.assertEqual(self.MIMO_linear.get_state()[0], zero);
+        self.assertEqual(self.MIMO_linear.get_state()[1], zero);
+        self.assertEqual(self.MIMO_linear.get_state()[2], zero);
+        self.assertEqual(self.MIMO_nonlinear.get_state()[0], zero);
+        self.assertEqual(self.MIMO_nonlinear.get_state()[1], zero);
+        self.assertEqual(self.MIMO_nonlinear.get_state()[2], zero);
+        self.assertEqual(self.MIMO_time_varying.get_state()[0], zero);
+        self.assertEqual(self.MIMO_time_varying.get_state()[1], zero);
+        self.assertEqual(self.MIMO_time_varying.get_state()[2], zero);
 
-        self.assertEqual(self.MIMO_linear.get_output()[0], np.array([0]));
-        self.assertEqual(self.MIMO_linear.get_output()[1], np.array([0]));
-        self.assertEqual(self.MIMO_nonlinear.get_output()[0], np.array([1]));
-        self.assertEqual(self.MIMO_nonlinear.get_output()[1], np.array([0]));
-        self.assertEqual(self.MIMO_time_varying.get_output()[0], np.array([1]));
-        self.assertEqual(self.MIMO_time_varying.get_output()[1], np.array([0]));
+        self.assertEqual(self.MIMO_linear.get_output()[0], zero);
+        self.assertEqual(self.MIMO_linear.get_output()[1], zero);
+        self.assertEqual(self.MIMO_nonlinear.get_output()[0], one);
+        self.assertEqual(self.MIMO_nonlinear.get_output()[1], zero);
+        self.assertEqual(self.MIMO_time_varying.get_output()[0], one);
+        self.assertEqual(self.MIMO_time_varying.get_output()[1], zero);
 
     def test_setters(self) -> None:
 
@@ -210,15 +303,18 @@ class TestModels(unittest.TestCase):
         
         """
 
+        one = np.array([1]);
+        three = np.array([3]);
+
         # SISO models
 
         self.linear_model.set_input(1);
         self.nonlinear_model.set_input(1);
         self.time_varying_model.set_input(1);
 
-        self.assertEqual(self.linear_model.get_input(), np.array([1]));
-        self.assertEqual(self.nonlinear_model.get_input(), np.array([1]));
-        self.assertEqual(self.time_varying_model.get_input(), np.array([1]));
+        self.assertEqual(self.linear_model.get_input(), one);
+        self.assertEqual(self.nonlinear_model.get_input(), one);
+        self.assertEqual(self.time_varying_model.get_input(), one);
     
         # MIMO models
 
@@ -226,12 +322,12 @@ class TestModels(unittest.TestCase):
         self.MIMO_nonlinear.set_input(np.array([[1], [3]]));
         self.MIMO_time_varying.set_input(np.array([[1], [3]]));
 
-        self.assertEqual(self.MIMO_linear.get_input()[0], np.array([1]));
-        self.assertEqual(self.MIMO_linear.get_input()[1], np.array([3]));
-        self.assertEqual(self.MIMO_nonlinear.get_input()[0], np.array([1]));
-        self.assertEqual(self.MIMO_nonlinear.get_input()[1], np.array([3]));
-        self.assertEqual(self.MIMO_time_varying.get_input()[0], np.array([1]));
-        self.assertEqual(self.MIMO_time_varying.get_input()[1], np.array([3]));
+        self.assertEqual(self.MIMO_linear.get_input()[0], one);
+        self.assertEqual(self.MIMO_linear.get_input()[1], three);
+        self.assertEqual(self.MIMO_nonlinear.get_input()[0], one);
+        self.assertEqual(self.MIMO_nonlinear.get_input()[1], three);
+        self.assertEqual(self.MIMO_time_varying.get_input()[0], one);
+        self.assertEqual(self.MIMO_time_varying.get_input()[1], three);
 
     def test_update(self) -> None:
 
@@ -239,7 +335,38 @@ class TestModels(unittest.TestCase):
         
         """
 
-        pass
+        new_state = np.array([3, 2, 1]).T;
+
+        self.linear_model.update_state(new_state);
+        self.nonlinear_model.update_state(new_state);
+        self.time_varying_model.update_state(new_state);
+        self.MIMO_linear.update_state(new_state);
+        self.MIMO_nonlinear.update_state(new_state);
+        self.MIMO_time_varying.update_state(new_state);
+
+        # SISO models
+    
+        self.assertEqual(self.linear_model.get_state()[0], new_state[0]);
+        self.assertEqual(self.linear_model.get_state()[1], new_state[1]);
+        self.assertEqual(self.linear_model.get_state()[2], new_state[2]);
+        self.assertEqual(self.nonlinear_model.get_state()[0], new_state[0]);
+        self.assertEqual(self.nonlinear_model.get_state()[1], new_state[1]);
+        self.assertEqual(self.nonlinear_model.get_state()[2], new_state[2]);
+        self.assertEqual(self.time_varying_model.get_state()[0], new_state[0]);
+        self.assertEqual(self.time_varying_model.get_state()[1], new_state[1]);
+        self.assertEqual(self.time_varying_model.get_state()[2], new_state[2]);
+
+        # MIMO models
+
+        self.assertEqual(self.MIMO_linear.get_state()[0], new_state[0]);
+        self.assertEqual(self.MIMO_linear.get_state()[1], new_state[1]);
+        self.assertEqual(self.MIMO_linear.get_state()[2], new_state[2]);
+        self.assertEqual(self.MIMO_nonlinear.get_state()[0], new_state[0]);
+        self.assertEqual(self.MIMO_nonlinear.get_state()[1], new_state[1]);
+        self.assertEqual(self.MIMO_nonlinear.get_state()[2], new_state[2]);
+        self.assertEqual(self.MIMO_time_varying.get_state()[0], new_state[0]);
+        self.assertEqual(self.MIMO_time_varying.get_state()[1], new_state[1]);
+        self.assertEqual(self.MIMO_time_varying.get_state()[2], new_state[2]);
 
     def test_eval(self) -> None:
 
@@ -247,49 +374,52 @@ class TestModels(unittest.TestCase):
         
         """
 
+        zero = np.array([0]);
+        one = np.array([1]);
+        two = np.array([2]);
+        three = np.array([3]);
+
         # SISO models
 
-        self.assertEqual(self.linear_model.eval(0.0, self.linear_model.get_state())[0], np.array([0]));
-        self.assertEqual(self.linear_model.eval(0.0, self.linear_model.get_state())[1], np.array([0]));
-        self.assertEqual(self.linear_model.eval(0.0, self.linear_model.get_state())[2], np.array([0]));
-        self.assertEqual(self.linear_model.eval(1.0, self.linear_model.get_state())[0], np.array([0]));
-        self.assertEqual(self.linear_model.eval(1.0, self.linear_model.get_state())[1], np.array([0]));
-        self.assertEqual(self.linear_model.eval(1.0, self.linear_model.get_state())[2], np.array([0]));
+        self.assertEqual(self.linear_model.eval(0.0, self.linear_model.get_state())[0], zero);
+        self.assertEqual(self.linear_model.eval(0.0, self.linear_model.get_state())[1], zero);
+        self.assertEqual(self.linear_model.eval(0.0, self.linear_model.get_state())[2], zero);
+        self.assertEqual(self.linear_model.eval(1.0, self.linear_model.get_state())[0], zero);
+        self.assertEqual(self.linear_model.eval(1.0, self.linear_model.get_state())[1], zero);
+        self.assertEqual(self.linear_model.eval(1.0, self.linear_model.get_state())[2], zero);
 
-        self.assertEqual(self.nonlinear_model.eval(0.0, self.nonlinear_model.get_state())[0], np.array([2]));
-        self.assertEqual(self.nonlinear_model.eval(0.0, self.nonlinear_model.get_state())[1], np.array([0]));
-        self.assertEqual(self.nonlinear_model.eval(1.0, self.nonlinear_model.get_state())[0], np.array([2]));
-        self.assertEqual(self.nonlinear_model.eval(1.0, self.nonlinear_model.get_state())[1], np.array([0]));
+        self.assertEqual(self.nonlinear_model.eval(0.0, self.nonlinear_model.get_state())[0], two);
+        self.assertEqual(self.nonlinear_model.eval(0.0, self.nonlinear_model.get_state())[1], zero);
+        self.assertEqual(self.nonlinear_model.eval(1.0, self.nonlinear_model.get_state())[0], two);
+        self.assertEqual(self.nonlinear_model.eval(1.0, self.nonlinear_model.get_state())[1], zero);
 
-        self.assertEqual(self.time_varying_model.eval(0.0, self.time_varying_model.get_state())[0], np.array([2]));
-        self.assertEqual(self.time_varying_model.eval(0.0, self.time_varying_model.get_state())[1], np.array([0]));
-        self.assertEqual(self.time_varying_model.eval(1.0, self.time_varying_model.get_state())[0], np.array([2]));
-        self.assertEqual(self.time_varying_model.eval(1.0, self.time_varying_model.get_state())[1], np.array([3]));
-
-        #self.assertEqual(self.time_varying_model.eval(0.0, self.time_varying_model.get_state()), np.array([0, 0, 0]).T);
+        self.assertEqual(self.time_varying_model.eval(0.0, self.time_varying_model.get_state())[0], two);
+        self.assertEqual(self.time_varying_model.eval(0.0, self.time_varying_model.get_state())[1], zero);
+        self.assertEqual(self.time_varying_model.eval(1.0, self.time_varying_model.get_state())[0], two);
+        self.assertEqual(self.time_varying_model.eval(1.0, self.time_varying_model.get_state())[1], three);
 
         # MIMO models
 
-        self.assertEqual(self.MIMO_linear.eval(0.0, self.MIMO_linear.get_state())[0], np.array([0]));
-        self.assertEqual(self.MIMO_linear.eval(0.0, self.MIMO_linear.get_state())[1], np.array([0]));
-        self.assertEqual(self.MIMO_linear.eval(0.0, self.MIMO_linear.get_state())[2], np.array([0]));
-        self.assertEqual(self.MIMO_linear.eval(1.0, self.MIMO_linear.get_state())[0], np.array([0]));
-        self.assertEqual(self.MIMO_linear.eval(1.0, self.MIMO_linear.get_state())[1], np.array([0]));
-        self.assertEqual(self.MIMO_linear.eval(1.0, self.MIMO_linear.get_state())[2], np.array([0]));
+        self.assertEqual(self.MIMO_linear.eval(0.0, self.MIMO_linear.get_state())[0], zero);
+        self.assertEqual(self.MIMO_linear.eval(0.0, self.MIMO_linear.get_state())[1], zero);
+        self.assertEqual(self.MIMO_linear.eval(0.0, self.MIMO_linear.get_state())[2], zero);
+        self.assertEqual(self.MIMO_linear.eval(1.0, self.MIMO_linear.get_state())[0], zero);
+        self.assertEqual(self.MIMO_linear.eval(1.0, self.MIMO_linear.get_state())[1], zero);
+        self.assertEqual(self.MIMO_linear.eval(1.0, self.MIMO_linear.get_state())[2], zero);
 
-        self.assertEqual(self.MIMO_nonlinear.eval(0.0, self.MIMO_nonlinear.get_state())[0], np.array([2]));
-        self.assertEqual(self.MIMO_nonlinear.eval(0.0, self.MIMO_nonlinear.get_state())[1], np.array([0]));
-        self.assertEqual(self.MIMO_nonlinear.eval(0.0, self.MIMO_nonlinear.get_state())[2], np.array([1]));
-        self.assertEqual(self.MIMO_nonlinear.eval(1.0, self.MIMO_nonlinear.get_state())[0], np.array([2]));
-        self.assertEqual(self.MIMO_nonlinear.eval(1.0, self.MIMO_nonlinear.get_state())[1], np.array([0]));
-        self.assertEqual(self.MIMO_nonlinear.eval(1.0, self.MIMO_nonlinear.get_state())[2], np.array([1]));
+        self.assertEqual(self.MIMO_nonlinear.eval(0.0, self.MIMO_nonlinear.get_state())[0], two);
+        self.assertEqual(self.MIMO_nonlinear.eval(0.0, self.MIMO_nonlinear.get_state())[1], zero);
+        self.assertEqual(self.MIMO_nonlinear.eval(0.0, self.MIMO_nonlinear.get_state())[2], one);
+        self.assertEqual(self.MIMO_nonlinear.eval(1.0, self.MIMO_nonlinear.get_state())[0], two);
+        self.assertEqual(self.MIMO_nonlinear.eval(1.0, self.MIMO_nonlinear.get_state())[1], zero);
+        self.assertEqual(self.MIMO_nonlinear.eval(1.0, self.MIMO_nonlinear.get_state())[2], one);
 
-        self.assertEqual(self.MIMO_time_varying.eval(0.0, self.MIMO_time_varying.get_state())[0], np.array([2]));
-        self.assertEqual(self.MIMO_time_varying.eval(0.0, self.MIMO_time_varying.get_state())[1], np.array([0]));
-        self.assertEqual(self.MIMO_time_varying.eval(0.0, self.MIMO_time_varying.get_state())[2], np.array([1]));
-        self.assertEqual(self.MIMO_time_varying.eval(1.0, self.MIMO_time_varying.get_state())[0], np.array([2]));
-        self.assertEqual(self.MIMO_time_varying.eval(1.0, self.MIMO_time_varying.get_state())[1], np.array([3]));
-        self.assertEqual(self.MIMO_time_varying.eval(1.0, self.MIMO_time_varying.get_state())[2], np.array([1]));
+        self.assertEqual(self.MIMO_time_varying.eval(0.0, self.MIMO_time_varying.get_state())[0], two);
+        self.assertEqual(self.MIMO_time_varying.eval(0.0, self.MIMO_time_varying.get_state())[1], zero);
+        self.assertEqual(self.MIMO_time_varying.eval(0.0, self.MIMO_time_varying.get_state())[2], one);
+        self.assertEqual(self.MIMO_time_varying.eval(1.0, self.MIMO_time_varying.get_state())[0], two);
+        self.assertEqual(self.MIMO_time_varying.eval(1.0, self.MIMO_time_varying.get_state())[1], three);
+        self.assertEqual(self.MIMO_time_varying.eval(1.0, self.MIMO_time_varying.get_state())[2], one);
 
 if __name__ == "__main__":
 

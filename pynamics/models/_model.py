@@ -62,8 +62,8 @@ class model(ABC):
         self.input_dim = input_dim;
         self.output_dim = output_dim;
         self.state_dim = self.x.shape[0];
-        self.input_labels = self._labels_check(input_labels, self.input_dim);
-        self.output_labels = self._labels_check(output_labels, self.output_dim);
+        self.input_labels = self._labels_check(input_labels, self.input_dim, "u");
+        self.output_labels = self._labels_check(output_labels, self.output_dim, "y");
         #self.state_labels = state_labels;
 
         return;
@@ -107,7 +107,7 @@ class model(ABC):
 
         return;
 
-    def _labels_check(self, labels: list[str], dim: int) -> list[str]:
+    def _labels_check(self, labels: list[str], dim: int, char: str) -> list[str]:
 
         """
         
@@ -115,7 +115,7 @@ class model(ABC):
 
         if(labels is None):
 
-            new_labels = [f"u_{num}" for num in range(1, dim + 1)];
+            new_labels = [f"{char}_{num}" for num in range(1, dim + 1)];
         
         else:
 

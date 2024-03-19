@@ -89,6 +89,7 @@ class linearModel(model):
         """
 
         self._matrix_type_checks(A, B, C, D);
+        C, D = self._matrix_reformatting(C, D);
         super().__init__(initial_state, B.shape[1], C.shape[0], input_labels, output_labels);
         self.u = self._control_type_checks(initial_control);
         self._matrix_dim_checks(A, B, C, D);
@@ -116,10 +117,10 @@ class linearModel(model):
 
         return;
 
-    def _matrix_dim_checks(self, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> None:
+    def _matrix_reformatting(self, C, D) -> tuple[np.ndarray]:
 
         """
-        Helper method to ... .        
+        
         """
 
         if(len(C.shape) == 1):
@@ -129,6 +130,14 @@ class linearModel(model):
         if(len(D.shape) == 1):
 
             D = np.expand_dims(D, axis=1);
+    
+        return (C, D);
+
+    def _matrix_dim_checks(self, A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> None:
+
+        """
+        Helper method to ... .        
+        """
 
         if(A.shape[0] != A.shape[1]):
 
@@ -246,7 +255,8 @@ class nonlinearModel(model):
     eval 
     """
 
-    def __init__(self, initial_state: np.ndarray, initial_control: np.ndarray, state_update_fcn: callable, state_output_fcn: callable, input_dim: int, output_dim: int) -> None:
+    def __init__(self, initial_state: np.ndarray, initial_control: np.ndarray, state_update_fcn: callable, state_output_fcn: callable, input_dim: int, output_dim: int,\
+                 input_labels: list[str] | None=None, output_labels: list[str] | None=None) -> None:
         
         """
         Constructor method for the nonlinearModel class.
@@ -277,7 +287,7 @@ class nonlinearModel(model):
         None
         """
 
-        super().__init__(initial_state, input_dim, output_dim);
+        super().__init__(initial_state, input_dim, output_dim, input_labels, output_labels);
         self.state_equations = state_update_fcn;
         self.output_equations = state_output_fcn;
         self.u = self._control_type_checks(initial_control);
