@@ -171,7 +171,7 @@ class linearModel(model):
         
         """
 
-        return np.matmul(self.C, self.x) + self.D;
+        return np.matmul(self.C, self.x) + np.matmul(self.D, self.u);
 
     def get_input(self) -> np.ndarray:
 

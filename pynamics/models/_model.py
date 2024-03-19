@@ -68,7 +68,7 @@ class model(ABC):
 
         return;
 
-    def _control_type_checks(self, control_action: np.ndarray | float) -> np.ndarray:
+    def _control_type_checks(self, control_action: np.ndarray | float | int) -> np.ndarray:
 
         """
         Internal helper method to perform the necessary checks when a new control action
@@ -76,7 +76,7 @@ class model(ABC):
 
         Arguments
         ----------------------------------------------------------------------------------
-        control_action: np.ndarray | float
+        control_action: np.ndarray | float | int
         The new control action. It can be specified as a float, a flat array, or a ...
 
         Returns
@@ -85,7 +85,7 @@ class model(ABC):
         The same control action ... [in the right format].
         """
 
-        if (isinstance(control_action, float) is True):
+        if (isinstance(control_action, float) is True or isinstance(control_action, int) is True):
 
             control_action = np.array([control_action]);
         
