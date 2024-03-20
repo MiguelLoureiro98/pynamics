@@ -26,12 +26,13 @@ class dummy_controller(object):
     control
     """
 
-    def __init__(self, n_inputs: int, n_outputs: int) -> None:
+    def __init__(self, n_inputs: int, n_outputs: int, sampling_time: int | float) -> None:
 
         """
         
         """
         
+        self.Ts = sampling_time;
         self.input_dim = n_inputs;
         self.output_dim = n_outputs;
         

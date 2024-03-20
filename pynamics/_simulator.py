@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from models._model import model
-from solvers.fixed_step._fixed_step_solver import fixed_step_solver
-from solvers.fixed_step._fixed_step_solvers import Euler, Modified_Euler, Heun, RK4
+from .models._model import model
+from .solvers.fixed_step._fixed_step_solver import fixed_step_solver
+from .solvers.fixed_step._fixed_step_solvers import Euler, Modified_Euler, Heun, RK4
 import numpy as np
 import pandas as pd
 
@@ -79,7 +79,7 @@ class simulation(ABC):
 
                     raise TypeError("Every simulation option must be either a float or an integer.");
     
-        if(sim_options["t0"] != solver_options["t0"]):
+        if(sim_options["t0"] != solver_options["t0"]): # This test isn't needed anymore!!! Remove ASAP.
 
             raise ValueError("The initial time instant must be the same for both the simulation and the solver.\n \
                              To solve this issue, set both solver_options['t0'] and sim_options['t0'] to the same value (it must be a float).");

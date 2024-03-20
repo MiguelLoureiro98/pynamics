@@ -1,5 +1,5 @@
-from models._model import model
-from _controllers import _dummy
+from .models._model import model
+from ._controllers import _dummy
 from ._simulator import simulation
 import numpy as np
 import pandas as pd
@@ -32,7 +32,7 @@ class sim(simulation):
 
         if(mode == "open_loop"):
 
-            self.controller = _dummy(self.inputs.shape[0], self.system.input_dim);
+            self.controller = _dummy(self.inputs.shape[0], self.system.input_dim, step_size);
 
         self.control_actions = np.zeros(shape=(self.controller.output_dim, self.time.shape[0]));
         self.ref_labels = self._labels_check(reference_labels);
@@ -65,7 +65,7 @@ class sim(simulation):
 
         if(labels is None):
 
-            new_labels = [f"Ref_{num}" for num in self.inputs.shape[0]];
+            new_labels = [f"Ref_{num}" for num in range(1, self.inputs.shape[0] + 1)];
         
         else:
 
