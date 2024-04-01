@@ -15,7 +15,7 @@ class TestSolvers(unittest.TestCase):
     Generic test class to implement the test cases for all solvers.
 
     Methods
-    ----------------------------------------------------------------------------------
+    -------
     @classmethod
     setUpClass:
     Defines two attributes used only for one of the tests.
@@ -75,7 +75,7 @@ class TestSolvers(unittest.TestCase):
         Define testing parameters.
         
         Parameters
-        ---------------------------------------------------------------------------------------
+        ----------
         sig_digits:
         Number of significant digits to consider in every calculation.
 

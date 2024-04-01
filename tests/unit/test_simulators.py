@@ -91,6 +91,7 @@ class TestSimulators(unittest.TestCase):
         """
 
         reference = np.zeros(int(10.0/0.001));
+        labelled_sim = sim(self.model, np.zeros(int(10.0/0.001)), reference_labels=["Reference_signal"]);
 
         # Exceptions
 
@@ -124,7 +125,9 @@ class TestSimulators(unittest.TestCase):
         self.assertEqual(self.simulation.control_actions.shape[0], 1);
         self.assertEqual(self.simulation.control_actions.shape[1], 10000);
         self.assertEqual(isinstance(self.simulation.controller, dummy_controller), True);
+        self.assertEqual(isinstance(self.controlled_simulation.controller, dummy_controller), False);
         self.assertListEqual(self.simulation.ref_labels, ["Ref_1"]);
+        self.assertListEqual(labelled_sim.ref_labels, ["Reference_signal"]);
 
     def test_step(self) -> None:
 

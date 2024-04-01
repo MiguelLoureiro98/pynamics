@@ -5,20 +5,62 @@ import numpy as np
 import pandas as pd
 
 """
-
+This module ... .
 """
 
 class sim(simulation):
-
-    """
     
+    """
+    _summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    simulation : _type_
+        _description_
     """
 
     def __init__(self, system: model, input_signal: np.ndarray, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001, \
-                 mode: str="open_loop", controller: any=None, reference_labels: list[str] | None=None) -> None:
-
-        """
+                 mode: str="open_loop", controller: any=None, reference_labels: list[str] | None=None, noise_power: int | float=0.0) -> None:
         
+        """
+        _summary_
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        system : model
+            _description_
+
+        input_signal : np.ndarray
+            _description_
+
+        t0 : float, optional
+            _description_, by default 0.0
+
+        tfinal : float, optional
+            _description_, by default 10.0
+
+        solver : str, optional
+            _description_, by default "RK4"
+
+        step_size : float, optional
+            _description_, by default 0.001
+
+        controller : any, optional
+            _description_, by default None
+
+        reference_labels : list[str] | None, optional
+            _description_, by default None
+
+        noise_power : int | float, optional
+            _description_, by default 0.0
+
+        Returns
+        -------
+        None
         """
 
         super().__init__(system, t0, tfinal, solver, step_size);
@@ -40,9 +82,28 @@ class sim(simulation):
         return;
 
     def _mode_check(self, mode: str) -> None:
-
-        """
         
+        """
+        _summary_
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        mode : str
+            _description_
+
+        Raises
+        ------
+        TypeError
+            _description_
+
+        ValueError
+            _description_
+
+        Returns
+        -------
+        None
         """
 
         if(isinstance(mode, str) is False):
@@ -120,15 +181,35 @@ class sim(simulation):
     def summary(self) -> None:
 
         """
-        
+        _summary_
+
+        _extended_summary_
         """
 
         return;
 
     def _step(self, t: float, ref: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-
-        """
         
+        """
+        _summary_
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        t : float
+            _description_
+
+        ref : np.ndarray
+            _description_
+
+        y : np.ndarray
+            _description_
+
+        Returns
+        -------
+        tuple[np.ndarray, np.ndarray]
+            _description_
         """
 
         if(t % self.controller.Ts == 0):
@@ -147,9 +228,16 @@ class sim(simulation):
         return (outputs, control_actions);
 
     def run(self) -> pd.DataFrame:
-
-        """
         
+        """
+        _summary_
+
+        _extended_summary_
+
+        Returns
+        -------
+        pd.DataFrame
+            _description_
         """
 
         print("-----------------------------------------------------------------");
