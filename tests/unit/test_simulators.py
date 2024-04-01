@@ -113,6 +113,8 @@ class TestSimulators(unittest.TestCase):
         self.assertRaises(ValueError, sim, self.model, np.zeros(5));
         self.assertRaises(TypeError, sim, self.model, reference, reference_labels=2);
         self.assertRaises(ValueError, sim, self.model, reference, reference_labels=["Label_1", "Label_2"]);
+        self.assertRaises(TypeError, sim, self.model, reference, reference_lookahead=5.5);
+        self.assertRaises(ValueError, sim, self.model, reference, reference_lookahead=0);
     
         # Attributes
     
@@ -131,11 +133,12 @@ class TestSimulators(unittest.TestCase):
         self.assertEqual(isinstance(self.simulation.controller, dummy_controller), True);
         self.assertEqual(isinstance(self.controlled_simulation.controller, dummy_controller), False);
         self.assertListEqual(self.simulation.ref_labels, ["Ref_1"]);
+        self.assertEqual(self.simulation.noise[0, 0], self.simulation.inputs[0, 0]);
+        self.assertEqual(self.simulation.ref_lookahead, 1);
 
         self.assertListEqual(labelled_sim.ref_labels, ["Reference_signal"]);
         self.assertEqual(self.noisy_simulation.noise.shape[1], self.noisy_simulation.time.shape[0]);
-        print(self.noisy_simulation.system.output_dim);
-        self.assertNotEqual(self.noisy_simulation.noise[0].item(), reference[0]);
+        self.assertNotEqual(self.noisy_simulation.noise[0, 0], self.noisy_simulation.inputs[0, 0]);
 
     def test_step(self) -> None:
 
@@ -143,7 +146,19 @@ class TestSimulators(unittest.TestCase):
         
         """
 
-        pass
+        matlab_output = 0.000996003664875;
+        
+        sim_outputs, sim_control_actions = self.simulation._step(self.simulation.time[0], self.simulation.inputs[:, 0], self.simulation.outputs[:, 0] + self.simulation.noise[:, 0]);
+        controlled_outputs, controlled_control_actions = self.controlled_simulation._step(self.simulation.time[0], self.simulation.inputs[:, 0], self.simulation.outputs[:, 0] + self.simulation.noise[:, 0]);
+        noisy_outputs, noisy_control_actions = self.noisy_simulation._step(self.simulation.time[0], self.simulation.inputs[:, 0], self.simulation.outputs[:, 0] + self.simulation.noise[:, 0]);
+
+        self.assertListEqual(sim_outputs.tolist(), np.array([[0]]).tolist());
+        self.assertListEqual(controlled_outputs.tolist(), np.array([[matlab_output]]).tolist());
+        self.assertNotEqual(sim_outputs[0].item(), noisy_outputs[0].item());
+
+        self.assertEqual(sim_control_actions[0], 0.0);
+        self.assertEqual(controlled_control_actions[0], 1.0);
+        self.assertEqual(noisy_control_actions[0], 0.0);
 
 if __name__ == "__main__":
 

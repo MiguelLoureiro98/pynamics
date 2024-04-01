@@ -276,7 +276,7 @@ class sim(simulation):
         Returns
         -------
         pd.DataFrame
-            _description_
+            Data frame containing the results.
         """
 
         print("-----------------------------------------------------------------");
@@ -286,7 +286,7 @@ class sim(simulation):
         self.control_actions[:, 0] = self.system.get_input();
         self.outputs[:, 0] = self.system.get_output();
 
-        for ind, (t, ref, y, n, _) in enumerate(zip(self.time[:-1], self.inputs[:, :-1], self.outputs[:, :-1], self.noise[:, :-1], self.control_actions[:, :-1])):
+        for ind, (t, _, y, n, _) in enumerate(zip(self.time[:-1], self.inputs[:, :-1], self.outputs[:, :-1], self.noise[:, :-1], self.control_actions[:, :-1])):
 
             #self.outputs[:, ind+1], self.control_actions[:, ind+1] = self._step(t, ref, y + n);
             self.outputs[:, ind+1], self.control_actions[:, ind+1] = self._step(t, self.inputs[:, ind:ind+self.ref_lookahead], y + n);

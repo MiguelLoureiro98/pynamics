@@ -89,7 +89,7 @@ class model(ABC):
 
             control_action = np.array([control_action]);
         
-        if(control_action.shape[0] == 1):
+        if(control_action.shape[0] == 1 and len(control_action.shape) == 1):
 
             control_action = np.expand_dims(control_action, axis=1);
 
