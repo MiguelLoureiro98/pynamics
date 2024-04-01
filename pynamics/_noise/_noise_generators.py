@@ -17,16 +17,16 @@ def white_noise(n_series: int, n_samples: int, power: int | float, seed: int) ->
     Parameters
     ----------
     n_series : int
-        _description_
+        Number of white noise time series to generate.
 
     n_samples : int
-        _description_
+        Number of samples (i.e. length) of each time series.
 
     power : int | float
         White noise power in Watt.
 
     seed : int
-        Random seed to allow for ... .
+        Random seed to allow for reproducible white noise generation.
 
     Returns
     -------

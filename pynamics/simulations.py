@@ -7,6 +7,7 @@ import pandas as pd
 
 """
 This module provides several classes for simulating dynamical systems.
+Both open-loop and closed-loop simulations are supported.
 """
 
 class sim(simulation):

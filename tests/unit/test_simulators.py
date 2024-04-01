@@ -58,10 +58,12 @@ class TestSimulators(unittest.TestCase):
         D = np.array([0]);
 
         self.controller = Controller_test(1, 1, 1.0);
+        self.noise_power = 100;
 
         self.model = linearModel(np.zeros((3, 1)), np.array([0]), A, B, C, D);
         self.simulation = sim(self.model, np.zeros(int(10.0/0.001)));
         self.controlled_simulation = sim(self.model, np.zeros(int(10.0/0.001)), mode="closed_loop", controller=self.controller);
+        self.noisy_simulation = sim(self.model, np.zeros(int(10.0/0.001)), noise_power=self.noise_power);
     
         self.t0 = 0.0;
         self.tfinal = 10.0;
@@ -74,9 +76,11 @@ class TestSimulators(unittest.TestCase):
         
         """
 
+        del self.noise_power;
         del self.model;
         del self.simulation;
         del self.controlled_simulation;
+        del self.noisy_simulation;
         del self.t0;
         del self.tfinal;
         del self.solver;
@@ -127,7 +131,11 @@ class TestSimulators(unittest.TestCase):
         self.assertEqual(isinstance(self.simulation.controller, dummy_controller), True);
         self.assertEqual(isinstance(self.controlled_simulation.controller, dummy_controller), False);
         self.assertListEqual(self.simulation.ref_labels, ["Ref_1"]);
+
         self.assertListEqual(labelled_sim.ref_labels, ["Reference_signal"]);
+        self.assertEqual(self.noisy_simulation.noise.shape[1], self.noisy_simulation.time.shape[0]);
+        print(self.noisy_simulation.system.output_dim);
+        self.assertNotEqual(self.noisy_simulation.noise[0].item(), reference[0]);
 
     def test_step(self) -> None:
 
