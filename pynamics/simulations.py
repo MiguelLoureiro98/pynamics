@@ -298,7 +298,7 @@ class sim(simulation):
         names.extend(self.system.input_labels);
         names.extend(self.system.output_labels);
 
-        results = self.time.T;
+        results = np.expand_dims(self.time, axis=0).T;
         results = np.hstack((results, self.inputs.T));
         results = np.hstack((results, self.control_actions.T));
         results = np.hstack((results, self.outputs.T));
