@@ -2,7 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 file = "ode45_test_10sec.csv";
-home = False;
+home = True;
+
 if home is True:
 
     stem = "J:/Projectos_e_relatorios/Project_repos/Pynamics/";

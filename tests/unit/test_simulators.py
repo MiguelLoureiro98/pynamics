@@ -2,6 +2,7 @@ import unittest
 import numpy as np
 from pynamics.models.state_space_models import linearModel
 from pynamics.simulations import sim
+from pynamics._controllers._dummy import dummy_controller
 
 """
 
@@ -59,8 +60,8 @@ class TestSimulators(unittest.TestCase):
         self.controller = Controller_test(1, 1, 1.0);
 
         self.model = linearModel(np.zeros((3, 1)), np.array([0]), A, B, C, D);
-        self.simulation = sim(self.model, np.zeros(10.0/0.001));
-        self.controlled_simulation = sim(self.model, np.zeros(10.0/0.001), mode="closed_loop", controller=self.controller);
+        self.simulation = sim(self.model, np.zeros(int(10.0/0.001)));
+        self.controlled_simulation = sim(self.model, np.zeros(int(10.0/0.001)), mode="closed_loop", controller=self.controller);
     
         self.t0 = 0.0;
         self.tfinal = 10.0;
@@ -110,10 +111,10 @@ class TestSimulators(unittest.TestCase):
     
         # Attributes
     
-        self.assertEqual(self.simulation.sim_options["t0"], self.t0);
-        self.assertEqual(self.simulation.sim_options["tfinal"], self.tfinal);
-        self.assertEqual(self.simulation.solver_options["t0"], self.t0);
-        self.assertEqual(self.simulation.solver_options["step_size"], self.step_size);
+        self.assertEqual(self.simulation.options["t0"], self.t0);
+        self.assertEqual(self.simulation.options["tfinal"], self.tfinal);
+        self.assertEqual(self.simulation.solver.t, self.t0);
+        self.assertEqual(self.simulation.solver.h, self.step_size);
         self.assertEqual(self.simulation.time.shape[0], 10000);
 
         self.assertEqual(self.simulation.inputs.shape[0], 1);
@@ -122,7 +123,7 @@ class TestSimulators(unittest.TestCase):
         self.assertEqual(self.simulation.outputs.shape[1], 10000);
         self.assertEqual(self.simulation.control_actions.shape[0], 1);
         self.assertEqual(self.simulation.control_actions.shape[1], 10000);
-        self.assertEqual(self.simulation.mode, "open_loop");
+        self.assertEqual(isinstance(self.simulation.controller, dummy_controller), True);
         self.assertListEqual(self.simulation.ref_labels, ["Ref_1"]);
 
     def test_step(self) -> None:

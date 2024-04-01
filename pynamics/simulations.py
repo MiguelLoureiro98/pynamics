@@ -1,5 +1,5 @@
 from .models._model import model
-from ._controllers import _dummy
+from ._controllers._dummy import dummy_controller
 from ._simulator import simulation
 import numpy as np
 import pandas as pd
@@ -15,7 +15,7 @@ class sim(simulation):
     """
 
     def __init__(self, system: model, input_signal: np.ndarray, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001, \
-                 mode: str="open_loop", controller: any | None=None, reference_labels: list[str] | None=None) -> None:
+                 mode: str="open_loop", controller: any=None, reference_labels: list[str] | None=None) -> None:
 
         """
         
@@ -32,7 +32,7 @@ class sim(simulation):
 
         if(mode == "open_loop"):
 
-            self.controller = _dummy(self.inputs.shape[0], self.system.input_dim, step_size);
+            self.controller = dummy_controller(self.inputs.shape[0], self.system.input_dim, step_size);
 
         self.control_actions = np.zeros(shape=(self.controller.output_dim, self.time.shape[0]));
         self.ref_labels = self._labels_check(reference_labels);
