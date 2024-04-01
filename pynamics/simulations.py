@@ -1,11 +1,12 @@
 from .models._model import model
 from ._controllers._dummy import dummy_controller
 from ._simulator import simulation
+from ._noise._noise_generators import white_noise
 import numpy as np
 import pandas as pd
 
 """
-This module ... .
+This module provides several classes for simulating dynamical systems.
 """
 
 class sim(simulation):
@@ -22,7 +23,8 @@ class sim(simulation):
     """
 
     def __init__(self, system: model, input_signal: np.ndarray, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001, \
-                 mode: str="open_loop", controller: any=None, reference_labels: list[str] | None=None, noise_power: int | float=0.0) -> None:
+                 mode: str="open_loop", controller: any=None, reference_labels: list[str] | None=None, reference_lookahead: int=1, \
+                 noise_power: int | float=0.0, noise_seed: int=0) -> None:
         
         """
         _summary_
@@ -55,12 +57,14 @@ class sim(simulation):
         reference_labels : list[str] | None, optional
             _description_, by default None
 
+        reference_lookahead : int, optional
+            _description_, by default 1
+
         noise_power : int | float, optional
             _description_, by default 0.0
 
-        Returns
-        -------
-        None
+        noise_seed : int, optional
+            _description_, by default 0
         """
 
         super().__init__(system, t0, tfinal, solver, step_size);
@@ -68,6 +72,9 @@ class sim(simulation):
         self.inputs = self._input_reformatting(input_signal);
         #self.states = np.zeros(shape=(self.system.state_dim, self.time.shape[0]));
         self.outputs = np.zeros(shape=(self.system.output_dim, self.time.shape[0]));
+        self.noise = white_noise(self.system.output_dim, self.time.shape[0], noise_power, noise_seed);
+        self._lookahead_check(reference_lookahead);
+        self.ref_lookahead = reference_lookahead;
         self.controller = controller;
 
         self._mode_check(mode);
@@ -78,6 +85,37 @@ class sim(simulation):
 
         self.control_actions = np.zeros(shape=(self.controller.output_dim, self.time.shape[0]));
         self.ref_labels = self._labels_check(reference_labels);
+
+        return;
+
+    def _lookahead_check(self, ref_lookahead: int) -> None:
+
+        """
+        _summary_
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        ref_lookahead : int
+            _description_
+
+        Raises
+        ------
+        TypeError
+            _description_
+
+        ValueError
+            _description_
+        """
+
+        if(isinstance(ref_lookahead, int) is False):
+
+            raise TypeError("The 'ref_lookahead' parameter must be an integer.");
+    
+        if(ref_lookahead < 1):
+
+            raise ValueError("The 'ref_lookahead' parameter must not be smaller than 1.");
 
         return;
 
@@ -247,9 +285,11 @@ class sim(simulation):
         self.control_actions[:, 0] = self.system.get_input();
         self.outputs[:, 0] = self.system.get_output();
 
-        for ind, (t, ref, y, u) in enumerate(zip(self.time[:-1], self.inputs[:, :-1], self.outputs[:, :-1], self.control_actions[:, :-1])):
+        for ind, (t, ref, y, n, _) in enumerate(zip(self.time[:-1], self.inputs[:, :-1], self.outputs[:, :-1], self.noise[:, :-1], self.control_actions[:, :-1])):
 
-            self.outputs[:, ind+1], self.control_actions[:, ind+1] = self._step(t, ref, y);
+            #self.outputs[:, ind+1], self.control_actions[:, ind+1] = self._step(t, ref, y + n);
+            self.outputs[:, ind+1], self.control_actions[:, ind+1] = self._step(t, self.inputs[:, ind:ind+self.ref_lookahead], y + n);
+            self.outputs[:, ind+1] += self.noise[:, ind+1];
         
         # Create results data frame
         names = ["Time"];
@@ -265,6 +305,22 @@ class sim(simulation):
         sim_data = pd.DataFrame(results, columns=names);
 
         return sim_data;
+
+class SIL(simulation):
+
+    """
+    
+    """
+
+    def __init__(self, system: model, t0: float = 0, tfinal: float = 10, solver: str = "RK4", step_size: float = 0.001) -> None:
+
+        """
+        
+        """
+
+        super().__init__(system, t0, tfinal, solver, step_size);
+
+        raise NotImplementedError("SIL simulations have yet to be implemented.");
 
 class RLSim(simulation):
 

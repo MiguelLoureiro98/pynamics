@@ -10,9 +10,9 @@ However, support for coloured noise may come in the future.
 def white_noise(n_series: int, n_samples: int, power: int | float, seed: int) -> np.ndarray:
     
     """
-    _summary_
+    Generate White Gaussian Noise.
 
-    _extended_summary_
+    This function generates one or more time series of white gaussian noise, each with a length of n_samples.
 
     Parameters
     ----------
@@ -23,16 +23,39 @@ def white_noise(n_series: int, n_samples: int, power: int | float, seed: int) ->
         _description_
 
     power : int | float
-        _description_
+        White noise power in Watt.
 
     seed : int
-        _description_
+        Random seed to allow for ... .
 
     Returns
     -------
     np.ndarray
-        _description_
+        An array shaped (n_series, n_samples) containing the generated white noise time series.
+
+    Raises
+    ------
+    TypeError
+        If the noise power is not an integer or a float.
+
+    ValueError
+        If the noise power is negative.
+
+    TypeError
+        If the seed is not an integer.
     """
+
+    if(isinstance(power, int) is False and isinstance(power, float) is False):
+
+        raise TypeError("The noise power must be either an integer or a float.");
+
+    if(power < 0):
+
+        raise ValueError("The noise power must be positive.");
+
+    if(isinstance(seed, int) is False):
+
+        raise TypeError("The seed must be an integer.");
 
     if(n_series == 1):
 
