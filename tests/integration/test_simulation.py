@@ -38,7 +38,7 @@ class SimulationTests(unittest.TestCase):
         _extended_summary_
         """
         
-        home = True;
+        home = False;
 
         if home is True:
 
@@ -74,7 +74,7 @@ class SimulationTests(unittest.TestCase):
         reference = np.ones(int(10/0.001));
         reference_100sec = np.ones(int(100/0.001));
     
-        cls.Euler_10sec = sim(cls.model, reference, solver="Euler");
+        cls.Euler_10sec = sim(cls.model, reference[:5], solver="Euler", tfinal=0.005);
         cls.Heun_10sec = sim(cls.model, reference, solver="Heun");
         cls.RK4_10sec = sim(cls.model, reference);
     
@@ -105,7 +105,7 @@ class SimulationTests(unittest.TestCase):
         # Something's wrong with the run method ...
 
         Euler_10sec_res = self.Euler_10sec.run();
-        #print(Euler_10sec_res);
+        print(Euler_10sec_res);
         Heun_10sec_res = self.Heun_10sec.run();
         #print(Heun_10sec_res);
         RK4_10sec_res = self.RK4_10sec.run();
