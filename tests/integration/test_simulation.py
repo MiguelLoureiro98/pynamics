@@ -70,7 +70,7 @@ class SimulationTests(unittest.TestCase):
         C = np.array([0, 0, 1]);
         D = np.array([0]);
     
-        cls.model = linearModel(np.zeros((3, 1)), np.array([0]), A, B, C, D);
+        cls.model = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
         reference = np.ones(int(10/0.001));
         reference_100sec = np.ones(int(100/0.001));
     
