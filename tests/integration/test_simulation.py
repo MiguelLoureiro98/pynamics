@@ -38,7 +38,7 @@ class SimulationTests(unittest.TestCase):
         _extended_summary_
         """
         
-        home = False;
+        home = True;
 
         if home is True:
 
@@ -70,17 +70,22 @@ class SimulationTests(unittest.TestCase):
         C = np.array([0, 0, 1]);
         D = np.array([0]);
     
-        cls.model = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
-        reference = np.ones(int(10/0.001));
-        reference_100sec = np.ones(int(100/0.001));
+        cls.model1 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model2 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model3 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model4 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model5 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model6 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        reference = np.ones(int(10/0.001)+1);
+        reference_100sec = np.ones(int(100/0.001)+1);
     
-        cls.Euler_10sec = sim(cls.model, reference[:5], solver="Euler", tfinal=0.005);
-        cls.Heun_10sec = sim(cls.model, reference, solver="Heun");
-        cls.RK4_10sec = sim(cls.model, reference);
+        cls.Euler_10sec = sim(cls.model1, reference, solver="Euler");
+        cls.Heun_10sec = sim(cls.model2, reference, solver="Heun");
+        cls.RK4_10sec = sim(cls.model3, reference);
     
-        cls.Euler_100sec = sim(cls.model, reference_100sec, solver="Euler", tfinal=100);
-        cls.Heun_100sec = sim(cls.model, reference_100sec, solver="Heun", tfinal=100);
-        cls.RK4_100sec = sim(cls.model, reference_100sec, tfinal=100);
+        cls.Euler_100sec = sim(cls.model4, reference_100sec, solver="Euler", tfinal=100);
+        cls.Heun_100sec = sim(cls.model5, reference_100sec, solver="Heun", tfinal=100);
+        cls.RK4_100sec = sim(cls.model6, reference_100sec, tfinal=100);
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -105,7 +110,7 @@ class SimulationTests(unittest.TestCase):
         # Something's wrong with the run method ...
 
         Euler_10sec_res = self.Euler_10sec.run();
-        print(Euler_10sec_res);
+        #print(Euler_10sec_res);
         Heun_10sec_res = self.Heun_10sec.run();
         #print(Heun_10sec_res);
         RK4_10sec_res = self.RK4_10sec.run();
@@ -115,6 +120,7 @@ class SimulationTests(unittest.TestCase):
         #print(Euler_100sec_res);
         Heun_100sec_res = self.Heun_100sec.run();
         RK4_100sec_res = self.RK4_100sec.run();
+        #print(RK4_100sec_res);
 
 if __name__ == "__main__":
 

@@ -61,9 +61,9 @@ class TestSimulators(unittest.TestCase):
         self.noise_power = 100;
 
         self.model = linearModel(np.zeros((3, 1)), np.array([0]), A, B, C, D);
-        self.simulation = sim(self.model, np.zeros(int(10.0/0.001)));
-        self.controlled_simulation = sim(self.model, np.zeros(int(10.0/0.001)), mode="closed_loop", controller=self.controller);
-        self.noisy_simulation = sim(self.model, np.zeros(int(10.0/0.001)), noise_power=self.noise_power);
+        self.simulation = sim(self.model, np.zeros(int(10.0/0.001)+1));
+        self.controlled_simulation = sim(self.model, np.zeros(int(10.0/0.001)+1), mode="closed_loop", controller=self.controller);
+        self.noisy_simulation = sim(self.model, np.zeros(int(10.0/0.001)+1), noise_power=self.noise_power);
     
         self.t0 = 0.0;
         self.tfinal = 10.0;
@@ -94,8 +94,10 @@ class TestSimulators(unittest.TestCase):
         
         """
 
-        reference = np.zeros(int(10.0/0.001));
-        labelled_sim = sim(self.model, np.zeros(int(10.0/0.001)), reference_labels=["Reference_signal"]);
+        ref_signal_length = int(10.0/0.001) + 1;
+
+        reference = np.zeros(ref_signal_length);
+        labelled_sim = sim(self.model, reference, reference_labels=["Reference_signal"]);
 
         # Exceptions
 
@@ -109,7 +111,7 @@ class TestSimulators(unittest.TestCase):
         self.assertRaises(TypeError, sim, self.model, reference, mode=1);
         self.assertRaises(ValueError, sim, self.model, reference, mode="Third_way");
         self.assertRaises(TypeError, sim, self.model, 23.19);
-        self.assertRaises(ValueError, sim, self.model, np.zeros((2, int(10.0/0.001))));
+        self.assertRaises(ValueError, sim, self.model, np.zeros((2, ref_signal_length)));
         self.assertRaises(ValueError, sim, self.model, np.zeros(5));
         self.assertRaises(TypeError, sim, self.model, reference, reference_labels=2);
         self.assertRaises(ValueError, sim, self.model, reference, reference_labels=["Label_1", "Label_2"]);
@@ -122,14 +124,14 @@ class TestSimulators(unittest.TestCase):
         self.assertEqual(self.simulation.options["tfinal"], self.tfinal);
         self.assertEqual(self.simulation.solver.t, self.t0);
         self.assertEqual(self.simulation.solver.h, self.step_size);
-        self.assertEqual(self.simulation.time.shape[0], 10000);
+        self.assertEqual(self.simulation.time.shape[0], ref_signal_length);
 
         self.assertEqual(self.simulation.inputs.shape[0], 1);
-        self.assertEqual(self.simulation.inputs.shape[1], 10000);
+        self.assertEqual(self.simulation.inputs.shape[1], ref_signal_length);
         self.assertEqual(self.simulation.outputs.shape[0], 1);
-        self.assertEqual(self.simulation.outputs.shape[1], 10000);
+        self.assertEqual(self.simulation.outputs.shape[1], ref_signal_length);
         self.assertEqual(self.simulation.control_actions.shape[0], 1);
-        self.assertEqual(self.simulation.control_actions.shape[1], 10000);
+        self.assertEqual(self.simulation.control_actions.shape[1], ref_signal_length);
         self.assertEqual(isinstance(self.simulation.controller, dummy_controller), True);
         self.assertEqual(isinstance(self.controlled_simulation.controller, dummy_controller), False);
         self.assertListEqual(self.simulation.ref_labels, ["Ref_1"]);

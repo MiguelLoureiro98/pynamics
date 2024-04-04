@@ -32,7 +32,7 @@ class simulation(ABC):
 
         self.options = sim_options;
         self.solver = self._solver_selection(solver, solver_options);
-        self.time = np.arange(self.options["t0"], self.options["tfinal"], solver_options["step_size"]);
+        self.time = np.arange(self.options["t0"], self.options["tfinal"] + solver_options["step_size"], solver_options["step_size"]);
         #self.time = np.expand_dims(self.time, axis=0);
 
         return;
