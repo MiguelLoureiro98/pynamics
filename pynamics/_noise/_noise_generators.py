@@ -12,14 +12,14 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import numpy as np
-
 """
 This module contains helper functions to help generate noise.
 
 As of now, only white noise generation is supported.
 However, support for coloured noise may come in the future.
 """
+
+import numpy as np
 
 def white_noise(n_series: int, n_samples: int, power: int | float, seed: int) -> np.ndarray:
     
