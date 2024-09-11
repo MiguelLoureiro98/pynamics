@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pynamics"
+version = "0.0.1"
+authors = [
+    {name = "Miguel Santos Loureiro", email = "miguel.santos.loureiro@gmail.com"}
+]
+description = "Physical modelling tools for advanced control design."
+readme = "README.md"
+license = { file = "LICENSE" }
+keywords = ["physical-models", "dynamical-systems", "simulations"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education"
+]
+dependencies = [
+    "numpy>=1.26.3",
+    "pandas>=2.1.4"
+]
+
+[project.optional-dependencies]
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.30",
+    "build>=1.2.1",
+    "twine>=5.3.1"
+]
+
+[project.urls]
+repository = "https://github.com/MiguelLoureiro98/pynamics"
+
+[tool.setuptools.packages.find]
+include = ["pynamics*"]
