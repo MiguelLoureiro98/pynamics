@@ -18,14 +18,15 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Software Development :: Version Control :: Git",
+    "Topic :: Scientific/Engineering",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Intended Audience :: Education"
 ]
 dependencies = [
     "numpy>=1.26.3",
-    "pandas>=2.1.4"
+    "pandas>=2.1.4",
+    "control>=0.10.1"
 ]
 
 [project.optional-dependencies]
