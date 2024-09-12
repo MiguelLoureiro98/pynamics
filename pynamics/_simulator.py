@@ -14,8 +14,8 @@
 
 from abc import ABC, abstractmethod
 from .models._model import model
-from .solvers._fixed_step._fixed_step_solver import _FixedStepSolver
-from .solvers._fixed_step._fixed_step_solvers import _Euler, _Modified_Euler, _Heun, _RK4
+from ._solvers._fixed_step._fixed_step_solver import _FixedStepSolver
+from ._solvers._fixed_step._fixed_step_solvers import _Euler, _Modified_Euler, _Heun, _RK4
 import numpy as np
 import pandas as pd
 
