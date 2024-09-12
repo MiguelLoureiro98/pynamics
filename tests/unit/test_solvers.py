@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from pynamics.solvers._fixed_step._fixed_step_solvers import _Euler, _Modified_Euler, _Heun, _RK4
-from pynamics.solvers.variable_step._variable_step_solvers import RKF, DP
+from pynamics.solvers._variable_step._variable_step_solvers import _RKF, _DP
 from pynamics.models.state_space_models import linearModel
 
 """
@@ -146,9 +146,9 @@ class TestSolvers(unittest.TestCase):
         self.RK2_solver = _Modified_Euler(self.h, self.initial_t);
         self.RK3_solver = _Heun(self.h, self.initial_t);
         self.RK4_solver = _RK4(self.h, self.initial_t);
-        self.RKF_solver = RKF(self.h, self.initial_t, max_step_size=self.max_h, min_step_size=self.min_h, 
+        self.RKF_solver = _RKF(self.h, self.initial_t, max_step_size=self.max_h, min_step_size=self.min_h, 
                               min_update=self.min_q, max_update=self.max_q, tfinal=self.final_t);
-        self.DP_solver = DP(self.h, self.initial_t, max_step_size=self.max_h, min_step_size=self.min_h, 
+        self.DP_solver = _DP(self.h, self.initial_t, max_step_size=self.max_h, min_step_size=self.min_h, 
                               min_update=self.min_q, max_update=self.max_q, tfinal=self.final_t);
     
 
@@ -158,9 +158,9 @@ class TestSolvers(unittest.TestCase):
         self.ode1 = _Euler(self.sim_h, self.initial_t);
         self.ode2 = _Heun(self.sim_h, self.initial_t);
         self.ode4 = _RK4(self.sim_h, self.initial_t);
-        self.ode_RKF = RKF(self.sim_h, self.initial_t, max_step_size=self.max_h, min_step_size=self.sim_hmin, 
+        self.ode_RKF = _RKF(self.sim_h, self.initial_t, max_step_size=self.max_h, min_step_size=self.sim_hmin, 
                            min_update=1e-15, max_update=10000, tfinal=self.final_t);
-        self.ode_DP = DP(self.sim_h, self.initial_t, max_step_size=self.max_h, min_step_size=self.sim_hmin, 
+        self.ode_DP = _DP(self.sim_h, self.initial_t, max_step_size=self.max_h, min_step_size=self.sim_hmin, 
                             min_update=1e-15, max_update=10000, tfinal=self.final_t);
 
     def tearDown(self) -> None:

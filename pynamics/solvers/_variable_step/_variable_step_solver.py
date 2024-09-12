@@ -19,7 +19,7 @@ import numpy as np
 This file containts the abstract 'variable step solver' class from which all variable step solvers inherit / are derived.
 """
 
-class variable_step_solver(ABC):
+class _VariableStepSolver(ABC):
 
     """
     Generic variable step solver class to serve as [the] mother class to all variable step solvers supported by this package.

@@ -12,14 +12,14 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from ._variable_step_solver import variable_step_solver
-import numpy as np
-
 """
 This solver's implementation was based on the "Numerical Analysis" textbook, by R. Burden and J. Faires.
 """
 
-class RKF(variable_step_solver):
+from ._variable_step_solver import _VariableStepSolver
+import numpy as np
+
+class _RKF(_VariableStepSolver):
 
     """
     
@@ -88,7 +88,7 @@ class RKF(variable_step_solver):
 
         return new_state;
 
-class DP(variable_step_solver):
+class _DP(_VariableStepSolver):
 
     """
     
