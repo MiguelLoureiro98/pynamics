@@ -38,6 +38,7 @@ docs = [
 
 [project.urls]
 repository = "https://github.com/MiguelLoureiro98/pynamics"
+docs = "https://miguelloureiro98.github.io/pynamics/"
 
 [tool.setuptools.packages.find]
 include = ["pynamics*"]
