@@ -30,11 +30,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-docs = [
-    "mkdocs>=1.6.0",
-    "mkdocs-material>=9.5.30",
+dev = [
     "build>=1.2.1",
     "twine>=5.3.1"
+]
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.30"
 ]
 
 [project.urls]
