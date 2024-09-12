@@ -5,7 +5,7 @@ from pynamics.simulations import Sim
 from pynamics.controllers.dummy import DummyController
 
 """
-
+Unit tests for the Sim class.
 """
 
 class Controller_test(object):
