@@ -23,7 +23,7 @@ from ._solvers._fixed_step._fixed_step_solvers import _Euler, _Modified_Euler, _
 import numpy as np
 import pandas as pd
 
-class simulation(ABC):
+class _BaseSimulator(ABC):
 
     """
     

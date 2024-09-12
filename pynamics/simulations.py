@@ -19,12 +19,12 @@ Both open-loop and closed-loop simulations are supported.
 
 from .models.base import BaseModel
 from .controllers.dummy import DummyController
-from ._simulator import simulation
+from ._simulator import _BaseSimulator
 from ._noise._noise_generators import _white_noise
 import numpy as np
 import pandas as pd
 
-class sim(simulation):
+class sim(_BaseSimulator):
     
     """
     _summary_
