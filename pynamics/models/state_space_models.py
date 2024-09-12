@@ -75,12 +75,12 @@ class LinearModel(BaseModel):
         Arguments
         ----------------------------------------------------------------------------------
         initial_state: np.ndarray
-        The system's initial state. Should be an array shaped (n, 1), where
-        n is the number of variables.
+            The system's initial state. Should be an array shaped (n, 1), where
+            n is the number of variables.
 
         initial_control: np.ndarray
-        The inputs' initial value(s). Should be an array shaped (u, 1), where
-        u is the number of input variables.
+            The inputs' initial value(s). Should be an array shaped (u, 1), where
+            u is the number of input variables.
 
         A: np.ndarray
 

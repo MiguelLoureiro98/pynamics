@@ -28,8 +28,8 @@ class BaseModel(ABC):
     Attributes
     ----------------------------------------------------------------------------------
     x: np.ndarray
-    The system's state. Should be an array shaped (n, 1), where n is the number of
-    state variables.
+        The system's state. Should be an array shaped (n, 1), where n is the number of
+        state variables.
 
     Methods
     ----------------------------------------------------------------------------------
