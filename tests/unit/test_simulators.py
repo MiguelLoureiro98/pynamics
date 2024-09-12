@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from pynamics.models.state_space_models import LinearModel
 from pynamics.simulations import sim
-from pynamics._controllers._dummy import dummy_controller
+from pynamics.controllers.dummy import DummyController
 
 """
 
@@ -132,8 +132,8 @@ class TestSimulators(unittest.TestCase):
         self.assertEqual(self.simulation.outputs.shape[1], ref_signal_length);
         self.assertEqual(self.simulation.control_actions.shape[0], 1);
         self.assertEqual(self.simulation.control_actions.shape[1], ref_signal_length);
-        self.assertEqual(isinstance(self.simulation.controller, dummy_controller), True);
-        self.assertEqual(isinstance(self.controlled_simulation.controller, dummy_controller), False);
+        self.assertEqual(isinstance(self.simulation.controller, DummyController), True);
+        self.assertEqual(isinstance(self.controlled_simulation.controller, DummyController), False);
         self.assertListEqual(self.simulation.ref_labels, ["Ref_1"]);
         self.assertEqual(self.simulation.noise[0, 0], self.simulation.inputs[0, 0]);
         self.assertEqual(self.simulation.ref_lookahead, 1);

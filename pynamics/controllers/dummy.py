@@ -18,7 +18,7 @@ import numpy as np
 This module contains a dummy controller useful for open-loop simulations.
 """
 
-class dummy_controller(object):
+class DummyController(object):
 
     """
     This class defines the dummy controller used by the Pynamics package to run

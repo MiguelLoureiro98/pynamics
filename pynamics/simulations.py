@@ -18,7 +18,7 @@ Both open-loop and closed-loop simulations are supported.
 """
 
 from .models.base import BaseModel
-from ._controllers._dummy import dummy_controller
+from .controllers.dummy import DummyController
 from ._simulator import simulation
 from ._noise._noise_generators import _white_noise
 import numpy as np
@@ -96,7 +96,7 @@ class sim(simulation):
 
         if(mode == "open_loop"):
 
-            self.controller = dummy_controller(self.inputs.shape[0], self.system.input_dim, step_size);
+            self.controller = DummyController(self.inputs.shape[0], self.system.input_dim, step_size);
 
         self.control_actions = np.zeros(shape=(self.controller.output_dim, self.time.shape[0]));
         self.ref_labels = self._labels_check(reference_labels);
