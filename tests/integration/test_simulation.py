@@ -1,6 +1,6 @@
 import unittest
-from pynamics.simulations import sim
-from pynamics.models.state_space_models import linearModel
+from pynamics.simulations import Sim
+from pynamics.models.state_space_models import LinearModel
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -72,22 +72,22 @@ class SimulationTests(unittest.TestCase):
         C = np.array([0, 0, 1]);
         D = np.array([0]);
     
-        cls.model1 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
-        cls.model2 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
-        cls.model3 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
-        cls.model4 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
-        cls.model5 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
-        cls.model6 = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model1 = LinearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model2 = LinearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model3 = LinearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model4 = LinearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model5 = LinearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        cls.model6 = LinearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
         reference = np.ones(int(10/0.001)+1);
         reference_100sec = np.ones(int(100/0.001)+1);
     
-        cls.Euler_10sec = sim(cls.model1, reference, solver="Euler");
-        cls.Heun_10sec = sim(cls.model2, reference, solver="Heun");
-        cls.RK4_10sec = sim(cls.model3, reference);
+        cls.Euler_10sec = Sim(cls.model1, reference, solver="Euler");
+        cls.Heun_10sec = Sim(cls.model2, reference, solver="Heun");
+        cls.RK4_10sec = Sim(cls.model3, reference);
     
-        cls.Euler_100sec = sim(cls.model4, reference_100sec, solver="Euler", tfinal=100);
-        cls.Heun_100sec = sim(cls.model5, reference_100sec, solver="Heun", tfinal=100);
-        cls.RK4_100sec = sim(cls.model6, reference_100sec, tfinal=100);
+        cls.Euler_100sec = Sim(cls.model4, reference_100sec, solver="Euler", tfinal=100);
+        cls.Heun_100sec = Sim(cls.model5, reference_100sec, solver="Heun", tfinal=100);
+        cls.RK4_100sec = Sim(cls.model6, reference_100sec, tfinal=100);
 
     @classmethod
     def tearDownClass(cls) -> None:

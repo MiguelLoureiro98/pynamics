@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from pynamics.models.state_space_models import LinearModel
-from pynamics.simulations import sim
+from pynamics.simulations import Sim
 from pynamics.controllers.dummy import DummyController
 
 """
@@ -61,9 +61,9 @@ class TestSimulators(unittest.TestCase):
         self.noise_power = 100;
 
         self.model = LinearModel(np.zeros((3, 1)), np.array([0]), A, B, C, D);
-        self.simulation = sim(self.model, np.zeros(int(10.0/0.001)+1));
-        self.controlled_simulation = sim(self.model, np.zeros(int(10.0/0.001)+1), mode="closed_loop", controller=self.controller);
-        self.noisy_simulation = sim(self.model, np.zeros(int(10.0/0.001)+1), noise_power=self.noise_power);
+        self.simulation = Sim(self.model, np.zeros(int(10.0/0.001)+1));
+        self.controlled_simulation = Sim(self.model, np.zeros(int(10.0/0.001)+1), mode="closed_loop", controller=self.controller);
+        self.noisy_simulation = Sim(self.model, np.zeros(int(10.0/0.001)+1), noise_power=self.noise_power);
     
         self.t0 = 0.0;
         self.tfinal = 10.0;
@@ -97,26 +97,26 @@ class TestSimulators(unittest.TestCase):
         ref_signal_length = int(10.0/0.001) + 1;
 
         reference = np.zeros(ref_signal_length);
-        labelled_sim = sim(self.model, reference, reference_labels=["Reference_signal"]);
+        labelled_sim = Sim(self.model, reference, reference_labels=["Reference_signal"]);
 
         # Exceptions
 
-        self.assertRaises(TypeError, sim, 2, reference);
-        self.assertRaises(TypeError, sim, self.model, reference, t0="Hey");
-        self.assertRaises(TypeError, sim, self.model, reference, tfinal="Hey");
-        self.assertRaises(TypeError, sim, self.model, reference, step_size="Hey");
-        self.assertRaises(TypeError, sim, self.model, reference, solver=2.5);
-        self.assertRaises(ValueError, sim, self.model, reference, solver="Not_Implemented");
+        self.assertRaises(TypeError, Sim, 2, reference);
+        self.assertRaises(TypeError, Sim, self.model, reference, t0="Hey");
+        self.assertRaises(TypeError, Sim, self.model, reference, tfinal="Hey");
+        self.assertRaises(TypeError, Sim, self.model, reference, step_size="Hey");
+        self.assertRaises(TypeError, Sim, self.model, reference, solver=2.5);
+        self.assertRaises(ValueError, Sim, self.model, reference, solver="Not_Implemented");
     
-        self.assertRaises(TypeError, sim, self.model, reference, mode=1);
-        self.assertRaises(ValueError, sim, self.model, reference, mode="Third_way");
-        self.assertRaises(TypeError, sim, self.model, 23.19);
-        self.assertRaises(ValueError, sim, self.model, np.zeros((2, ref_signal_length)));
-        self.assertRaises(ValueError, sim, self.model, np.zeros(5));
-        self.assertRaises(TypeError, sim, self.model, reference, reference_labels=2);
-        self.assertRaises(ValueError, sim, self.model, reference, reference_labels=["Label_1", "Label_2"]);
-        self.assertRaises(TypeError, sim, self.model, reference, reference_lookahead=5.5);
-        self.assertRaises(ValueError, sim, self.model, reference, reference_lookahead=0);
+        self.assertRaises(TypeError, Sim, self.model, reference, mode=1);
+        self.assertRaises(ValueError, Sim, self.model, reference, mode="Third_way");
+        self.assertRaises(TypeError, Sim, self.model, 23.19);
+        self.assertRaises(ValueError,Sim, self.model, np.zeros((2, ref_signal_length)));
+        self.assertRaises(ValueError, Sim, self.model, np.zeros(5));
+        self.assertRaises(TypeError, Sim, self.model, reference, reference_labels=2);
+        self.assertRaises(ValueError, Sim, self.model, reference, reference_labels=["Label_1", "Label_2"]);
+        self.assertRaises(TypeError, Sim, self.model, reference, reference_lookahead=5.5);
+        self.assertRaises(ValueError, Sim, self.model, reference, reference_lookahead=0);
     
         # Attributes
     

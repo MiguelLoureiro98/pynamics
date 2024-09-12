@@ -24,7 +24,7 @@ from ._noise._noise_generators import _white_noise
 import numpy as np
 import pandas as pd
 
-class sim(_BaseSimulator):
+class Sim(_BaseSimulator):
     
     """
     _summary_
