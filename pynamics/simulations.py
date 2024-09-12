@@ -15,7 +15,7 @@
 from .models._model import model
 from ._controllers._dummy import dummy_controller
 from ._simulator import simulation
-from ._noise._noise_generators import white_noise
+from ._noise._noise_generators import _white_noise
 import numpy as np
 import pandas as pd
 
@@ -87,7 +87,7 @@ class sim(simulation):
         self.inputs = self._input_reformatting(input_signal);
         #self.states = np.zeros(shape=(self.system.state_dim, self.time.shape[0]));
         self.outputs = np.zeros(shape=(self.system.output_dim, self.time.shape[0]));
-        self.noise = white_noise(self.system.output_dim, self.time.shape[0], noise_power, noise_seed);
+        self.noise = _white_noise(self.system.output_dim, self.time.shape[0], noise_power, noise_seed);
         self._lookahead_check(reference_lookahead);
         self.ref_lookahead = reference_lookahead;
         self.controller = controller;

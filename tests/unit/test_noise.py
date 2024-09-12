@@ -1,5 +1,5 @@
 import unittest
-from pynamics._noise._noise_generators import white_noise
+from pynamics._noise._noise_generators import _white_noise
 
 """
 
@@ -18,9 +18,9 @@ class TestNoise(unittest.TestCase):
 
         cls.length = 100000;
         
-        cls.sample1 = white_noise(1, cls.length, 1, 0);
-        cls.sample2 = white_noise(5, cls.length, 1, 0);
-        cls.sample3 = white_noise(1, cls.length, 100, 0);
+        cls.sample1 = _white_noise(1, cls.length, 1, 0);
+        cls.sample2 = _white_noise(5, cls.length, 1, 0);
+        cls.sample3 = _white_noise(1, cls.length, 100, 0);
 
     @classmethod
     def tearDownClass(cls) -> None:

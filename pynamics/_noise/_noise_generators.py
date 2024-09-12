@@ -21,7 +21,7 @@ However, support for coloured noise may come in the future.
 
 import numpy as np
 
-def white_noise(n_series: int, n_samples: int, power: int | float, seed: int) -> np.ndarray:
+def _white_noise(n_series: int, n_samples: int, power: int | float, seed: int) -> np.ndarray:
     
     """
     Generate White Gaussian Noise.
