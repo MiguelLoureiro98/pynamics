@@ -12,7 +12,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from ._model import model
+from .base import BaseModel
 import numpy as np
 
 """
@@ -27,7 +27,7 @@ These include:
 -> nonlinearPVModel: yet to be implemented.
 """
 
-class linearModel(model):
+class linearModel(BaseModel):
 
     """
     This class implements a generic linear state-space model. Its methods allow one to ... .
@@ -232,7 +232,7 @@ class linearModel(model):
 
         return np.matmul(self.A, x) + np.matmul(self.B, self.u);
 
-class nonlinearModel(model):
+class nonlinearModel(BaseModel):
 
     """
     This class implements a generic continuous nonlinear state-space model.

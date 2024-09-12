@@ -12,17 +12,17 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .models._model import model
+"""
+This module provides several classes for simulating dynamical systems.
+Both open-loop and closed-loop simulations are supported.
+"""
+
+from .models.base import BaseModel
 from ._controllers._dummy import dummy_controller
 from ._simulator import simulation
 from ._noise._noise_generators import _white_noise
 import numpy as np
 import pandas as pd
-
-"""
-This module provides several classes for simulating dynamical systems.
-Both open-loop and closed-loop simulations are supported.
-"""
 
 class sim(simulation):
     
@@ -37,7 +37,7 @@ class sim(simulation):
         _description_
     """
 
-    def __init__(self, system: model, input_signal: np.ndarray, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001, \
+    def __init__(self, system: BaseModel, input_signal: np.ndarray, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001, \
                  mode: str="open_loop", controller: any=None, reference_labels: list[str] | None=None, reference_lookahead: int=1, \
                  noise_power: int | float=0.0, noise_seed: int=0) -> None:
         

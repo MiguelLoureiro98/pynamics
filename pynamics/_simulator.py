@@ -12,16 +12,16 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+"""
+This file ... .
+"""
+
 from abc import ABC, abstractmethod
-from .models._model import model
+from .models.base import BaseModel
 from ._solvers._fixed_step._fixed_step_solver import _FixedStepSolver
 from ._solvers._fixed_step._fixed_step_solvers import _Euler, _Modified_Euler, _Heun, _RK4
 import numpy as np
 import pandas as pd
-
-"""
-This file ... .
-"""
 
 class simulation(ABC):
 
@@ -29,7 +29,7 @@ class simulation(ABC):
     
     """
 
-    def __init__(self, system: model, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001) -> None:
+    def __init__(self, system: BaseModel, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001) -> None:
         
         """
         
@@ -51,13 +51,13 @@ class simulation(ABC):
 
         return;
 
-    def _model_check(self, system: model) -> None:
+    def _model_check(self, system: BaseModel) -> None:
 
         """
         
         """
 
-        if(isinstance(system, model) is False):
+        if(isinstance(system, BaseModel) is False):
 
             raise TypeError("'system' must be an instance of the 'model' class.");
 

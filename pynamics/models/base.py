@@ -19,7 +19,7 @@ import numpy as np
 This module contains the model base class, which forms the template for every plant model supported by this package.
 """
 
-class model(ABC):
+class BaseModel(ABC):
 
     """
     This is the parent class for every plant model supported by Pynamics. 
