@@ -322,3 +322,12 @@ class Sim(_BaseSimulator):
         sim_data = pd.DataFrame(results, columns=names);
 
         return sim_data;
+
+    def plot_results(self) -> None:
+        """
+        _summary_
+
+        _extended_summary_
+        """
+        
+        pass
