@@ -16,34 +16,42 @@ import numpy as np
 
 """
 This module contains a dummy controller useful for open-loop simulations.
+
+Classes
+-------
+DummyController
+    A dummy controller that returns the reference value(s). Used to run open-loop simulations.
 """
 
 class DummyController(object):
-
     """
-    This class defines the dummy controller used by the Pynamics package to run
+    This class defines the dummy controller used by the pynamics package to run
     open-loop simulations.
     The controller performs no computations.
 
     Attributes
-    ----------------------------------------------------------------------------------
+    ----------
     input_dim: int
-    The number of controller inputs (it should be one for a single-input controller).
+        The number of controller inputs (one for a single-input controller).
 
     output_dim: int
-    The number of controller outputs (it should be one for a single-output controller).
+        The number of control actions (one for a single-output controller / single-input system).
+
+    sampling_time : int | float
+        Controller sampling time.
 
     Methods
-    ----------------------------------------------------------------------------------
-    __init__
-    info
-    control
+    -------
+    info()
+        Display a warning.
+
+    control(ref: np.ndarray, y: np.ndarray)
+        Compute the control actions for the next time instant. In practice, it simply outputs the value of `ref`.
     """
 
     def __init__(self, n_inputs: int, n_outputs: int, sampling_time: int | float) -> None:
-
         """
-        
+        Class constructor.
         """
         
         self.Ts = sampling_time;
@@ -53,29 +61,41 @@ class DummyController(object):
         return;
 
     def info(self) -> None:
-
         """
-        
+        Provides useful information regarding the controller.
+
+        This method issues a warning to the user that this 'controller' should not be used \
+        as a benchmark of any kind. It is simply used for open-loop simulations.
         """
 
-        print("-----------------------------------------------------------------");
-        print("Pynamics Dummy Controller");
-        print("-----------------------------------------------------------------");
-        print("Description:");
-        print("Pynamics makes use of this class in open-loop simulations.\
-              It is not really a controller, as its output will simply be\
+        print("pynamics Dummy Controller");
+        print("-------------------------");
+        print("pynamics makes use of this class in open-loop simulations. \
+              It is not really a controller, as its output will simply be \
               the reference signal. No computations are performed.");
-        print("-----------------------------------------------------------------");
-        print("WARNING: for the reasons stated above, this controller should NOT be used\
+        print("WARNING: for the reasons stated above, this controller should NOT be used \
               as a baseline. Its use is equivalent to an open-loop simulation.");
-        print("-----------------------------------------------------------------");
 
         return;
 
     def control(self, ref: np.ndarray, y: np.ndarray) -> np.ndarray:
-
         """
-        
+        Computes the control actions for the next time instant.
+
+        This method outputs the control actions for the next time instant, which in this case are simply the reference values.
+
+        Parameters
+        ----------
+        ref : np.ndarray
+            Array of reference values. For regulation problems, this should be an array of zeros.
+
+        y : np.ndarray
+            System state vector. Used for compatibility reasons. Unused by this 'controller'.
+
+        Returns
+        -------
+        np.ndarray
+            Array of control actions. In this case, the reference values themselves.
         """
 
         return ref;
