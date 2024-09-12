@@ -47,6 +47,8 @@ class SimulationTests(unittest.TestCase):
         else:
 
             stem = "C:/Users/User/Desktop/Project_repos/Pynamics/";
+        
+        stem = "C:/Users/ml4/Desktop/Projects/Repos/pynamics";
     
         files_10sec = ["ode1_test_10sec.csv", "ode2_test_10sec.csv", "ode4_test_10sec.csv"];
         files_100sec = ["ode1_test_100sec.csv", "ode2_test_100sec.csv", "ode4_test_100sec.csv"];
@@ -56,8 +58,8 @@ class SimulationTests(unittest.TestCase):
     
         for (sim_10sec, sim_100sec) in zip(files_10sec, files_100sec):
 
-            path_10sec = f"{stem}Pynamics/tests/integration/solver_validation_data/{sim_10sec}";
-            path_100sec = f"{stem}Pynamics/tests/integration/solver_validation_data/{sim_100sec}";
+            path_10sec = f"{stem}/tests/integration/solver_validation_data/{sim_10sec}";
+            path_100sec = f"{stem}/tests/integration/solver_validation_data/{sim_100sec}";
 
             data_10sec.append(pd.read_csv(path_10sec));
             data_100sec.append(pd.read_csv(path_100sec));
@@ -98,6 +100,19 @@ class SimulationTests(unittest.TestCase):
 
         del cls.data_10sec;
         del cls.data_100sec;
+        del cls.model1;
+        del cls.model2;
+        del cls.model3;
+        del cls.model4;
+        del cls.model5;
+        del cls.model6;
+        del cls.Euler_10sec;
+        del cls.Heun_10sec;
+        del cls.RK4_10sec;
+        del cls.Euler_100sec;
+        del cls.Heun_100sec;
+        del cls.RK4_100sec;
+
 
     def test_simulations(self) -> None:
 
@@ -107,9 +122,12 @@ class SimulationTests(unittest.TestCase):
         _extended_summary_
         """
 
-        # Something's wrong with the run method ...
-
         Euler_10sec_res = self.Euler_10sec.run();
+        Euler_10sec_true = self.data_10sec[0];
+        #plt.plot(Euler_10sec_true["t"], Euler_10sec_true["y"], label="Matlab");
+        #plt.plot(Euler_10sec_res["Time"], Euler_10sec_res["y_1"], label="pynamics");
+        #plt.legend();
+        #plt.show();
         #print(Euler_10sec_res);
         Heun_10sec_res = self.Heun_10sec.run();
         #print(Heun_10sec_res);
@@ -120,6 +138,11 @@ class SimulationTests(unittest.TestCase):
         #print(Euler_100sec_res);
         Heun_100sec_res = self.Heun_100sec.run();
         RK4_100sec_res = self.RK4_100sec.run();
+        RK4_100sec_true = self.data_100sec[2];
+        plt.plot(RK4_100sec_true["t"], RK4_100sec_true["y"], label="Matlab");
+        plt.plot(RK4_100sec_res["Time"], RK4_100sec_res["y_1"], label="pynamics");
+        plt.legend();
+        plt.show();
         #print(RK4_100sec_res);
 
 if __name__ == "__main__":
