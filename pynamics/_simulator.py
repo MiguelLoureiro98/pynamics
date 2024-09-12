@@ -14,8 +14,8 @@
 
 from abc import ABC, abstractmethod
 from .models._model import model
-from .solvers.fixed_step._fixed_step_solver import fixed_step_solver
-from .solvers.fixed_step._fixed_step_solvers import Euler, Modified_Euler, Heun, RK4
+from .solvers._fixed_step._fixed_step_solver import _FixedStepSolver
+from .solvers._fixed_step._fixed_step_solvers import _Euler, _Modified_Euler, _Heun, _RK4
 import numpy as np
 import pandas as pd
 
@@ -100,7 +100,7 @@ class simulation(ABC):
 
         return;
 
-    def _solver_selection(self, solver: str, solver_options: dict) -> fixed_step_solver:
+    def _solver_selection(self, solver: str, solver_options: dict) -> _FixedStepSolver:
 
         """
         
@@ -110,10 +110,10 @@ class simulation(ABC):
 
             raise TypeError("'solver' must be a string.");
 
-        solvers = {"Euler": Euler(solver_options["step_size"], solver_options["t0"]),
-                   "Modified_Euler": Modified_Euler(solver_options["step_size"], solver_options["t0"]),
-                   "Heun": Heun(solver_options["step_size"], solver_options["t0"]),
-                   "RK4": RK4(solver_options["step_size"], solver_options["t0"])};
+        solvers = {"Euler": _Euler(solver_options["step_size"], solver_options["t0"]),
+                   "Modified_Euler": _Modified_Euler(solver_options["step_size"], solver_options["t0"]),
+                   "Heun": _Heun(solver_options["step_size"], solver_options["t0"]),
+                   "RK4": _RK4(solver_options["step_size"], solver_options["t0"])};
         
         if (solver not in solvers):
 

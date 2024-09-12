@@ -18,7 +18,7 @@ from abc import ABC, abstractmethod
 This module containts the abstract 'fixed step solver' class from which all fixed step solvers inherit / derive.
 """
 
-class fixed_step_solver(ABC):
+class _FixedStepSolver(ABC):
 
     """
     Generic fixed step solver class to serve as [the] mother class to all fixed step solvers supported by this package.

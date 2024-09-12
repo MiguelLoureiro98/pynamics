@@ -12,10 +12,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-#from pynamics.solvers.fixed_step._fixed_step_solver import fixed_step_solver
-from ._fixed_step_solver import fixed_step_solver
-import numpy as np
-
 """
 This module contains classes for all fixed-step solvers supported by this package.
 
@@ -29,7 +25,10 @@ List of fixed-step solvers supported by this package:
 The solvers' implementation was based on the "Numerical Analysis" textbook, by R. Burden and J. Faires.
 """
 
-class Euler(fixed_step_solver):
+from ._fixed_step_solver import _FixedStepSolver
+import numpy as np
+
+class _Euler(_FixedStepSolver):
 
     """
     This class implements the Euler method for solving ODEs.
@@ -62,7 +61,7 @@ class Euler(fixed_step_solver):
 
         return new_state;
 
-class Modified_Euler(fixed_step_solver):
+class _Modified_Euler(_FixedStepSolver):
 
     """
     
@@ -94,7 +93,7 @@ class Modified_Euler(fixed_step_solver):
 
         return new_state;
 
-class Heun(fixed_step_solver):
+class _Heun(_FixedStepSolver):
 
     """
     
@@ -127,7 +126,7 @@ class Heun(fixed_step_solver):
 
         return new_state;
 
-class RK4(fixed_step_solver):
+class _RK4(_FixedStepSolver):
 
     """
     
