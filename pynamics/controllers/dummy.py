@@ -12,6 +12,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from .base import BaseController
 import numpy as np
 
 """
@@ -23,7 +24,7 @@ DummyController
     A dummy controller that returns the reference value(s). Used to run open-loop simulations.
 """
 
-class DummyController(object):
+class DummyController(BaseController):
     """
     This class defines the dummy controller used by the pynamics package to run
     open-loop simulations.
@@ -54,9 +55,7 @@ class DummyController(object):
         Class constructor.
         """
         
-        self.Ts = sampling_time;
-        self.input_dim = n_inputs;
-        self.output_dim = n_outputs;
+        super().__init__(n_inputs, n_outputs, sampling_time);
         
         return;
 
