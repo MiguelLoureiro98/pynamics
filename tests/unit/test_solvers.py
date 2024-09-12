@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from pynamics._solvers._fixed_step._fixed_step_solvers import _Euler, _Modified_Euler, _Heun, _RK4
 from pynamics._solvers._variable_step._variable_step_solvers import _RKF, _DP
-from pynamics.models.state_space_models import linearModel
+from pynamics.models.state_space_models import LinearModel
 
 """
 Test cases to test every single solver supported by this package.
@@ -309,7 +309,7 @@ class TestSolvers(unittest.TestCase):
         B = np.array([1, -5, 1]).reshape(-1, 1);
         C = np.array([0, 0, 1]);
         D = np.array([0]);
-        model = linearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
+        model = LinearModel(np.zeros((3, 1)), np.array([1]), A, B, C, D);
 
         ode1_matlab = 0.001;
         ode2_matlab = 0.000996;

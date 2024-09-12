@@ -27,7 +27,7 @@ These include:
 -> nonlinearPVModel: yet to be implemented.
 """
 
-class linearModel(BaseModel):
+class LinearModel(BaseModel):
 
     """
     This class implements a generic linear state-space model. Its methods allow one to ... .
@@ -232,7 +232,7 @@ class linearModel(BaseModel):
 
         return np.matmul(self.A, x) + np.matmul(self.B, self.u);
 
-class nonlinearModel(BaseModel):
+class NonlinearModel(BaseModel):
 
     """
     This class implements a generic continuous nonlinear state-space model.

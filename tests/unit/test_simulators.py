@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pynamics.models.state_space_models import linearModel
+from pynamics.models.state_space_models import LinearModel
 from pynamics.simulations import sim
 from pynamics._controllers._dummy import dummy_controller
 
@@ -60,7 +60,7 @@ class TestSimulators(unittest.TestCase):
         self.controller = Controller_test(1, 1, 1.0);
         self.noise_power = 100;
 
-        self.model = linearModel(np.zeros((3, 1)), np.array([0]), A, B, C, D);
+        self.model = LinearModel(np.zeros((3, 1)), np.array([0]), A, B, C, D);
         self.simulation = sim(self.model, np.zeros(int(10.0/0.001)+1));
         self.controlled_simulation = sim(self.model, np.zeros(int(10.0/0.001)+1), mode="closed_loop", controller=self.controller);
         self.noisy_simulation = sim(self.model, np.zeros(int(10.0/0.001)+1), noise_power=self.noise_power);

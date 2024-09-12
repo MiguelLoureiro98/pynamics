@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pynamics.models.state_space_models import linearModel, nonlinearModel
+from pynamics.models.state_space_models import LinearModel, NonlinearModel
 
 """
 Test cases to test linear and nonlinear state-space models.
@@ -116,10 +116,10 @@ class TestModels(unittest.TestCase):
         B = np.array([1, -5, 1]).reshape(-1, 1);
         C = np.array([0, 0, 1]);
         D = np.array([0]);
-        linmodel = linearModel(np.zeros((3, 1)), np.array([0]), A, B, C, D);
+        linmodel = LinearModel(np.zeros((3, 1)), np.array([0]), A, B, C, D);
 
-        nlinmodel = nonlinearModel(np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1);
-        time_variant_model = nonlinearModel(np.zeros((2, 1)), np.array([0]), time_dependent_state_function_test, output_function_test, 1, 1);
+        nlinmodel = NonlinearModel(np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1);
+        time_variant_model = NonlinearModel(np.zeros((2, 1)), np.array([0]), time_dependent_state_function_test, output_function_test, 1, 1);
 
         self.linear_model = linmodel;
         self.nonlinear_model = nlinmodel;
@@ -130,10 +130,10 @@ class TestModels(unittest.TestCase):
         Bm = np.array([[1, 1], [-5, 0], [1, 0]]);
         Cm = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
         Dm = np.array([[0, 0], [0, 0], [0, 1]]);
-        MIMO_linmodel = linearModel(np.zeros((3, 1)), np.array([[0], [0]]), A, Bm, Cm, Dm);
+        MIMO_linmodel = LinearModel(np.zeros((3, 1)), np.array([[0], [0]]), A, Bm, Cm, Dm);
     
-        MIMO_nlinmodel = nonlinearModel(np.zeros((3, 1)), np.array([[0], [0]]), MIMO_state_function_test, MIMO_output_function_test, 2, 2);
-        MIMO_time_variant_model = nonlinearModel(np.zeros((3, 1)), np.array([[0], [0]]), MIMO_time_dependent_state_function_test, MIMO_output_function_test, 2, 2);
+        MIMO_nlinmodel = NonlinearModel(np.zeros((3, 1)), np.array([[0], [0]]), MIMO_state_function_test, MIMO_output_function_test, 2, 2);
+        MIMO_time_variant_model = NonlinearModel(np.zeros((3, 1)), np.array([[0], [0]]), MIMO_time_dependent_state_function_test, MIMO_output_function_test, 2, 2);
     
         self.MIMO_linear = MIMO_linmodel;
         self.MIMO_nonlinear = MIMO_nlinmodel;
@@ -160,13 +160,13 @@ class TestModels(unittest.TestCase):
         
         """
 
-        new_linear = linearModel(np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, \
+        new_linear = LinearModel(np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, \
                                  input_labels=["Input"], output_labels=["Output"]);
-        new_nonlinear = nonlinearModel(np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, input_labels=["Input"], output_labels=["Output"]);
+        new_nonlinear = NonlinearModel(np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, input_labels=["Input"], output_labels=["Output"]);
 
-        new_MIMO_linear = linearModel(np.zeros((3, 1)), np.array([[0], [0]]), self.MIMO_linear.A, self.MIMO_linear.B, self.MIMO_linear.C, self.MIMO_linear.D, \
+        new_MIMO_linear = LinearModel(np.zeros((3, 1)), np.array([[0], [0]]), self.MIMO_linear.A, self.MIMO_linear.B, self.MIMO_linear.C, self.MIMO_linear.D, \
                                       input_labels=["Input_1", "Input_2"], output_labels=["Output_1", "Output_2", "Output_3"]);
-        new_MIMO_nonlinear = nonlinearModel(np.zeros((3, 1)), np.array([[0], [0]]), MIMO_state_function_test, MIMO_output_function_test, 2, 2, \
+        new_MIMO_nonlinear = NonlinearModel(np.zeros((3, 1)), np.array([[0], [0]]), MIMO_state_function_test, MIMO_output_function_test, 2, 2, \
                                             input_labels=["Input_1", "Input_2"], output_labels=["Output_1", "Output_2"]);
 
         # Parameters
@@ -223,33 +223,33 @@ class TestModels(unittest.TestCase):
 
         # Exceptions
     
-        self.assertRaises(TypeError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1.4, 1);
-        self.assertRaises(TypeError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1.7);
+        self.assertRaises(TypeError, NonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1.4, 1);
+        self.assertRaises(TypeError, NonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1.7);
 
-        self.assertRaises(TypeError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, input_labels=1);
-        self.assertRaises(TypeError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, output_labels=1);
+        self.assertRaises(TypeError, NonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, input_labels=1);
+        self.assertRaises(TypeError, NonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, output_labels=1);
     
-        self.assertRaises(ValueError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, input_labels=["1", "2"]);
-        self.assertRaises(ValueError, nonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, output_labels=["1", "2"]);
+        self.assertRaises(ValueError, NonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, input_labels=["1", "2"]);
+        self.assertRaises(ValueError, NonlinearModel, np.zeros((2, 1)), np.array([0]), state_function_test, output_function_test, 1, 1, output_labels=["1", "2"]);
     
-        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), 1, self.linear_model.B, self.linear_model.C, self.linear_model.D);
-        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, 1, self.linear_model.C, self.linear_model.D);
-        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, 1, self.linear_model.D);
-        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, 1);
+        self.assertRaises(TypeError, LinearModel, np.zeros((3, 1)), np.array([0]), 1, self.linear_model.B, self.linear_model.C, self.linear_model.D);
+        self.assertRaises(TypeError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, 1, self.linear_model.C, self.linear_model.D);
+        self.assertRaises(TypeError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, 1, self.linear_model.D);
+        self.assertRaises(TypeError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, 1);
     
-        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), np.zeros((3, 2)), self.linear_model.B, self.linear_model.C, self.linear_model.D);
-        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), np.zeros((4, 4)), self.linear_model.B, self.linear_model.C, self.linear_model.D);
-        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, np.zeros((3, 2)), self.linear_model.C, self.linear_model.D);
-        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, np.zeros((2, 1)), self.linear_model.C, self.linear_model.D);
-        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, np.zeros((2, 3)), self.linear_model.D);
-        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, np.zeros((1, 3)));
-        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, np.zeros((1, 5)), self.linear_model.D);
+        self.assertRaises(ValueError, LinearModel, np.zeros((3, 1)), np.array([0]), np.zeros((3, 2)), self.linear_model.B, self.linear_model.C, self.linear_model.D);
+        self.assertRaises(ValueError, LinearModel, np.zeros((3, 1)), np.array([0]), np.zeros((4, 4)), self.linear_model.B, self.linear_model.C, self.linear_model.D);
+        self.assertRaises(ValueError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, np.zeros((3, 2)), self.linear_model.C, self.linear_model.D);
+        self.assertRaises(ValueError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, np.zeros((2, 1)), self.linear_model.C, self.linear_model.D);
+        self.assertRaises(ValueError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, np.zeros((2, 3)), self.linear_model.D);
+        self.assertRaises(ValueError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, np.zeros((1, 3)));
+        self.assertRaises(ValueError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, np.zeros((1, 5)), self.linear_model.D);
     
-        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, input_labels=1);
-        self.assertRaises(TypeError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, output_labels=1);
+        self.assertRaises(TypeError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, input_labels=1);
+        self.assertRaises(TypeError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, output_labels=1);
     
-        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, input_labels=["1", "2"]);
-        self.assertRaises(ValueError, linearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, output_labels=["1", "2"]);
+        self.assertRaises(ValueError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, input_labels=["1", "2"]);
+        self.assertRaises(ValueError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, output_labels=["1", "2"]);
 
     def test_getters(self) -> None:
 
