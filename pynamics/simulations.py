@@ -28,6 +28,7 @@ from ._simulator import _BaseSimulator
 from ._noise._noise_generators import _white_noise
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class Sim(_BaseSimulator):    
     """
@@ -39,34 +40,35 @@ class Sim(_BaseSimulator):
     Parameters
     ----------
     system : BaseModel
-            _description_
+        System to simulate. Must be described by a model supported by pynamics.
+        ! Add link to 'pynamics' page.
 
-        input_signal : np.ndarray
-            _description_
+    input_signal : np.ndarray
+        Input signals. These may be reference values or other external inputs (e.g. wind speed in a wind turbine system).
 
-        t0 : float, optional
-            _description_, by default 0.0
+    t0 : float, default=0.0
+        Initial time instant. Must be non-negative.
 
-        tfinal : float, optional
-            _description_, by default 10.0
+    tfinal : float, optional
+        ... 
 
-        solver : str, optional
-            _description_, by default "RK4"
+    solver : str, optional
+        _description_, by default "RK4"
 
-        step_size : float, optional
-            _description_, by default 0.001
+    step_size : float, optional
+        _description_, by default 0.001
 
-        controller : any, optional
-            _description_, by default None
+    controller : any, optional
+        _description_, by default None
 
-        reference_labels : list[str] | None, optional
-            _description_, by default None
+    reference_labels : list[str] | None, optional
+        _description_, by default None
             
-        reference_lookahead : int, optional
-            _description_, by default 1
+    reference_lookahead : int, optional
+        _description_, by default 1
             
-        noise_seed : int, optional
-            _description_, by default 0
+    noise_seed : int, optional
+        _description_, by default 0
 
     TODO: Attributes and Methods sections.
     """
@@ -273,23 +275,122 @@ class Sim(_BaseSimulator):
 
         return sim_data;
 
-    def plot_results(self) -> None:
+    @staticmethod
+    def tracking_plot(sim_results: pd.DataFrame,
+                      time_variable: str,
+                      reference: str,
+                      output: str, 
+                      plot_title: str="Simulation results", 
+                      xlabel: str="t", 
+                      ylabel: str="y", 
+                      plot_height: int | float=10.0, 
+                      plot_width: int | float=10.0) -> None:
         """
         _summary_
 
         _extended_summary_
+
+        Parameters
+        ----------
+        sim_results : pd.DataFrame
+            Simulation results.
+
+        time_variable : str
+            Name of the time variable.
+
+        reference : str
+            Name of the reference variable.
+
+        output : str
+            Name of the output variable.
+
+        plot_title : str, default="Simulation results"
+            Plot title.
+
+        xlabel : str, default="t"
+            X-axis label.
+
+        ylabel : str, default="y"
+            Y-axis label.
+
+        plot_height : int | float, default=10.0
+            Figure height.
+
+        plot_width : int | float, default=10.0
+            Figure width.
         """
         
-        pass
+        _ = plt.figure(figsize=(plot_height, plot_width));
+        plt.plot(sim_results[time_variable], sim_results[reference], label="r");
+        plt.plot(sim_results[time_variable], sim_results[output], label="y");
+        plt.xlabel(xlabel);
+        plt.ylabel(ylabel);
+        plt.title(plot_title);
+        plt.grid(visible=True);
+        plt.xlim([sim_results[time_variable].min() - 1, sim_results[time_variable].max() + 1]);
+        plt.ylim([sim_results[output].min() - 1, sim_results[output].max() + 1]);
+        plt.legend();
+        plt.show();
 
-    def plot_MIMO(self) -> None:
+        return;
+
+    @staticmethod
+    def system_outputs_plot(sim_results: pd.DataFrame,
+                            time_variable: str,
+                            outputs: list[str], 
+                            plot_title: str="Simulation results", 
+                            xlabel: str="t", 
+                            ylabel: str="y", 
+                            plot_height: int | float=10.0, 
+                            plot_width: int | float=10.0) -> None:
         """
         _summary_
 
         _extended_summary_
+
+        Parameters
+        ----------
+        sim_results : pd.DataFrame
+            Simulation results.
+
+        time_variable : str
+            Name of the time variable.
+
+        outputs : list[str]
+            List containing the names of the output variables.
+
+        plot_title : str, default="Simulation results"
+            Plot title.
+
+        xlabel : str, default="t"
+            X-axis label.
+
+        ylabel : str, default="y"
+            Y-axis label
+
+        plot_height : int | float, default=10.0
+            Figure height.
+
+        plot_width : int | float, default=10.0
+            Figure width.
         """
 
-        pass
+        fig, axes = plt.subplots(len(outputs), 1, sharex=True);
+        fig.set_figheight(plot_height);
+        fig.set_figwidth(plot_width);
+        fig.suptitle(plot_title);
+        fig.supxlabel(xlabel);
+        
+        for (ax, output) in zip(axes, outputs):
+
+            ax.plot(sim_results[time_variable], sim_results[output]);
+            ax.ylabel(ylabel);
+            ax.grid(visible=True);
+            ax.legend();
+            ax.set_xlim([sim_results[time_variable].min() - 1, sim_results[time_variable].max() + 1]);
+            ax.set_ylim([sim_results[output].min() - 1, sim_results[output].max() + 1]);
+
+        plt.show();
 
     @classmethod
     def step_response(cls,
@@ -308,7 +409,8 @@ class Sim(_BaseSimulator):
         """
         Simulate the step response of a dynamical system.
 
-        This method can be used to perform a step response simulation. Keep in mind that, for now, it can only be used for ... .
+        This method can be used to perform a step response simulation. Keep in mind that, for now, it should only be used \
+        with single-input systems or controllers needing only one reference signal.
 
         Returns
         -------
