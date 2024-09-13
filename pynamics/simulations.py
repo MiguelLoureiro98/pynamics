@@ -94,7 +94,6 @@ class Sim(_BaseSimulator):
         self._mode_check(mode);
         self._input_checks(input_signal, mode);
         self.inputs = self._input_reformatting(input_signal);
-        #self.states = np.zeros(shape=(self.system.state_dim, self.time.shape[0]));
         self.outputs = np.zeros(shape=(self.system.output_dim, self.time.shape[0]));
         self.noise = _white_noise(self.system.output_dim, self.time.shape[0], noise_power, noise_seed);
         self._lookahead_check(reference_lookahead);
@@ -327,8 +326,12 @@ class Sim(_BaseSimulator):
         plt.ylabel(ylabel);
         plt.title(plot_title);
         plt.grid(visible=True);
-        plt.xlim([sim_results[time_variable].min() - 1, sim_results[time_variable].max() + 1]);
-        plt.ylim([sim_results[output].min() - 1, sim_results[output].max() + 1]);
+        xfactor = 1.0005;
+        yfactor = 1.05;
+        minlim = np.fmin(sim_results[output].min(), sim_results[reference].min());
+        maxlim = np.fmax(sim_results[output].max(), sim_results[reference].max());
+        plt.xlim([sim_results[time_variable].min() * xfactor, sim_results[time_variable].max() * xfactor]);
+        plt.ylim([minlim * yfactor, maxlim * yfactor]);
         plt.legend();
         plt.show();
 
@@ -380,17 +383,32 @@ class Sim(_BaseSimulator):
         fig.set_figwidth(plot_width);
         fig.suptitle(plot_title);
         fig.supxlabel(xlabel);
-        
-        for (ax, output) in zip(axes, outputs):
+        xfactor = 1.0005;
+        yfactor = 1.05;
 
-            ax.plot(sim_results[time_variable], sim_results[output]);
-            ax.ylabel(ylabel);
-            ax.grid(visible=True);
-            ax.legend();
-            ax.set_xlim([sim_results[time_variable].min() - 1, sim_results[time_variable].max() + 1]);
-            ax.set_ylim([sim_results[output].min() - 1, sim_results[output].max() + 1]);
+        if (len(outputs) > 1):
+
+            for it, (_, output) in enumerate(zip(axes, outputs)):
+
+                axes[it].plot(sim_results[time_variable], sim_results[output], label=output);
+                axes[it].set_ylabel(ylabel);
+                axes[it].grid(visible=True);
+                axes[it].legend();
+                axes[it].set_xlim([sim_results[time_variable].min() * xfactor, sim_results[time_variable].max() * xfactor]);
+                axes[it].set_ylim([sim_results[output].min() * yfactor, sim_results[output].max() * yfactor]);
+        
+        else:
+
+            axes.plot(sim_results[time_variable], sim_results[outputs[0]], label=outputs[0]);
+            axes.set_ylabel(ylabel);
+            axes.grid(visible=True);
+            axes.legend();
+            axes.set_xlim([sim_results[time_variable].min() * xfactor, sim_results[time_variable].max() * xfactor]);
+            axes.set_ylim([sim_results[outputs[0]].min() * yfactor, sim_results[outputs[0]].max() * yfactor]); 
 
         plt.show();
+    
+        return;
 
     @classmethod
     def step_response(cls,

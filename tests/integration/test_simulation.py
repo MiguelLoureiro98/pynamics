@@ -124,11 +124,8 @@ class SimulationTests(unittest.TestCase):
 
         Euler_10sec_res = self.Euler_10sec.run();
         Euler_10sec_true = self.data_10sec[0];
-        #plt.plot(Euler_10sec_true["t"], Euler_10sec_true["y"], label="Matlab");
-        #plt.plot(Euler_10sec_res["Time"], Euler_10sec_res["y_1"], label="pynamics");
-        #plt.legend();
-        #plt.show();
-        #print(Euler_10sec_res);
+        Sim.tracking_plot(Euler_10sec_res, "Time", "Ref_1", "y_1");
+        Sim.system_outputs_plot(Euler_10sec_res, "Time", ["y_1"]);
         Heun_10sec_res = self.Heun_10sec.run();
         #print(Heun_10sec_res);
         RK4_10sec_res = self.RK4_10sec.run();
