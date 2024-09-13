@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 """
-This file ... .
+This module contains the simulator base class.
 """
 
 from abc import ABC, abstractmethod
@@ -24,15 +24,13 @@ import numpy as np
 import pandas as pd
 
 class _BaseSimulator(ABC):
-
     """
-    
+    Simulator base class.
     """
 
     def __init__(self, system: BaseModel, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001) -> None:
-        
         """
-        
+        Class constructor.
         """
 
         super().__init__();
@@ -52,21 +50,19 @@ class _BaseSimulator(ABC):
         return;
 
     def _model_check(self, system: BaseModel) -> None:
-
         """
-        
+        Perform a type check on the model.
         """
 
         if(isinstance(system, BaseModel) is False):
 
-            raise TypeError("'system' must be an instance of the 'model' class.");
+            raise TypeError("'system' must be an instance of the 'BaseModel' class.");
 
         return;
 
     def _check_options(self, sim_options: dict, solver_options: dict) -> None:
-
         """
-        
+        Perform type and value checks on every sim and solver option.
         """
 
         for (key, option) in solver_options.items():
@@ -101,9 +97,8 @@ class _BaseSimulator(ABC):
         return;
 
     def _solver_selection(self, solver: str, solver_options: dict) -> _FixedStepSolver:
-
         """
-        
+        Perfom a type check on `solver` and select the appropriate solver.
         """
 
         if (isinstance(solver, str) is False):
@@ -124,27 +119,24 @@ class _BaseSimulator(ABC):
 
     @abstractmethod
     def summary(self) -> None:
-
         """
-        
+        Display simulation options.
         """
 
         pass
 
     @abstractmethod
     def _step(self) -> any:
-
         """
-        
+        Perfom a simulation step.
         """
 
         pass
 
     @abstractmethod
     def run(self) -> pd.DataFrame:
-
         """
-        
+        Run an entire simulation.
         """
 
         pass

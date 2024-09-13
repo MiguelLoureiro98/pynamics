@@ -15,6 +15,11 @@
 """
 This module provides several classes for simulating dynamical systems.
 Both open-loop and closed-loop simulations are supported.
+
+Classes
+-------
+Sim
+    Simulate a dynamical system and plot the results.
 """
 
 from .models.base import BaseModel
@@ -24,31 +29,16 @@ from ._noise._noise_generators import _white_noise
 import numpy as np
 import pandas as pd
 
-class Sim(_BaseSimulator):
-    
+class Sim(_BaseSimulator):    
     """
-    _summary_
+    Simulate a dynamical system.
 
-    _extended_summary_
+    This class can be used to simulate the behaviour of a dynamical system. It supports both open- \
+    and closed-loop simulations, which makes it appropriate for both system analysis and control design.
 
     Parameters
     ----------
-    simulation : _type_
-        _description_
-    """
-
-    def __init__(self, system: BaseModel, input_signal: np.ndarray, t0: float=0.0, tfinal: float=10.0, solver: str="RK4", step_size: float=0.001, \
-                 mode: str="open_loop", controller: any=None, reference_labels: list[str] | None=None, reference_lookahead: int=1, \
-                 noise_power: int | float=0.0, noise_seed: int=0) -> None:
-        
-        """
-        _summary_
-
-        _extended_summary_
-
-        Parameters
-        ----------
-        system : model
+    system : BaseModel
             _description_
 
         input_signal : np.ndarray
@@ -71,19 +61,36 @@ class Sim(_BaseSimulator):
 
         reference_labels : list[str] | None, optional
             _description_, by default None
-
+            
         reference_lookahead : int, optional
             _description_, by default 1
-
-        noise_power : int | float, optional
-            _description_, by default 0.0
-
+            
         noise_seed : int, optional
             _description_, by default 0
+
+    TODO: Attributes and Methods sections.
+    """
+
+    def __init__(self, 
+                 system: BaseModel, 
+                 input_signal: np.ndarray, 
+                 t0: float=0.0, 
+                 tfinal: float=10.0, 
+                 solver: str="RK4", 
+                 step_size: float=0.001, 
+                 mode: str="open_loop", 
+                 controller: any=None, 
+                 reference_labels: list[str] | None=None, 
+                 reference_lookahead: int=1, \
+                 noise_power: int | float=0.0, 
+                 noise_seed: int=0) -> None:
+        """
+        Class constructor.
         """
 
         super().__init__(system, t0, tfinal, solver, step_size);
-        self._input_checks(input_signal);
+        self._mode_check(mode);
+        self._input_checks(input_signal, mode);
         self.inputs = self._input_reformatting(input_signal);
         #self.states = np.zeros(shape=(self.system.state_dim, self.time.shape[0]));
         self.outputs = np.zeros(shape=(self.system.output_dim, self.time.shape[0]));
@@ -91,8 +98,6 @@ class Sim(_BaseSimulator):
         self._lookahead_check(reference_lookahead);
         self.ref_lookahead = reference_lookahead;
         self.controller = controller;
-
-        self._mode_check(mode);
 
         if(mode == "open_loop"):
 
@@ -104,24 +109,8 @@ class Sim(_BaseSimulator):
         return;
 
     def _lookahead_check(self, ref_lookahead: int) -> None:
-
         """
-        _summary_
-
-        _extended_summary_
-
-        Parameters
-        ----------
-        ref_lookahead : int
-            _description_
-
-        Raises
-        ------
-        TypeError
-            _description_
-
-        ValueError
-            _description_
+        Perform type and value checks on the `ref_lookahead` parameter.
         """
 
         if(isinstance(ref_lookahead, int) is False):
@@ -134,29 +123,9 @@ class Sim(_BaseSimulator):
 
         return;
 
-    def _mode_check(self, mode: str) -> None:
-        
+    def _mode_check(self, mode: str) -> None:    
         """
-        _summary_
-
-        _extended_summary_
-
-        Parameters
-        ----------
-        mode : str
-            _description_
-
-        Raises
-        ------
-        TypeError
-            _description_
-
-        ValueError
-            _description_
-
-        Returns
-        -------
-        None
+        Perform type and value checks on the `mode` parameter.
         """
 
         if(isinstance(mode, str) is False):
@@ -172,9 +141,8 @@ class Sim(_BaseSimulator):
         return;
 
     def _labels_check(self, labels: list[str] | None) -> list[str]:
-
         """
-        
+        Perform type and value checks on the labels.
         """
 
         if(labels is None):
@@ -195,10 +163,9 @@ class Sim(_BaseSimulator):
 
         return new_labels;
 
-    def _input_checks(self, input_signal: np.ndarray) -> None:
-
+    def _input_checks(self, input_signal: np.ndarray, mode: str) -> None:
         """
-        
+        Perform type and value checks on the input signal (reference values).
         """
 
         if(isinstance(input_signal, np.ndarray) is False):
@@ -211,16 +178,17 @@ class Sim(_BaseSimulator):
 
             raise ValueError("The input signal length must match the length of the time vector: (T_final - T_initial) / step_size. Check the number of columns of your input signal.");
 
-        if(input_shape_length != 1 and input_signal.shape[0] != self.system.input_dim):
+        if(mode == "open_loop"):
 
-            raise ValueError("The input signal must have the same dimensions as the system's input. Check the number of rows of your input signal.");
+            if(input_shape_length != 1 and input_signal.shape[0] != self.system.input_dim):
+
+                raise ValueError("The input signal must have the same dimensions as the system's input. Check the number of rows of your input signal.");
 
         return;
 
     def _input_reformatting(self, input_signal: np.ndarray) -> np.ndarray:
-
         """
-        
+        Reformat the input signal array if need be.
         """
 
         input_shape_length = len(input_signal.shape);
@@ -232,37 +200,22 @@ class Sim(_BaseSimulator):
         return input_signal;
 
     def summary(self) -> None:
-
         """
-        _summary_
+        Display simulation options.
 
-        _extended_summary_
+        This method can be used ... .
+
+        TODO: Add examples section ...
         """
+
+        print("Simulation details");
+        print("------------------");
 
         return;
 
-    def _step(self, t: float, ref: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-        
+    def _step(self, t: float, ref: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:  
         """
-        _summary_
-
-        _extended_summary_
-
-        Parameters
-        ----------
-        t : float
-            _description_
-
-        ref : np.ndarray
-            _description_
-
-        y : np.ndarray
-            _description_
-
-        Returns
-        -------
-        tuple[np.ndarray, np.ndarray]
-            _description_
+        Perform a simulation step. Used by the `run` method.
         """
 
         if(t % self.controller.Ts == 0):
@@ -280,22 +233,19 @@ class Sim(_BaseSimulator):
 
         return (outputs, control_actions);
 
-    def run(self) -> pd.DataFrame:
-        
+    def run(self) -> pd.DataFrame:     
         """
-        _summary_
+        Run a simulation.
 
-        _extended_summary_
+        This method is used to run a simulation.
 
         Returns
         -------
         pd.DataFrame
             Data frame containing the results.
-        """
 
-        print("-----------------------------------------------------------------");
-        print("Simulation details...");
-        print("-----------------------------------------------------------------");
+        TODO: Add examples section ... 
+        """
 
         self.control_actions[:, 0] = self.system.get_input();
         self.outputs[:, 0] = self.system.get_output();
@@ -331,3 +281,133 @@ class Sim(_BaseSimulator):
         """
         
         pass
+
+    def plot_MIMO(self) -> None:
+        """
+        _summary_
+
+        _extended_summary_
+        """
+
+        pass
+
+    @classmethod
+    def step_response(cls,
+                      system: BaseModel, 
+                      step_magnitude: int | float=1.0, 
+                      t0: float=0.0, 
+                      tfinal: float=10.0, 
+                      solver: str="RK4", 
+                      step_size: float=0.001, 
+                      mode: str="open_loop", 
+                      controller: any=None, 
+                      reference_labels: list[str] | None=None, 
+                      reference_lookahead: int=1, \
+                      noise_power: int | float=0.0, 
+                      noise_seed: int=0):
+        """
+        Simulate the step response of a dynamical system.
+
+        This method can be used to perform a step response simulation. Keep in mind that, for now, it can only be used for ... .
+
+        Returns
+        -------
+        Sim
+            A simulation class instance.
+        """
+
+        reference_signal = np.full(shape=(1, (tfinal - t0) / step_size + 1), fill_value=step_magnitude);
+
+        return cls(system, 
+                   reference_signal, 
+                   t0, 
+                   tfinal, 
+                   solver, 
+                   step_size, 
+                   mode, 
+                   controller, 
+                   reference_labels, 
+                   reference_lookahead, 
+                   noise_power, 
+                   noise_seed);
+
+    @classmethod
+    def impulse_response(cls,
+                         system: BaseModel, 
+                         impulse_magnitude: int | float=1.0, 
+                         t0: float=0.0, 
+                         tfinal: float=10.0, 
+                         solver: str="RK4", 
+                         step_size: float=0.001, 
+                         mode: str="open_loop", 
+                         controller: any=None, 
+                         reference_labels: list[str] | None=None, 
+                         reference_lookahead: int=1, \
+                         noise_power: int | float=0.0, 
+                         noise_seed: int=0):
+        """
+        _summary_
+
+        _extended_summary_
+
+        Returns
+        -------
+        Sim
+            A simulation class instance.
+        """
+
+        reference_signal = np.zeros(shape=(1, (tfinal - t0) / step_size + 1));
+        reference_signal[0, 0] = impulse_magnitude;
+
+        return cls(system, 
+                   reference_signal, 
+                   t0, 
+                   tfinal, 
+                   solver, 
+                   step_size, 
+                   mode, 
+                   controller, 
+                   reference_labels, 
+                   reference_lookahead, 
+                   noise_power, 
+                   noise_seed);
+
+    @classmethod
+    def ramp(cls,
+             system: BaseModel, 
+             slope: int | float=1.0, 
+             t0: float=0.0, 
+             tfinal: float=10.0, 
+             solver: str="RK4", 
+             step_size: float=0.001, 
+             mode: str="open_loop", 
+             controller: any=None, 
+             reference_labels: list[str] | None=None, 
+             reference_lookahead: int=1, \
+             noise_power: int | float=0.0, 
+             noise_seed: int=0):
+        """
+        _summary_
+
+        _extended_summary_
+
+        Returns
+        -------
+        Sim
+            A simulation class instance.
+        """
+
+        reference_signal = slope * np.arange(t0, tfinal + step_size, step_size);
+
+        return cls(system, 
+                   reference_signal, 
+                   t0, 
+                   tfinal, 
+                   solver, 
+                   step_size, 
+                   mode, 
+                   controller, 
+                   reference_labels, 
+                   reference_lookahead, 
+                   noise_power, 
+                   noise_seed);

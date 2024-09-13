@@ -33,7 +33,7 @@ class DummyController(BaseController):
     Attributes
     ----------
     input_dim: int
-        The number of controller inputs (one for a single-input controller).
+        The number of controller inputs.
 
     output_dim: int
         The number of control actions (one for a single-output controller / single-input system).

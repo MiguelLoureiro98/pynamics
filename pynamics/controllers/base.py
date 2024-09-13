@@ -35,10 +35,11 @@ class BaseController(ABC):
     Parameters
     ----------
     n_inputs : int
-        Number of controller inputs (controlled variables).
+        Number of controller inputs.
 
     n_outputs : int
-        Number of controller outputs.
+        Number of controller outputs.\
+        Should be the same as the system's input dimension.
 
     sampling_time : int | float
         Controller sampling time (in seconds).
@@ -120,6 +121,23 @@ class BaseController(ABC):
         """
 
         return self._sampling_time;
+
+    @Ts.setter
+    def Ts(self, new_sampling_time: int | float) -> None:
+        """
+        Set the controller's sampling time.
+
+        This method can be used to modify a controller's sampling time using dot notation.
+
+        Parameters
+        ----------
+        new_sampling_time : int | float
+            New sampling time.
+        """
+
+        self._sampling_time = new_sampling_time;
+    
+        return;
 
     @abstractmethod
     def info(self) -> None:
