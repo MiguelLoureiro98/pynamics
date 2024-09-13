@@ -26,15 +26,14 @@ classifiers = [
 dependencies = [
     "numpy>=1.26.3",
     "pandas>=2.1.4",
+    "matplotlib>=3.9.2",
     "control>=0.10.1"
 ]
 
 [project.optional-dependencies]
 dev = [
     "build>=1.2.1",
-    "twine>=5.3.1"
-]
-docs = [
+    "twine>=5.3.1",
     "mkdocs>=1.6.0",
     "mkdocs-material>=9.5.30"
 ]
