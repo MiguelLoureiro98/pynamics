@@ -82,10 +82,6 @@ def MIMO_output_function_test(state: np.ndarray) -> np.ndarray:
 
 class TestModels(unittest.TestCase):
 
-    """
-    
-    """
-
     @classmethod
     def setUpClass(cls) -> None:
 
@@ -140,9 +136,8 @@ class TestModels(unittest.TestCase):
         self.MIMO_time_varying = MIMO_time_variant_model;
 
     def tearDown(self) -> None:
-        
         """
-        
+        Delete variables created by the setUp method.
         """
 
         del self.linear_model
@@ -155,9 +150,8 @@ class TestModels(unittest.TestCase):
         print("Deleted every testing variable.");
 
     def test_initialisation(self) -> None:
-
         """
-        
+        Test initialisation (exceptions and attributes).
         """
 
         new_linear = LinearModel(np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, \
@@ -252,9 +246,8 @@ class TestModels(unittest.TestCase):
         self.assertRaises(ValueError, LinearModel, np.zeros((3, 1)), np.array([0]), self.linear_model.A, self.linear_model.B, self.linear_model.C, self.linear_model.D, output_labels=["1", "2"]);
 
     def test_getters(self) -> None:
-
         """
-        
+        Test attribute getters.
         """
 
         zero = np.array([0]);
@@ -306,9 +299,8 @@ class TestModels(unittest.TestCase):
         self.assertEqual(self.MIMO_time_varying.get_output()[1], zero);
 
     def test_setters(self) -> None:
-
         """
-        
+        Test attribute setters.
         """
 
         one = np.array([1]);
@@ -338,9 +330,8 @@ class TestModels(unittest.TestCase):
         self.assertEqual(self.MIMO_time_varying.get_input()[1], three);
 
     def test_update(self) -> None:
-
         """
-        
+        Test model update methods.
         """
 
         new_state = np.array([3, 2, 1]).T;
@@ -377,9 +368,8 @@ class TestModels(unittest.TestCase):
         self.assertEqual(self.MIMO_time_varying.get_state()[2], new_state[2]);
 
     def test_eval(self) -> None:
-
         """
-        
+        Test eval methods.
         """
 
         zero = np.array([0]);

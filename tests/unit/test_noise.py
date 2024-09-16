@@ -2,7 +2,7 @@ import unittest
 from pynamics._noise._noise_generators import _white_noise
 
 """
-
+This file contains unit tests targetting the white noise generating functions.
 """
 
 class TestNoise(unittest.TestCase):
@@ -11,9 +11,7 @@ class TestNoise(unittest.TestCase):
     def setUpClass(cls) -> None:
         
         """
-        _summary_
-
-        _extended_summary_
+        Set up the necessary variables.
         """
 
         cls.length = 100000;
@@ -26,9 +24,7 @@ class TestNoise(unittest.TestCase):
     def tearDownClass(cls) -> None:
         
         """
-        _summary_
-
-        _extended_summary_
+        Delete the variables created by the setUpClass method.
         """
         
         del cls.length;
@@ -39,11 +35,8 @@ class TestNoise(unittest.TestCase):
         print("Sucessfully deleted all class attributes created by setUpClass.");
 
     def test_shape(self) -> None:
-
         """
-        _summary_
-
-        _extended_summary_
+        Verify that the shape of the noise arrays is as expected.
         """
 
         self.assertEqual(self.sample1.shape[1], self.length);
@@ -55,11 +48,8 @@ class TestNoise(unittest.TestCase):
         self.assertEqual(self.sample3.shape[0], 1);
 
     def test_mean(self) -> None:
-        
         """
-        _summary_
-
-        _extended_summary_
+        Test whether the mean of the noise arrays is close enough to zero.
         """
 
         self.assertAlmostEqual(self.sample1.mean(), 0.0, 2);
@@ -71,11 +61,8 @@ class TestNoise(unittest.TestCase):
         self.assertAlmostEqual(self.sample3.mean(), 0.0, 1);
 
     def test_variance(self) -> None:
-
         """
-        _summary_
-
-        _extended_summary_
+        Test whether the variance of the noise arrays are close enough to the one specified by the user.
         """
 
         self.assertAlmostEqual(self.sample1.var(), 1.0, 3);

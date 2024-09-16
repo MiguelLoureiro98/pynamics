@@ -323,7 +323,7 @@ class Sim(_BaseSimulator):
         for ind, t in enumerate(self.time[:-1]):
 
             #self.outputs[:, ind+1], self.control_actions[:, ind+1] = self._step(t, ref, y + n);
-            self.outputs[:, ind+1], self.control_actions[:, ind+1] = self._step(t, self.inputs[:, ind:ind+self.ref_lookahead], self.outputs[:, ind:ind+1] + self.noise[:, ind:ind+1]);
+            self.outputs[:, ind+1], self.control_actions[:, ind+1] = self._step(t, self.inputs[:, ind:ind+self.ref_lookahead], self.outputs[:, ind:ind+1]); # + self.noise[:, ind:ind+1]
             #self.outputs[:, ind+1], self.control_actions[:, ind+1] = self._step(t, self.inputs[:, ind:ind+self.ref_lookahead], y + n);
             self.outputs[:, ind+1] += self.noise[:, ind+1];
         
@@ -341,6 +341,33 @@ class Sim(_BaseSimulator):
         sim_data = pd.DataFrame(results, columns=names);
 
         return sim_data;
+
+    def reset(self, initial_state: np.ndarray, initial_control: np.ndarray | float) -> None:
+        """
+        Reset simulation parameters (initial conditions, output arrays, control actions).
+
+        This method must be called every time one wishes to run another simulation. The initial conditions, \
+        output array and control actions array are all reset. This method is useful if one wishes to run \
+        simulations with different initial conditions or different controllers.
+
+        Parameters
+        ----------
+        initial_state : np.ndarray
+            The system's initial state. Should be an array shaped (n, 1), where n \
+            is the number of state variables.
+
+        initial_control: np.ndarray
+            The inputs' initial value(s). Should be an array shaped (u, 1), where
+            u is the number of input variables.
+        """
+
+        self.system.x = initial_state;
+        self.system.set_input(initial_control);
+        self.outputs = np.zeros(shape=(self.system.output_dim, self.time.shape[0]));
+        self.control_actions = np.zeros(shape=(self.controller.output_dim, self.time.shape[0]));
+        print("Sim outputs and control actions were reset sucessfully.");
+    
+        return;
 
     @staticmethod
     def tracking_plot(sim_results: pd.DataFrame,
@@ -504,7 +531,8 @@ class Sim(_BaseSimulator):
             A simulation class instance.
         """
 
-        reference_signal = np.full(shape=(1, (tfinal - t0) / step_size + 1), fill_value=step_magnitude);
+        end = (tfinal - t0) / step_size + 1;
+        reference_signal = np.full(shape=(1, int(end)), fill_value=step_magnitude);
 
         return cls(system, 
                    reference_signal, 
@@ -544,7 +572,8 @@ class Sim(_BaseSimulator):
             A simulation class instance.
         """
 
-        reference_signal = np.zeros(shape=(1, (tfinal - t0) / step_size + 1));
+        end = (tfinal - t0) / step_size + 1;
+        reference_signal = np.zeros(shape=(1, int(end)));
         reference_signal[0, 0] = impulse_magnitude;
 
         return cls(system, 

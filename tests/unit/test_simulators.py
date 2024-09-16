@@ -23,14 +23,12 @@ class Controller_test(object):
         return np.array([[1]]);
 
 class TestSimulators(unittest.TestCase):
-
     """
-    
+    Test simulator class.
     """
 
     @classmethod
     def setUpClass(cls) -> None:
-        
         """
         Unused.
         """
@@ -39,7 +37,6 @@ class TestSimulators(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        
         """
         Unused.
         """
@@ -47,9 +44,8 @@ class TestSimulators(unittest.TestCase):
         pass
 
     def setUp(self) -> None:
-        
         """
-        
+        Set up models, controller, noise and optional values.
         """
 
         A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
@@ -71,9 +67,8 @@ class TestSimulators(unittest.TestCase):
         self.step_size = 0.001;
 
     def tearDown(self) -> None:
-        
         """
-        
+        Delete variables created by the setUp method.
         """
 
         del self.noise_power;
@@ -89,9 +84,8 @@ class TestSimulators(unittest.TestCase):
         print("Sucessfully deleted every instance of every class created by the setUp method.");
 
     def test_initialisation(self) -> None:
-
         """
-        
+        Test initialisation (exceptions and attributes).
         """
 
         ref_signal_length = int(10.0/0.001) + 1;
@@ -143,9 +137,8 @@ class TestSimulators(unittest.TestCase):
         self.assertNotEqual(self.noisy_simulation.noise[0, 0], self.noisy_simulation.inputs[0, 0]);
 
     def test_step(self) -> None:
-
         """
-        
+        Test the _step method.
         """
 
         matlab_output = 0.000996003664875;
@@ -161,6 +154,14 @@ class TestSimulators(unittest.TestCase):
         self.assertEqual(sim_control_actions[0], 0.0);
         self.assertEqual(controlled_control_actions[0], 1.0);
         self.assertEqual(noisy_control_actions[0], 0.0);
+
+    def test_properties(self) -> None:
+
+        pass
+
+    def test_reset(self) -> None:
+
+        pass
 
 if __name__ == "__main__":
 

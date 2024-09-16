@@ -31,11 +31,8 @@ class SimulationTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        
         """
-        _summary_
-
-        _extended_summary_
+        Set up models and simulations and import Matlab data.
         """
         
         home = True;
@@ -91,11 +88,8 @@ class SimulationTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        
         """
-        _summary_
-
-        _extended_summary_
+        Delete variables created by the setUpClass method.
         """
 
         del cls.data_10sec;
@@ -115,32 +109,99 @@ class SimulationTests(unittest.TestCase):
 
 
     def test_simulations(self) -> None:
-
         """
-        _summary_
-
-        _extended_summary_
+        Test `run` method by benchmarking the results against Matlab data.
         """
+
+        self.Euler_10sec.reset(np.zeros((3, 1)), np.array([1]));
+        self.Heun_10sec.reset(np.zeros((3, 1)), np.array([1]));
+        self.RK4_10sec.reset(np.zeros((3, 1)), np.array([1]));
+        self.Euler_100sec.reset(np.zeros((3, 1)), np.array([1]));
+        self.Heun_100sec.reset(np.zeros((3, 1)), np.array([1]));
+        self.RK4_100sec.reset(np.zeros((3, 1)), np.array([1]));
 
         Euler_10sec_res = self.Euler_10sec.run();
         Euler_10sec_true = self.data_10sec[0];
-        Sim.tracking_plot(Euler_10sec_res, "Time", "Ref_1", "y_1");
-        Sim.system_outputs_plot(Euler_10sec_res, "Time", ["y_1"]);
+        pd.testing.assert_series_equal(Euler_10sec_true["t"], Euler_10sec_res["Time"], check_names=False);
+        pd.testing.assert_series_equal(Euler_10sec_true["y"], Euler_10sec_res["y_1"], check_names=False);
+
         Heun_10sec_res = self.Heun_10sec.run();
-        #print(Heun_10sec_res);
+        Heun_10sec_true = self.data_10sec[1];
+        np.allclose(Heun_10sec_true["t"], Heun_10sec_res["Time"]);
+        np.allclose(Heun_10sec_true["y"], Heun_10sec_res["y_1"]);
+
         RK4_10sec_res = self.RK4_10sec.run();
-        #print(RK4_10sec_res);
+        RK4_10sec_true = self.data_10sec[2];
+        pd.testing.assert_series_equal(RK4_10sec_true["t"], RK4_10sec_res["Time"], check_names=False);
+        pd.testing.assert_series_equal(RK4_10sec_true["y"], RK4_10sec_res["y_1"], check_names=False);
 
         Euler_100sec_res = self.Euler_100sec.run();
-        #print(Euler_100sec_res);
+        Euler_100sec_true = self.data_100sec[0];
+        pd.testing.assert_series_equal(Euler_100sec_true["t"], Euler_100sec_res["Time"], check_names=False);
+        pd.testing.assert_series_equal(Euler_100sec_true["y"], Euler_100sec_res["y_1"], check_names=False);
+
         Heun_100sec_res = self.Heun_100sec.run();
+        Heun_100sec_true = self.data_100sec[1];
+        np.allclose(Heun_100sec_true["t"], Heun_100sec_res["Time"]);
+        np.allclose(Heun_100sec_true["y"], Heun_100sec_res["y_1"]);
+
         RK4_100sec_res = self.RK4_100sec.run();
         RK4_100sec_true = self.data_100sec[2];
-        plt.plot(RK4_100sec_true["t"], RK4_100sec_true["y"], label="Matlab");
-        plt.plot(RK4_100sec_res["Time"], RK4_100sec_res["y_1"], label="pynamics");
-        plt.legend();
-        plt.show();
-        #print(RK4_100sec_res);
+        pd.testing.assert_series_equal(RK4_100sec_true["t"], RK4_100sec_res["Time"], check_names=False);
+        pd.testing.assert_series_equal(RK4_100sec_true["y"], RK4_100sec_res["y_1"], check_names=False);
+    
+        return;
+
+    def test_plots(self) -> None:
+        """
+        Test plot methods.
+        """
+
+        self.Euler_10sec.reset(np.zeros((3, 1)), np.array([1]));
+        self.Heun_10sec.reset(np.zeros((3, 1)), np.array([1]));
+        self.RK4_10sec.reset(np.zeros((3, 1)), np.array([1]));
+        self.Euler_100sec.reset(np.zeros((3, 1)), np.array([1]));
+        self.Heun_100sec.reset(np.zeros((3, 1)), np.array([1]));
+        self.RK4_100sec.reset(np.zeros((3, 1)), np.array([1]));
+
+        Euler_10sec_res = self.Euler_10sec.run();
+        Sim.tracking_plot(Euler_10sec_res, "Time", "Ref_1", "y_1");
+        Sim.system_outputs_plot(Euler_10sec_res, "Time", ["y_1"]);
+
+        Heun_10sec_res = self.Heun_10sec.run();
+        Sim.tracking_plot(Heun_10sec_res, "Time", "Ref_1", "y_1");
+        Sim.system_outputs_plot(Heun_10sec_res, "Time", ["y_1"]);
+
+        RK4_10sec_res = self.RK4_10sec.run();
+        Sim.tracking_plot(RK4_10sec_res, "Time", "Ref_1", "y_1");
+        Sim.system_outputs_plot(RK4_10sec_res, "Time", ["y_1"]);
+
+        Euler_100sec_res = self.Euler_100sec.run();
+        Sim.tracking_plot(Euler_100sec_res, "Time", "Ref_1", "y_1");
+        Sim.system_outputs_plot(Euler_100sec_res, "Time", ["y_1"]);
+
+        Heun_100sec_res = self.Heun_100sec.run();
+        Sim.tracking_plot(Heun_100sec_res, "Time", "Ref_1", "y_1");
+        Sim.system_outputs_plot(Heun_100sec_res, "Time", ["y_1"]);
+
+        RK4_100sec_res = self.RK4_100sec.run();
+        Sim.tracking_plot(RK4_100sec_res, "Time", "Ref_1", "y_1");
+        Sim.system_outputs_plot(RK4_100sec_res, "Time", ["y_1"]);
+
+        return;
+
+    def test_classmethods(self) -> None:
+        """
+        Test specific simulation instances.
+        """
+
+        step_sim = Sim.step_response(self.model1);
+        impulse_sim = Sim.impulse_response(self.model1);
+        ramp_sim = Sim.ramp(self.model1);
+
+        # Load Matlab data (?) and compare results
+
+        return;
 
 if __name__ == "__main__":
 

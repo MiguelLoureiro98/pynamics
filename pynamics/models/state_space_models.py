@@ -76,7 +76,7 @@ class LinearModel(BaseModel):
         ----------------------------------------------------------------------------------
         initial_state: np.ndarray
             The system's initial state. Should be an array shaped (n, 1), where
-            n is the number of variables.
+            n is the number of state variables.
 
         initial_control: np.ndarray
             The inputs' initial value(s). Should be an array shaped (u, 1), where
