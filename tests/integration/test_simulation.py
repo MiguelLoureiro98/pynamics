@@ -86,6 +86,10 @@ class SimulationTests(unittest.TestCase):
         cls.Heun_100sec = Sim(cls.model5, reference_100sec, solver="Heun", tfinal=100);
         cls.RK4_100sec = Sim(cls.model6, reference_100sec, tfinal=100);
 
+        cls.ramp_data = pd.read_csv(f"{stem}/tests/integration/solver_validation_data/ramp_test_10sec.csv");
+    
+        return;
+
     @classmethod
     def tearDownClass(cls) -> None:
         """
@@ -107,6 +111,7 @@ class SimulationTests(unittest.TestCase):
         del cls.Heun_100sec;
         del cls.RK4_100sec;
 
+        return;
 
     def test_simulations(self) -> None:
         """
@@ -196,10 +201,20 @@ class SimulationTests(unittest.TestCase):
         """
 
         step_sim = Sim.step_response(self.model1);
-        impulse_sim = Sim.impulse_response(self.model1);
-        ramp_sim = Sim.ramp(self.model1);
+        step_sim.reset(np.zeros((3, 1)), np.array([1]));
+        step_res = step_sim.run();
 
-        # Load Matlab data (?) and compare results
+        ramp_sim = Sim.ramp(self.model1);
+        ramp_sim.reset(np.zeros((3, 1)), np.array([1]));
+        ramp_res = ramp_sim.run();
+
+        RK4_true = self.data_10sec[2];
+
+        np.allclose(self.ramp_data["t"], ramp_res["Time"]);
+        np.allclose(self.ramp_data["y"], ramp_res["y_1"]);
+
+        pd.testing.assert_series_equal(RK4_true["t"], step_res["Time"], check_names=False);
+        pd.testing.assert_series_equal(RK4_true["y"], step_res["y_1"], check_names=False);
 
         return;
 
