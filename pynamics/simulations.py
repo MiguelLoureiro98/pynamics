@@ -23,6 +23,7 @@ Sim
 """
 
 from .models.base import BaseModel
+from .controllers.base import BaseController
 from .controllers.dummy import DummyController
 from ._simulator import _BaseSimulator
 from ._noise._noise_generators import _white_noise
@@ -81,7 +82,7 @@ class Sim(_BaseSimulator):
                  solver: str="RK4", 
                  step_size: float=0.001, 
                  mode: str="open_loop", 
-                 controller: any=None, 
+                 controller: BaseController | None=None, 
                  reference_labels: list[str] | None=None, 
                  reference_lookahead: int=1, \
                  noise_power: int | float=0.0, 
@@ -92,15 +93,16 @@ class Sim(_BaseSimulator):
 
         super().__init__(system, t0, tfinal, solver, step_size);
         self._mode_check(mode);
-        self._input_checks(input_signal, mode);
-        self.inputs = self._input_reformatting(input_signal);
+        self._mode = mode;
+        self._input_checks(input_signal);
+        self._inputs = self._input_reformatting(input_signal);
         self.outputs = np.zeros(shape=(self.system.output_dim, self.time.shape[0]));
         self.noise = _white_noise(self.system.output_dim, self.time.shape[0], noise_power, noise_seed);
         self._lookahead_check(reference_lookahead);
-        self.ref_lookahead = reference_lookahead;
+        self._ref_lookahead = reference_lookahead;
         self.controller = controller;
 
-        if(mode == "open_loop"):
+        if(self._mode == "open_loop"):
 
             self.controller = DummyController(self.inputs.shape[0], self.system.input_dim, step_size);
 
@@ -164,7 +166,7 @@ class Sim(_BaseSimulator):
 
         return new_labels;
 
-    def _input_checks(self, input_signal: np.ndarray, mode: str) -> None:
+    def _input_checks(self, input_signal: np.ndarray) -> None:
         """
         Perform type and value checks on the input signal (reference values).
         """
@@ -179,7 +181,7 @@ class Sim(_BaseSimulator):
 
             raise ValueError("The input signal length must match the length of the time vector: (T_final - T_initial) / step_size. Check the number of columns of your input signal.");
 
-        if(mode == "open_loop"):
+        if(self._mode == "open_loop"):
 
             if(input_shape_length != 1 and input_signal.shape[0] != self.system.input_dim):
 
@@ -199,6 +201,72 @@ class Sim(_BaseSimulator):
             input_signal = np.expand_dims(input_signal, axis=0);
 
         return input_signal;
+
+    @property
+    def inputs(self) -> np.ndarray:
+        """
+        _summary_
+
+        _extended_summary_
+
+        Returns
+        -------
+        np.ndarray
+            System input signals.
+        """
+
+        return self._inputs;
+
+    @inputs.setter
+    def inputs(self, new_input: np.ndarray) -> None:
+        """
+        _summary_
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        new_input : np.ndarray
+            New input signals.
+        """
+
+        self._input_checks(new_input);
+        self._inputs = self._input_reformatting(new_input);
+
+        return;
+
+    @property
+    def ref_lookahead(self) -> int:
+        """
+        _summary_
+
+        _extended_summary_
+
+        Returns
+        -------
+        int
+            Number of time steps ahead for which the reference values are known to the controller.
+        """
+
+        return self._ref_lookahead;
+
+    @ref_lookahead.setter
+    def ref_lookahead(self, new_value: int) -> None:
+        """
+        _summary_
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        new_value : int
+            New value for the `ref_lookahead` parameter.
+        """
+
+        self._lookahead_check(new_value);
+        self._ref_lookahead = new_value;
+
+        return;
 
     def summary(self) -> None:
         """
