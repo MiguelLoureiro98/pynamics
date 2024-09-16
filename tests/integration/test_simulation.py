@@ -110,6 +110,7 @@ class SimulationTests(unittest.TestCase):
         del cls.Euler_100sec;
         del cls.Heun_100sec;
         del cls.RK4_100sec;
+        del cls.ramp_data;
 
         return;
 

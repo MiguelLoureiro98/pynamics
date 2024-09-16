@@ -60,11 +60,17 @@ class TestSimulators(unittest.TestCase):
         self.simulation = Sim(self.model, np.zeros(int(10.0/0.001)+1));
         self.controlled_simulation = Sim(self.model, np.zeros(int(10.0/0.001)+1), mode="closed_loop", controller=self.controller);
         self.noisy_simulation = Sim(self.model, np.zeros(int(10.0/0.001)+1), noise_power=self.noise_power);
+        self.sim_to_reset = Sim(self.model, np.zeros(int(10.0/0.001)+1));
+        self.sim_to_reset.outputs = np.ones(int(10.0/0.001)+1);
+        self.sim_to_reset.control_actions = np.ones(int(10.0/0.001)+1);
+        self.sim_props = Sim(self.model, np.zeros(int(10.0/0.001)+1));
     
         self.t0 = 0.0;
         self.tfinal = 10.0;
         self.solver = "RK4";
         self.step_size = 0.001;
+
+        return;
 
     def tearDown(self) -> None:
         """
@@ -80,8 +86,12 @@ class TestSimulators(unittest.TestCase):
         del self.tfinal;
         del self.solver;
         del self.step_size;
+        del self.sim_to_reset;
+        del self.sim_props;
 
         print("Sucessfully deleted every instance of every class created by the setUp method.");
+    
+        return;
 
     def test_initialisation(self) -> None:
         """
@@ -156,12 +166,33 @@ class TestSimulators(unittest.TestCase):
         self.assertEqual(noisy_control_actions[0], 0.0);
 
     def test_properties(self) -> None:
+        """
+        Test Sim properties.
+        """
 
-        pass
+        np.testing.assert_array_equal(self.sim_props.inputs, np.zeros((1, int(10.0/0.001)+1)));
+        self.sim_props.inputs = np.ones(int(10.0/0.001)+1);
+        np.testing.assert_array_equal(self.sim_props.inputs, np.ones((1, int(10.0/0.001)+1)));
+
+        self.assertEqual(self.sim_props.ref_lookahead, 1);
+        self.sim_props.ref_lookahead = 5;
+        self.assertEqual(self.sim_props.ref_lookahead, 5);
+
+        return;
 
     def test_reset(self) -> None:
+        """
+        Test reset() method.
+        """
 
-        pass
+        self.sim_to_reset.reset(np.ones((3, 1)), np.array([1]));
+
+        np.testing.assert_array_equal(self.sim_to_reset.system.x, np.ones((3, 1)));
+        np.testing.assert_array_equal(self.sim_to_reset.system.get_input(), np.array([[1]]));
+        np.testing.assert_array_equal(self.sim_to_reset.outputs, np.zeros((1, int(10.0/0.001)+1)));
+        np.testing.assert_array_equal(self.sim_to_reset.control_actions, np.zeros((1, int(10.0/0.001)+1)));
+
+        return;
 
 if __name__ == "__main__":
 
