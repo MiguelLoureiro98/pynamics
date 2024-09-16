@@ -548,48 +548,6 @@ class Sim(_BaseSimulator):
                    noise_seed);
 
     @classmethod
-    def impulse_response(cls,
-                         system: BaseModel, 
-                         impulse_magnitude: int | float=1.0, 
-                         t0: float=0.0, 
-                         tfinal: float=10.0, 
-                         solver: str="RK4", 
-                         step_size: float=0.001, 
-                         mode: str="open_loop", 
-                         controller: any=None, 
-                         reference_labels: list[str] | None=None, 
-                         reference_lookahead: int=1, \
-                         noise_power: int | float=0.0, 
-                         noise_seed: int=0):
-        """
-        _summary_
-
-        _extended_summary_
-
-        Returns
-        -------
-        Sim
-            A simulation class instance.
-        """
-
-        end = (tfinal - t0) / step_size + 1;
-        reference_signal = np.zeros(shape=(1, int(end)));
-        reference_signal[0, 0] = impulse_magnitude;
-
-        return cls(system, 
-                   reference_signal, 
-                   t0, 
-                   tfinal, 
-                   solver, 
-                   step_size, 
-                   mode, 
-                   controller, 
-                   reference_labels, 
-                   reference_lookahead, 
-                   noise_power, 
-                   noise_seed);
-
-    @classmethod
     def ramp(cls,
              system: BaseModel, 
              slope: int | float=1.0, 
