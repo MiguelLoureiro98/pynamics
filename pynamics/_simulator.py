@@ -35,16 +35,16 @@ class _BaseSimulator(ABC):
 
         super().__init__();
         self._model_check(system);
-        self.system = system;
+        self._system = system;
 
         sim_options = {"t0": t0, "tfinal": tfinal};
         solver_options = {"t0": t0, "step_size": step_size};
 
         self._check_options(sim_options, solver_options);
 
-        self.options = sim_options;
-        self.solver = self._solver_selection(solver, solver_options);
-        self.time = np.arange(self.options["t0"], self.options["tfinal"] + solver_options["step_size"], solver_options["step_size"]);
+        self._options = sim_options;
+        self._solver = self._solver_selection(solver, solver_options);
+        self._time = np.arange(self.options["t0"], self.options["tfinal"] + solver_options["step_size"], solver_options["step_size"]);
         #self.time = np.expand_dims(self.time, axis=0);
 
         return;
@@ -116,6 +116,38 @@ class _BaseSimulator(ABC):
                              Please select one of the following: Euler, Modified_Euler, Heun, RK4.");
 
         return solvers[solver];
+
+    @property
+    def system(self) -> BaseModel:
+        """
+        Get system.
+        """
+
+        return self._system;
+
+    @property
+    def options(self) -> dict:
+        """
+        Get simulation options.
+        """
+
+        return self._options;
+
+    @property
+    def solver(self) -> _FixedStepSolver:
+        """
+        Get solver.
+        """
+
+        return self._solver;
+
+    @property
+    def time(self) -> np.ndarray:
+        """
+        Get time array.
+        """
+
+        return self._time;
 
     @abstractmethod
     def summary(self) -> None:
