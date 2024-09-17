@@ -63,3 +63,109 @@ array([[0., 0., 1.]])
 >>>
 >>> py_model.D
 array([[0.]])
+
+Linear model -> get state
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import LinearModel
+>>>
+>>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+>>> B = np.array([1, -5, 1]).reshape(-1, 1);
+>>> C = np.array([0, 0, 1]);
+>>> D = np.array([0]);
+>>> model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+>>>
+>>> model.get_state() 
+array([[0.],
+       [0.],
+       [0.]])
+
+Linear model -> get output
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import LinearModel
+>>>
+>>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+>>> B = np.array([1, -5, 1]).reshape(-1, 1);
+>>> C = np.array([0, 0, 1]);
+>>> D = np.array([0]);
+>>> model = LinearModel(np.ones((3, 1)), np.zeros((1, 1)), A, B, C, D);
+>>>
+>>> model.get_output()
+array([[1.]])
+
+Linear model -> get input
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import LinearModel
+>>>
+>>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+>>> B = np.array([1, -5, 1]).reshape(-1, 1);
+>>> C = np.array([0, 0, 1]);
+>>> D = np.array([0]);
+>>> model = LinearModel(np.zeros((3, 1)), np.ones((1, 1)), A, B, C, D);
+>>>
+>>> model.get_input()
+array([[1.]])
+
+Linear model -> set input
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import LinearModel
+>>>
+>>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+>>> B = np.array([1, -5, 1]).reshape(-1, 1);
+>>> C = np.array([0, 0, 1]);
+>>> D = np.array([0]);
+>>> model = LinearModel(np.zeros((3, 1)), np.ones((1, 1)), A, B, C, D);
+>>>
+>>> model.get_input()
+array([[1.]])
+>>>
+>>> model.set_input(np.array([[5.0]]));
+>>> model.get_input()
+array([[5.]])
+
+For single-input systems, floats and integers also constitute valid inputs:
+
+>>> model.set_input(2.5);
+>>> model.get_input()
+array([[2.5]])
+
+Linear model -> update state
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import LinearModel
+>>>
+>>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+>>> B = np.array([1, -5, 1]).reshape(-1, 1);
+>>> C = np.array([0, 0, 1]);
+>>> D = np.array([0]);
+>>> model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+>>> 
+>>> model.get_state()
+array([[0.],
+       [0.],
+       [0.]])
+>>>
+>>> model.update_state(np.ones((3, 1)));
+>>> model.get_state()
+array([[1.],
+       [1.],
+       [1.]])
+
+Linear model -> eval
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import LinearModel
+>>>
+>>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+>>> B = np.array([1, -5, 1]).reshape(-1, 1);
+>>> C = np.array([0, 0, 1]);
+>>> D = np.array([0]);
+>>> model = LinearModel(np.ones((3, 1)), np.zeros((1, 1)), A, B, C, D);
+>>>
+>>> model.eval(0.0, x=model.get_state())
+array([[-1.],
+       [-2.],
+       [-2.]])

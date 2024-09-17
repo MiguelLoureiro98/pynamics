@@ -163,16 +163,6 @@ class BaseModel(ABC):
             new_labels = labels;
 
         return new_labels;
-
-    @abstractmethod
-    def info(self) -> None:
-        """
-        Display general information about the model.
-
-        Ãbstract method. Implementation details may vary with the model.
-        """
-
-        pass
     
     @abstractmethod
     def get_state(self) -> np.ndarray:
