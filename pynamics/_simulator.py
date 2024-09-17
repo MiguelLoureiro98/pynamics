@@ -45,7 +45,6 @@ class _BaseSimulator(ABC):
         self._options = sim_options;
         self._solver = self._solver_selection(solver, solver_options);
         self._time = np.arange(self.options["t0"], self.options["tfinal"] + solver_options["step_size"], solver_options["step_size"]);
-        #self.time = np.expand_dims(self.time, axis=0);
 
         return;
 

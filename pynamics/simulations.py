@@ -42,7 +42,7 @@ class Sim(_BaseSimulator):
     ----------
     system : BaseModel
         System to simulate. Must be described by a model supported by pynamics.
-        ! Add link to 'pynamics' page.
+        TODO : Add link to 'pynamics' page.
 
     input_signal : np.ndarray
         Input signals. These may be reference values or other external inputs (e.g. wind speed in a wind turbine system).
@@ -50,28 +50,40 @@ class Sim(_BaseSimulator):
     t0 : float, default=0.0
         Initial time instant. Must be non-negative.
 
-    tfinal : float, optional
-        ... 
+    tfinal : float, default=0.0
+        Final time instant. Must be non-negative.
 
-    solver : str, optional
-        _description_, by default "RK4"
+    solver : {"Euler", "Modified_Euler", "Heun", "RK4"}, str, default="RK4"
+        Fixed-step solver.
 
-    step_size : float, optional
-        _description_, by default 0.001
+    step_size : float, default=0.001
+        Solver step size. Must be positive.
 
-    controller : any, optional
-        _description_, by default None
+    controller : BaseController | None, optional
+        Controller.
 
     reference_labels : list[str] | None, optional
-        _description_, by default None
+        Reference signals labels.
             
-    reference_lookahead : int, optional
-        _description_, by default 1
+    reference_lookahead : int, default=1
+        Number of time steps ahead for which the reference values are known to the controller.
             
-    noise_seed : int, optional
-        _description_, by default 0
+    noise_power : int | float, default=0.0
+        White noise power. If equal to zero, no noise will be added to the simulation.
+
+    noise_seed : int, default=0
+        Random seed for the noise array.
 
     TODO: Attributes and Methods sections.
+    Attributes
+    ----------
+
+    Methods
+    -------
+
+    Raises
+    ------
+    
     """
 
     def __init__(self, 
