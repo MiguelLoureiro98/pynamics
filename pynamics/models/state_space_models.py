@@ -85,15 +85,6 @@ class LinearModel(BaseModel):
     D : np.ndarray
         Direct or feedforward matrix. It maps the input vector to the output vector.
 
-    input_dim : int
-        Number of system inputs.
-
-    output_dim : int
-        Number of system outputs.
-
-    state_dim : int
-        Number of states in the state vector.
-
     input_labels : list[str]
         List of input labels.
 
@@ -114,7 +105,7 @@ class LinearModel(BaseModel):
     set_input(u: np.ndarray | float)
         Pass new inputs to the system.
         
-    update_state()
+    update_state(state : np.ndarray)
         Assign new values to the system's state vector.
 
     eval()
@@ -441,7 +432,6 @@ class LinearModel(BaseModel):
         return np.matmul(self.A, x) + np.matmul(self.B, self.u);
 
 class NonlinearModel(BaseModel):
-
     """
     Generic nonlinear state-space model.
 
@@ -450,65 +440,105 @@ class NonlinearModel(BaseModel):
     time-varying systems are supported. In order to implement such a system,
     the state and/or the output equations should explicitly dependent on time.
 
+    Parameters
+    ----------
+    x : np.ndarray
+        The system's state vector. Should be an array shaped (n, 1), where n is the \
+        number of state variables.
+
+    u : np.ndarray
+        Input vector. Should be an array shaped (u, 1), where \
+        u is the number of input variables.
+
+    state_update_fcn : callable
+        State update function. This function should implement the system's state equations, \
+        i.e. it should compute its state derivatives given the inputs and the current state vector.
+
+    state_output_fcn : callable
+        Output function. This function should implement the system's output equations, \
+        i.e. it should compute its output vector given the inputs and the current state vector.
+
+    input_dim : int
+        Number of system inputs.
+
+    output_dim : int
+        Number of system outputs.
+
+    input_labels : list[str]
+        List of input labels.
+
+    output_labels : list[str]
+        List of output labels.
+
     Attributes
-    ----------------------------------------------------------------------------------
-    x: np.ndarray
-    The system's state. Should be an array shaped [of shape] (n, 1), where n is the number of
-    variables.
+    ----------
+    x : np.ndarray
+        The system's state. Should be an array shaped [of shape] (n, 1), where n is the number of \
+        variables.
 
-    state_equations: callable
-    The state equations. These describe the evolution of the system's state depending
-    on its current state and its inputs.
+    state_equations : callable
+        The state equations. These describe the evolution of the system's state depending \
+        on its current state and its inputs.
 
-    output_equations: callable
-    The output equations. These establish the relations between the system's current
-    state and its output. [These relate the system's state to its output.]
+    output_equations : callable
+        The output equations. These relate the system's state to its output.
 
-    u: np.ndarray
-    The current control action, or set of control actions, defined as an (n, 1)-shaped
-    array, where n is the number of controlled inputs. 
+    u : np.ndarray
+        The current control action, or set of control actions, defined as an (n, 1)-shaped \
+        array, where n is the number of controlled inputs. 
 
     Methods
-    ----------------------------------------------------------------------------------
-    __init__
-    _control_type_checks
-    get_state
-    get_output
-    get_input
-    set_input
-    eval 
+    -------
+    get_state()
+        Get the current state vector.
+
+    get_output()
+        Compute the system's output from the current state.
+
+    get_input()
+        Get the current inputs.
+
+    set_input(u: np.ndarray | float)
+        Pass new inputs to the system.
+        
+    update_state(state : np.ndarray)
+        Assign new values to the system's state vector.
+
+    eval()
+        Compute the system's state derivative.
+
+    See also
+    --------
+    LinearModel:
+        Implements a linear time-invariant state-space model.
+    TODO : Add link to linear model page.
+    
+    Notes
+    -----
+    A generic, nonlinear state-space model describes the relations between inputs and ouputs using \
+    nonlinear differential equations of the form:
+
+    $$
+    \dot{x}(t) = f(x(t), u(t), t)
+    y(t) = g(x(t), u(t), t)
+    $$
+
+    where $x(t)$ is the system's state vector, $u(t)$ is its input vector, $y(t)$ is the output vector, and \
+    t is the time variable. f(.) represents the state equations, while g(.) stands for the output equations.
     """
 
-    def __init__(self, initial_state: np.ndarray, initial_control: np.ndarray, state_update_fcn: callable, state_output_fcn: callable, input_dim: int, output_dim: int,\
-                 input_labels: list[str] | None=None, output_labels: list[str] | None=None) -> None:
+    def __init__(self, 
+                 initial_state: np.ndarray, 
+                 initial_control: np.ndarray, 
+                 state_update_fcn: callable, 
+                 state_output_fcn: callable, 
+                 input_dim: int, 
+                 output_dim: int,
+                 input_labels: list[str] | None=None, 
+                 output_labels: list[str] | None=None) -> None:
         
         """
-        Constructor method for the nonlinearModel class.
-
-        This method ... .
-
-        Arguments
-        ----------------------------------------------------------------------------------
-        initial_state: np.ndarray
-        The system's initial state. Should be an array shaped (n, 1), where
-        n is the number of variables.
-
-        state_update_fcn: callable
-        The state update function. If this class is used, it must be provided y the user.
-        This function must receive ... .
-
-        state_output_fcn: callable
-
-
-        input_dim: int
-        Number of inputs.
-
-        output_dim: int
-        Number of outputs.
-
-        Returns
-        ----------------------------------------------------------------------------------
-        None
+        Class constructor.
         """
 
         super().__init__(initial_state, input_dim, output_dim, input_labels, output_labels);
@@ -519,33 +549,169 @@ class NonlinearModel(BaseModel):
         return;
 
     def get_state(self) -> np.ndarray:
-        
         """
-        
+        Access the system's state.
+
+        This method allows one to access the current state vector.
+
+        Returns
+        -------
+        np.ndarray
+            Current state vector.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import NonlinearModel
+        >>>
+        >>> # Define the state function.
+        >>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+        ...
+        ...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+        ...     state_derivative_2 = state[1] + control[0];
+        ...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+        ...
+        ...     return state_derivative;   
+        >>>
+        >>> # Define the output function.
+        >>> def output_function(state: np.ndarray):
+        ...
+        ...     output = np.array([state[0]**state[1]]);
+        ...
+        ...     return output;
+        >>>
+        >>> model = NonlinearModel(np.zeros((2, 1)), np.ones((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+        >>>
+        >>> model.get_state()
+        array([[0.],
+               [0.]])
         """
 
         return self.x;
 
     def get_output(self) -> np.ndarray:
-        
         """
+        Compute the system's output from the current state vector.
+
+        This method can be used to compute the output of a nonlinear state-space \
+        model from its current state vector. This is done by computing \
+        $y = g(x(t), u(t), t)$, where $y(t)$ is the output vector, $x(t)$ is the state vector, \
+        $u(t)$ is the input vector, $t$ is the time instant, and $g(.)$ represents the output equations.
+
+        Returns
+        -------
+        np.ndarray
+            Output vector.
         
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import NonlinearModel
+        >>>
+        >>> # Define the state function.
+        >>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+        ...
+        ...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+        ...     state_derivative_2 = state[1] + control[0];
+        ...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+        ...
+        ...     return state_derivative;   
+        >>>
+        >>> # Define the output function.
+        >>> def output_function(state: np.ndarray):
+        ...
+        ...     output = np.array([state[0]**state[1]]);
+        ...
+        ...     return output;
+        >>>
+        >>> model = NonlinearModel(np.ones((2, 1)), np.zeros((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+        >>>
+        >>> model.get_output()
+        array([[1.]])
         """
 
         return self.output_equations(self.x);
 
     def get_input(self) -> np.ndarray:
-
         """
-        
+        Access the system's input.
+
+        This method can be use to access the current input vector.
+
+        Returns
+        -------
+        np.ndarray
+            Current input vector.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import NonlinearModel
+        >>>
+        >>> # Define the state function.
+        >>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+        ...
+        ...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+        ...     state_derivative_2 = state[1] + control[0];
+        ...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+        ...
+        ...     return state_derivative;   
+        >>>
+        >>> # Define the output function.
+        >>> def output_function(state: np.ndarray):
+        ...
+        ...     output = np.array([state[0]**state[1]]);
+        ...
+        ...     return output;
+        >>>
+        >>> model = NonlinearModel(np.ones((2, 1)), 2.5 * np.ones((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+        >>>
+        >>> model.get_input()
+        array([[2.5]])
         """
 
         return self.u;
 
     def set_input(self, u: np.ndarray | float) -> None:
-
         """
-        
+        Pass a new set of inputs (references, control actions, etc.) to the system.
+
+        This method can be used to update the system's input vector directly.
+
+        Parameters
+        ----------
+        u : np.ndarray | float
+            The new set of inputs (i.e. input vector).
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import NonlinearModel
+        >>>
+        >>> # Define the state function.
+        >>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+        ...
+        ...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+        ...     state_derivative_2 = state[1] + control[0];
+        ...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+        ...
+        ...     return state_derivative;   
+        >>>
+        >>> # Define the output function.
+        >>> def output_function(state: np.ndarray):
+        ...
+        ...     output = np.array([state[0]**state[1]]);
+        ...
+        ...     return output;
+        >>>
+        >>> model = NonlinearModel(np.ones((2, 1)), 2.5 * np.ones((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+        >>>
+        >>> model.get_input()
+        array([[2.5]])
+        >>>
+        >>> model.set_input(np.array([[5.0]]));
+        >>> model.get_input();
+        array([[5.]])
         """
 
         self.u = self._control_type_checks(u);
@@ -553,9 +719,47 @@ class NonlinearModel(BaseModel):
         return;
 
     def update_state(self, state: np.ndarray) -> None:
-
         """
-        
+        Assign new values to the system's state vector.
+
+        This method can be used to update the system's state vector directly.
+
+        Parameters
+        ----------
+        state : np.ndarray
+            New state vector.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import NonlinearModel
+        >>>
+        >>> # Define the state function.
+        >>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+        ...
+        ...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+        ...     state_derivative_2 = state[1] + control[0];
+        ...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+        ...
+        ...     return state_derivative;   
+        >>>
+        >>> # Define the output function.
+        >>> def output_function(state: np.ndarray):
+        ...
+        ...     output = np.array([state[0]**state[1]]);
+        ...
+        ...     return output;
+        >>>
+        >>> model = NonlinearModel(np.ones((2, 1)), np.ones((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+        >>> 
+        >>> model.get_state()
+        array([[1.],
+               [1.]])
+        >>>
+        >>> model.update_state(np.zeros((2, 1)));
+        >>> model.get_state()
+        array([[0.],
+               [0.]])
         """
 
         self.x = state;
@@ -563,13 +767,52 @@ class NonlinearModel(BaseModel):
         return;
 
     def eval(self, t: float, x: np.ndarray) -> np.ndarray:
-
         """
-        
+        Compute the system's state derivative.
+
+        This method computes the system's state derivative via the state \
+        equation: $\dot{x} = A \cdot x + B \cdot u$, where $x$ is the state vector \
+        and $u$ is the input vector.
+
+        Parameters
+        ----------
+        t : float
+            Time instant. Used for compatibility reasons. Unused by this method.
+
+        x : np.ndarray
+            The current state vector.
+
+        Returns
+        -------
+        np.ndarray
+            The system's state derivative.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import NonlinearModel
+        >>>
+        >>> # Define the state function.
+        >>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+        ...
+        ...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+        ...     state_derivative_2 = state[1] + control[0];
+        ...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+        ...
+        ...     return state_derivative;   
+        >>>
+        >>> # Define the output function.
+        >>> def output_function(state: np.ndarray):
+        ...
+        ...     output = np.array([state[0]**state[1]]);
+        ...
+        ...     return output;
+        >>>
+        >>> model = NonlinearModel(np.ones((2, 1)), np.ones((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+        >>> 
+        >>> model.eval(t=0.0, x=model.get_state())
+        array([[2.08060461],
+               [2.        ]])
         """
 
         return self.state_equations(x, self.u, t);
-
-if __name__ == "__main__":
-
-    pass

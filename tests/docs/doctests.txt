@@ -169,3 +169,171 @@ Linear model -> eval
 array([[-1.],
        [-2.],
        [-2.]])
+
+Nonlinear model -> get state
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import NonlinearModel
+>>>
+>>> # Define the state function.
+>>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+...
+...    state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+...    state_derivative_2 = state[1] + control[0];
+...    state_derivative = np.array([state_derivative_1, state_derivative_2]);
+...
+...    return state_derivative;   
+>>>
+>>> # Define the output function.
+>>> def output_function(state: np.ndarray):
+...
+...    output = np.array([state[0]**state[1]]);
+...
+...    return output;
+>>>
+>>> model = NonlinearModel(np.zeros((2, 1)), np.ones((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+>>>
+>>> model.get_state()
+array([[0.],
+       [0.]])
+
+Nonlinear model -> get output
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import NonlinearModel
+>>>
+>>> # Define the state function.
+>>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+...
+...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+...     state_derivative_2 = state[1] + control[0];
+...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+...
+...     return state_derivative;   
+>>>
+>>> # Define the output function.
+>>> def output_function(state: np.ndarray):
+...
+...     output = np.array([state[0]**state[1]]);
+...
+...     return output;
+>>>
+>>> model = NonlinearModel(np.ones((2, 1)), np.zeros((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+>>>
+>>> model.get_output()
+array([[1.]])
+
+Nonlinear model -> get input
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import NonlinearModel
+>>>
+>>> # Define the state function.
+>>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+...
+...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+...     state_derivative_2 = state[1] + control[0];
+...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+...
+...     return state_derivative;   
+>>>
+>>> # Define the output function.
+>>> def output_function(state: np.ndarray):
+...
+...     output = np.array([state[0]**state[1]]);
+...
+...     return output;
+>>>
+>>> model = NonlinearModel(np.ones((2, 1)), 2.5 * np.ones((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+>>>
+>>> model.get_input()
+array([[2.5]])
+
+Nonlinear model -> set input
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import NonlinearModel
+>>>
+>>> # Define the state function.
+>>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+...
+...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+...     state_derivative_2 = state[1] + control[0];
+...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+...
+...     return state_derivative;   
+>>>
+>>> # Define the output function.
+>>> def output_function(state: np.ndarray):
+...
+...     output = np.array([state[0]**state[1]]);
+...
+...     return output;
+>>>
+>>> model = NonlinearModel(np.ones((2, 1)), 2.5 * np.ones((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+>>>
+>>> model.get_input()
+array([[2.5]])
+>>>
+>>> model.set_input(np.array([[5.0]]));
+>>> model.get_input()
+array([[5.]])
+
+Nonlinear model -> update state
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import NonlinearModel
+>>>
+>>> # Define the state function.
+>>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+...
+...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+...     state_derivative_2 = state[1] + control[0];
+...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+...
+...     return state_derivative;   
+>>>
+>>> # Define the output function.
+>>> def output_function(state: np.ndarray):
+...
+...     output = np.array([state[0]**state[1]]);
+...
+...     return output;
+>>>
+>>> model = NonlinearModel(np.ones((2, 1)), np.ones((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+>>> 
+>>> model.get_state()
+array([[1.],
+       [1.]])
+>>>
+>>> model.update_state(np.zeros((2, 1)));
+>>> model.get_state()
+array([[0.],
+       [0.]])
+
+Nonlinear model -> eval method
+
+>>> import numpy as np
+>>> from pynamics.models.state_space_models import NonlinearModel
+>>>
+>>> # Define the state function.
+>>> def state_function(state: np.ndarray, control: np.ndarray, time: float):
+...
+...     state_derivative_1 = state[0] + 2 * np.cos(state[1]);
+...     state_derivative_2 = state[1] + control[0];
+...     state_derivative = np.array([state_derivative_1, state_derivative_2]);
+...
+...     return state_derivative;   
+>>>
+>>> # Define the output function.
+>>> def output_function(state: np.ndarray):
+...
+...     output = np.array([state[0]**state[1]]);
+...
+...     return output;
+>>>
+>>> model = NonlinearModel(np.ones((2, 1)), np.ones((1, 1)), state_function, output_function, input_dim=2, output_dim=1);
+>>> 
+>>> model.eval(t=0.0, x=model.get_state())
+array([[2.08060461],
+       [2.        ]])
