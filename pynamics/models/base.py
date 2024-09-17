@@ -12,62 +12,96 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from abc import ABC, abstractmethod
-import numpy as np
-
 """
 This module contains the model base class, which forms the template for every plant model supported by this package.
+
+Classes
+-------
+BaseModel
+    Model base class.
 """
+
+from abc import ABC, abstractmethod
+import numpy as np
 
 class BaseModel(ABC):
 
     """
-    This is the parent class for every plant model supported by Pynamics. 
+    This is the parent class for every plant model supported by pynamics. 
     While custom models are supported, they must all inherit from this class.
 
-    Attributes
-    ----------------------------------------------------------------------------------
-    x: np.ndarray
-        The system's state. Should be an array shaped (n, 1), where n is the number of
+    Parameters
+    ----------
+    initial_state : np.ndarray
+        The system's initial state. Should be an array shaped (n, 1), where n is the number of \
         state variables.
 
+    input_dim : int
+        Number of system inputs.
+
+    output_dim : int
+        Number of system outputs.
+
+    input_labels : list[str] | None, optional
+        List of input labels. If `None` is passed, the inputs will be given generic names.
+
+    output_labels : list[str] | None, optional
+        List of output labels. If `None` is passed, the outputs will be given generic names.
+
+    Attributes
+    ----------
+    x : np.ndarray
+        The system's state vector.
+
+    input_dim : int
+        Number of system inputs.
+
+    output_dim : int
+        Number of system outputs.
+
+    state_dim : int
+        Number of states in the state vector.
+
+    input_labels : list[str]
+        List of input labels.
+
+    output_labels : list[str]
+        List of output labels.
+
     Methods
-    ----------------------------------------------------------------------------------
-    __init__
-    get_state
-    get_output
-    get_input
-    set_input
-    eval 
+    -------
+    get_state()
+        Get the current state vector.
+
+    get_output()
+        Compute the system's output from the current state.
+
+    get_input()
+        Get the current inputs.
+
+    set_input(u: np.ndarray | float)
+        Pass new inputs to the system.
+        
+    update_state()
+        Assign new values to the system's state vector.
+
+    eval()
+        Compute the system's state derivative.
+
+    Warning
+    -------
+    This is an abstract base class. It should not be used directly. 
     """
 
-    def __init__(self, initial_state: np.ndarray, input_dim: int, output_dim: int, \
-                 input_labels: list[str] | None=None, output_labels: list[str] | None=None) -> None:
+    def __init__(self, 
+                 initial_state: np.ndarray, 
+                 input_dim: int, 
+                 output_dim: int,
+                 input_labels: list[str] | None=None, 
+                 output_labels: list[str] | None=None) -> None:
         
         """
-        Class constructor. Receives the system's initial state as an input.
-
-        Arguments
-        ----------------------------------------------------------------------------------
-        initial_state: np.ndarray
-        The system's initial state. Should be an array shaped (n, 1), where
-        n is the number of variables.
-
-        input_dim: int
-        Number of inputs.
-
-        output_dim: int
-        Number of outputs.
-
-        input_labels: list or None
-
-
-        output_labels: list or None
-
-        
-        Returns
-        ----------------------------------------------------------------------------------
-        None
+        Class constructor.
         """
 
         super().__init__();
@@ -78,25 +112,12 @@ class BaseModel(ABC):
         self.state_dim = self.x.shape[0];
         self.input_labels = self._labels_check(input_labels, self.input_dim, "u");
         self.output_labels = self._labels_check(output_labels, self.output_dim, "y");
-        #self.state_labels = state_labels;
 
         return;
 
     def _control_type_checks(self, control_action: np.ndarray | float | int) -> np.ndarray:
-
         """
-        Internal helper method to perform the necessary checks when a new control action
-        is defined.
-
-        Arguments
-        ----------------------------------------------------------------------------------
-        control_action: np.ndarray | float | int
-        The new control action. It can be specified as a float, a flat array, or a ...
-
-        Returns
-        ----------------------------------------------------------------------------------
-        control_action: np.ndarray
-        The same control action ... [in the right format].
+        Check and reformat control actions.
         """
 
         if (isinstance(control_action, float) is True or isinstance(control_action, int) is True):
@@ -110,9 +131,8 @@ class BaseModel(ABC):
         return control_action;
 
     def _dim_checks(self, input_dim: int, output_dim: int) -> None:
-
         """
-        
+        Check input and output dimensions.
         """
 
         if((isinstance(input_dim, int) and isinstance(output_dim, int)) is False):
@@ -122,9 +142,8 @@ class BaseModel(ABC):
         return;
 
     def _labels_check(self, labels: list[str], dim: int, char: str) -> list[str]:
-
         """
-        
+        Perform label and type checks on the labels. Reformat them if necessary.
         """
 
         if(labels is None):
@@ -147,63 +166,70 @@ class BaseModel(ABC):
 
     @abstractmethod
     def info(self) -> None:
-
         """
-        Method to provid general information regarding model structure, parameters, etc.
+        Display general information about the model.
+
+        Ãbstract method. Implementation details may vary with the model.
         """
 
         pass
     
     @abstractmethod
     def get_state(self) -> np.ndarray:
-
         """
-        Method to access the system's state.
+        Access the system's state.
+
+        Abstract method. Implementation details may vary with the model.
         """
 
         pass
 
     @abstractmethod
     def get_output(self) -> np.ndarray:
-
         """
-        Method to access the system's output.
+        Compute the system's output from the current state vector.
+
+        Abstract method. Implementation details may vary with the model.
         """
 
         pass
 
     @abstractmethod
     def get_input(self) -> np.ndarray:
-
         """
-        Method to access the system's input.
+        Access the system's input.
+
+        Abstract method. Implementation details may vary with the model.
         """
 
         pass
 
     @abstractmethod
     def set_input(self, u: np.ndarray | float) -> None:
-
         """
-        Method to set a new set of inputs (references, control actions, etc.).
+        Pass a new set of inputs (references, control actions, etc.) to the system.
+
+        Abstract method. Implementation details may vary with the model.
         """
 
         pass
 
     @abstractmethod
     def update_state(self) -> None:
-
         """
-        Method to update the system's state.
+        Assign new values to the system's state vector.
+
+        Abstract method. Implementation details may vary with the model.
         """
 
         pass
 
     @abstractmethod
     def eval(self) -> np.ndarray:
-
         """
-        Method used to compute the model's state derivative at a given time instant.
+        Compute the system's state derivative.
+
+        Abstract method. Implementation details may vary with the model.
         """
 
         pass

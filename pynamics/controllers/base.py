@@ -61,7 +61,11 @@ class BaseController(ABC):
         Display useful information regarding the controller.
 
     control(ref: np.ndarray, y: np.ndarray)
-        Compute control actions for the next time instant. 
+        Compute control actions for the next time instant.
+
+    Warning
+    -------
+    This is an abstract base class. It should not be used directly. 
     """
 
     def __init__(self, n_inputs: int, n_outputs: int, sampling_time: int | float) -> None:
