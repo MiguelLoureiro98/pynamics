@@ -13,9 +13,9 @@
 #   limitations under the License.
 
 """
-This module contains helper functions that make pynamics compatible with the Python Control Systems Library.
+This module contains helper functions that make pynamics compatible with the [Python Control Systems Library](https://python-control.readthedocs.io/en/0.10.1/).
 
-! ADD PAGE LINKS TO THESE LIBRARIES!!!!!
+TODO: Add pynamics link.
 
 Functions
 ---------
@@ -45,6 +45,39 @@ def pynamics_to_control(pynamics_model: LinearModel) -> ct.ss:
     -------
     ct.ss
         A state-space model compatible with the Python Control Systems library.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import control as ct
+    >>> from pynamics.models.state_space_models import LinearModel
+    >>> from pynamics.models.model_conversion import pynamics_to_control
+    >>>
+    >>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+    >>> B = np.array([1, -5, 1]).reshape(-1, 1);
+    >>> C = np.array([0, 0, 1]);
+    >>> D = np.array([0]);
+    >>> py_model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+    >>>
+    >>> ct_model = pynamics_to_control(py_model);
+    >>> isinstance(ct_model, ct.statesp.StateSpace)
+    True
+    >>>
+    >>> ct_model.A
+    array([[ 0.,  0., -1.],
+           [ 1.,  0., -3.],
+           [ 0.,  1., -3.]])
+    >>>
+    >>> ct_model.B
+    array([[ 1.],
+           [-5.],
+           [ 1.]])
+    >>>
+    >>> ct_model.C
+    array([[0., 0., 1.]])
+    >>>
+    >>> ct_model.D
+    array([[0.]])
     """
 
     return ct.ss(pynamics_model.A, pynamics_model.B, pynamics_model.C, pynamics_model.D);
@@ -82,6 +115,38 @@ def control_to_pynamics(control_model: ct.ss,
     -------
     LinearModel
         A pynamics linear model.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import control as ct
+    >>> from pynamics.models.model_conversion import control_to_pynamics
+    >>>
+    >>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+    >>> B = np.array([1, -5, 1]).reshape(-1, 1);
+    >>> C = np.array([0, 0, 1]);
+    >>> D = np.array([0]);
+    >>> ct_model = ct.ss(A, B, C, D);
+    >>>
+    >>> py_model = control_to_pynamics(ct_model, initial_state=np.zeros((3, 1)), initial_control=np.zeros((1, 1)));
+    >>> isinstance(py_model, pynamics.models.state_space_models.LinearModel)
+    True
+    >>>
+    >>> py_model.A
+    array([[ 0.,  0., -1.],
+           [ 1.,  0., -3.],
+           [ 0.,  1., -3.]])
+    >>>
+    >>> py_model.B
+    array([[ 1.],
+           [-5.],
+           [ 1.]])
+    >>>
+    >>> py_model.C
+    array([[0., 0., 1.]])
+    >>>
+    >>> py_model.D
+    array([[0.]])
     """
 
     return LinearModel(initial_state, 

@@ -1,0 +1,65 @@
+pynamics_to_control
+
+>>> import numpy as np
+>>> import control as ct
+>>> from pynamics.models.state_space_models import LinearModel
+>>> from pynamics.models.model_conversion import pynamics_to_control
+>>>
+>>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+>>> B = np.array([1, -5, 1]).reshape(-1, 1);
+>>> C = np.array([0, 0, 1]);
+>>> D = np.array([0]);
+>>> py_model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+>>>
+>>> ct_model = pynamics_to_control(py_model);
+>>> isinstance(ct_model, ct.statesp.StateSpace)
+True
+>>>
+>>> ct_model.A
+array([[ 0.,  0., -1.],
+       [ 1.,  0., -3.],
+       [ 0.,  1., -3.]])
+>>>
+>>> ct_model.B
+array([[ 1.],
+       [-5.],
+       [ 1.]])
+>>>
+>>> ct_model.C
+array([[0., 0., 1.]])
+>>>
+>>> ct_model.D
+array([[0.]])
+
+control_to_pynamics
+
+>>> import numpy as np
+>>> import control as ct
+>>> import pynamics as pyn
+>>> from pynamics.models.model_conversion import control_to_pynamics
+>>>
+>>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+>>> B = np.array([1, -5, 1]).reshape(-1, 1);
+>>> C = np.array([0, 0, 1]);
+>>> D = np.array([0]);
+>>> ct_model = ct.ss(A, B, C, D);
+>>>
+>>> py_model = control_to_pynamics(ct_model, initial_state=np.zeros((3, 1)), initial_control=np.zeros((1, 1)));
+>>> isinstance(py_model, pyn.models.state_space_models.LinearModel)
+True
+>>>
+>>> py_model.A
+array([[ 0.,  0., -1.],
+       [ 1.,  0., -3.],
+       [ 0.,  1., -3.]])
+>>>
+>>> py_model.B
+array([[ 1.],
+       [-5.],
+       [ 1.]])
+>>>
+>>> py_model.C
+array([[0., 0., 1.]])
+>>>
+>>> py_model.D
+array([[0.]])
