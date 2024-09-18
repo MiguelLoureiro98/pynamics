@@ -144,6 +144,10 @@ class Sim(_BaseSimulator):
     ValueError
         If the value of any parameter is invalid (e.g. input signal has the wrong length, \
         `mode` is neither "open_loop" nor "closed_loop", etc.).
+
+    Warning
+    -------
+    Only fixed-step solvers are support at the moment.
     """
 
     def __init__(self, 
