@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 """
-This module contains helper functions that make pynamics compatible with the [Python Control Systems Library](https://python-control.readthedocs.io/en/0.10.1/).
+This module contains helper functions that make pynamics compatible with the [Python Control Systems Library](https://github.com/python-control/python-control).
 
 TODO: Add pynamics link.
 

@@ -1,4 +1,4 @@
-# Base controller class
+# Controller base class
 
 ::: pynamics.controllers.base
     options:
