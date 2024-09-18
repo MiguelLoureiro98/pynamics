@@ -74,3 +74,10 @@ markdown_extensions:
 extra_javascript:
   - javascripts/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  Home: index.md
+  Installation: installation.md
+  API reference: API_ref.md
+  Change Log: changelog.md
+  About: about.md

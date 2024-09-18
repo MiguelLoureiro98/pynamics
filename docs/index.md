@@ -1,6 +1,6 @@
-# Welcome to MkDocs
+# Welcome to the Pynamics documentation
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Pynamics is a simple, lightweight Python package to simulate dynamical systems. 
 
 ## Commands
 
