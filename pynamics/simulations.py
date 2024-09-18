@@ -891,8 +891,8 @@ class Sim(_BaseSimulator):
         Sim
             A simulation class instance.
 
-        Warnings
-        --------
+        Warning
+        -------
         This method seems to have some inaccuracies at the moment. Results might not be as reliable.
 
         Examples

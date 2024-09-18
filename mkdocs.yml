@@ -78,15 +78,19 @@ extra_javascript:
 nav:
   - Home: index.md
   - Installation: installation.md
-  - API reference: API_ref/index.md
+  - API reference: 
+    - API_ref/index.md
     - Simulations: API_ref/simulations.md
-    - Models: API_ref/models/index.md
+    - Models: 
+      - API_ref/models/index.md
       - Base class: API_ref/models/base.md
-      - State space models: API_ref/models/state_space/index.md
+      - State space models: 
+        - API_ref/models/state_space/index.md
         - Linear model: API_ref/models/state_space/linear.md
         - Nonlinear model: API_ref/models/state_space/nonlinear.md
       - Model conversions: API_ref/models/conversions.md
-    - Control: API_ref/controllers/index.md
+    - Control: 
+      - API_ref/controllers/index.md
       - Controller base class: API_ref/controllers/base.md
       - Dummy controller: API_ref/controllers/dummy.md
   - Change Log: changelog.md

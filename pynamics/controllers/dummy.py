@@ -38,7 +38,7 @@ class DummyController(BaseController):
     output_dim: int
         The number of control actions (one for a single-output controller / single-input system).
 
-    sampling_time : int | float
+    Ts : int | float
         Controller sampling time.
 
     Methods
