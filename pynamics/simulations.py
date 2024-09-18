@@ -59,11 +59,15 @@ class Sim(_BaseSimulator):
     step_size : float, default=0.001
         Solver step size. Must be positive.
 
+    mode : {"open_loop", "closed_loop"}, str, default="open_loop"
+        Simulation mode. The controller will not be included in the simulation unless \
+        parameter is set to "closed_loop".
+
     controller : BaseController | None, optional
         Controller.
 
     reference_labels : list[str] | None, optional
-        Reference signals labels.
+        List of labels for the reference signals.
             
     reference_lookahead : int, default=1
         Number of time steps ahead for which the reference values are known to the controller.
@@ -74,16 +78,72 @@ class Sim(_BaseSimulator):
     noise_seed : int, default=0
         Random seed for the noise array.
 
-    TODO: Attributes and Methods sections.
     Attributes
     ----------
+    system : BaseModel
+        The system to simulate.
 
+    options : dict
+        Simulation options (initial and final time instants).
+
+    solver : _FixedStepSolver
+        Solver.
+
+    time : np.ndarray
+        Time array.
+
+    inputs : np.ndarray
+        The input signals. 
+
+    outputs : np.ndarray
+        The output signals.
+
+    noise : np.ndarray
+        Array of white noise values.
+
+    control_actions : np.ndarray
+        Array of control actions.
+
+    controller : BaseController
+        Controller.
+
+    ref_lookahead : int
+        Number of time steps ahead for which the reference values are known to the controller.
+
+    ref_labels : list[str]
+        List of labels for the reference signals.
+    
     Methods
     -------
+    summary()
+        Display the current simulation settings.
 
+    run()
+        Run a simulation.
+
+    reset(initial_state: np.ndarray, initial_control: np.ndarray | float)
+        Reset the output and control actions arrays, as well as the system's state and input vectors, so that a new simulation can be run.
+
+    tracking_plot(sim_results: pd.DataFrame, time_variable: str, reference: str, output: str,  plot_title: str="Simulation results",  xlabel: str="t",  ylabel: str="y",  plot_height: int | float=10.0,  plot_width: int | float=10.0)
+        Evaluate the system's tracking performance by plotting the reference signal and the system's output (SISO systems only).
+    
+    system_outputs_plot(sim_results: pd.DataFrame, time_variable: str, outputs: list[str],  plot_title: str="Simulation results",  xlabel: str="t",  ylabel: str="y",  plot_height: int | float=10.0,  plot_width: int | float=10.0)
+        Visualise the system's output signals.
+
+    step_response(cls, system: BaseModel,  step_magnitude: int | float=1.0,  t0: float=0.0,  tfinal: float=10.0,  solver: str="RK4",  step_size: float=0.001,  mode: str="open_loop",  controller: BaseController | None=None,  reference_labels: list[str] | None=None,  reference_lookahead: int=1, \ noise_power: int | float=0.0,  noise_seed: int=0)
+        Simulate the system's step response (single-input systems or single-reference controllers only).
+    
+    ramp(cls, system: BaseModel,  slope: int | float=1.0,  t0: float=0.0,  tfinal: float=10.0,  solver: str="RK4",  step_size: float=0.001,  mode: str="open_loop",  controller: BaseController | None=None,  reference_labels: list[str] | None=None,  reference_lookahead: int=1, \ noise_power: int | float=0.0,  noise_seed: int=0)
+        Simulate the system's response to a ramp signal (single-input systems or single-reference controllers only).
+    
     Raises
     ------
-    
+    TypeError
+        If a value of the wrong type is passed as a parameter.
+
+    ValueError
+        If the value of any parameter is invalid (e.g. input signal has the wrong length, \
+        `mode` is neither "open_loop" nor "closed_loop", etc.).
     """
 
     def __init__(self, 
@@ -96,7 +156,7 @@ class Sim(_BaseSimulator):
                  mode: str="open_loop", 
                  controller: BaseController | None=None, 
                  reference_labels: list[str] | None=None, 
-                 reference_lookahead: int=1, \
+                 reference_lookahead: int=1, 
                  noise_power: int | float=0.0, 
                  noise_seed: int=0) -> None:
         """
@@ -217,9 +277,9 @@ class Sim(_BaseSimulator):
     @property
     def inputs(self) -> np.ndarray:
         """
-        _summary_
+        Get the input signals.
 
-        _extended_summary_
+        This method can be used to access the input / reference signals using dot notation.
 
         Returns
         -------
@@ -232,14 +292,23 @@ class Sim(_BaseSimulator):
     @inputs.setter
     def inputs(self, new_input: np.ndarray) -> None:
         """
-        _summary_
+        Set the input signals.
 
-        _extended_summary_
+        This method can be used to assign new input signals to the Sim class instance using dot notation. \
+        It also performs some checks on the array and does some reformatting if necessary.
 
         Parameters
         ----------
         new_input : np.ndarray
             New input signals.
+
+        Raises
+        ------
+        TypeError
+            If `new_input` is not an np.ndarray.
+
+        ValueError
+            If `new_input` has the wrong length or its dimensions do not match those of the system's input.
         """
 
         self._input_checks(new_input);
@@ -250,9 +319,9 @@ class Sim(_BaseSimulator):
     @property
     def ref_lookahead(self) -> int:
         """
-        _summary_
+        Get the `ref_lookahead` parameter.
 
-        _extended_summary_
+        This method can be used to access the value of the `ref_lookahead` parameter using dot notation.
 
         Returns
         -------
@@ -265,14 +334,23 @@ class Sim(_BaseSimulator):
     @ref_lookahead.setter
     def ref_lookahead(self, new_value: int) -> None:
         """
-        _summary_
+        Set the value of the `ref_lookahead` parameter.
 
-        _extended_summary_
+        This method can be used to set the value of the `ref_lookahead` parameter \
+        using dot notation. It also performs some checks on the new value.
 
         Parameters
         ----------
         new_value : int
             New value for the `ref_lookahead` parameter.
+
+        Raises
+        ------
+        TypeError
+            If the new value is not an integer.
+
+        ValueError
+            If the new value is smaller than one.
         """
 
         self._lookahead_check(new_value);
@@ -282,15 +360,52 @@ class Sim(_BaseSimulator):
 
     def summary(self) -> None:
         """
-        Display simulation options.
+        Display the current simulation settings.
 
-        This method can be used ... .
+        This method displays the value of the most important simulation options.
 
-        TODO: Add examples section ...
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import LinearModel
+        >>> from pynamics.simulations import Sim
+        >>> 
+        >>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+        >>> B = np.array([1, -5, 1]).reshape(-1, 1);
+        >>> C = np.array([0, 0, 1]);
+        >>> D = np.array([0]);
+        >>> model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+        >>>
+        >>> simulation = Sim(model, input_signal=np.ones(int(10/0.001)+1));
+        >>> simulation.summary();
+        Simulation settings
+        -------------------
+        Initial time step: 0.0 s
+        Final time step: 10.0 s
+        Solver step size: 0.001 s
+        -------------------
+        Input signals format: (1, 10001)
+        Output signals format: (1, 10001)
+        Control actions format: (1, 10001)
+        Reference lookahead: 1 time step
+        -------------------
+        Simulation mode: open_loop
         """
 
-        print("Simulation details");
-        print("------------------");
+        print("Simulation settings");
+        print("-------------------");
+        print(f"Initial time step: {self._options["t0"]} s");
+        print(f"Final time step: {self._options["tfinal"]} s");
+        print(f"Solver step size: {self._solver.h} s");
+        #print(f"Solver: {self._solver}");
+        print("-------------------");
+        print(f"Input signals format: {self._inputs.shape}");
+        print(f"Output signals format: {self.outputs.shape}");
+        print(f"Control actions format: {self.control_actions.shape}");
+        print(f"Reference lookahead: {self._ref_lookahead} time step");
+        print("-------------------");
+        print(f"Simulation mode: {self._mode}");
+        #print(f"Controller: {self.controller}");
 
         return;
 
@@ -325,7 +440,35 @@ class Sim(_BaseSimulator):
         pd.DataFrame
             Data frame containing the results.
 
-        TODO: Add examples section ... 
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import LinearModel
+        >>> from pynamics.simulations import Sim
+        >>> 
+        >>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+        >>> B = np.array([1, -5, 1]).reshape(-1, 1);
+        >>> C = np.array([0, 0, 1]);
+        >>> D = np.array([0]);
+        >>> model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+        >>>
+        >>> simulation = Sim(model, input_signal=np.ones(int(10/0.001)+1));
+        >>> res = simulation.run();
+        >>> res
+                 Time  Ref_1  u_1       y_1
+        0       0.000    1.0  0.0  0.000000
+        1       0.001    1.0  1.0  0.000996
+        2       0.002    1.0  1.0  0.001984
+        3       0.003    1.0  1.0  0.002964
+        4       0.004    1.0  1.0  0.003936
+        ...       ...    ...  ...       ...
+        9996    9.996    1.0  1.0  0.984014
+        9997    9.997    1.0  1.0  0.984026
+        9998    9.998    1.0  1.0  0.984039
+        9999    9.999    1.0  1.0  0.984052
+        10000  10.000    1.0  1.0  0.984065
+        <BLANKLINE>
+        [10001 rows x 4 columns]
         """
 
         self.control_actions[:, 0] = self.system.get_input();
@@ -371,6 +514,32 @@ class Sim(_BaseSimulator):
         initial_control: np.ndarray
             The inputs' initial value(s). Should be an array shaped (u, 1), where
             u is the number of input variables.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import LinearModel
+        >>> from pynamics.simulations import Sim
+        >>> 
+        >>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+        >>> B = np.array([1, -5, 1]).reshape(-1, 1);
+        >>> C = np.array([0, 0, 1]);
+        >>> D = np.array([0]);
+        >>> model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+        >>>
+        >>> simulation = Sim(model, input_signal=np.ones(int(10/0.001)+1));
+        >>> res = simulation.run();
+        >>> simulation.system.x
+        array([[7.98056883],
+               [1.96495125],
+               [0.98406462]])
+        >>>
+        >>> simulation.reset(np.zeros((3, 1)), np.zeros((1, 1)));
+        Sim outputs and control actions were reset sucessfully.
+        >>> simulation.system.x
+        array([[0.],
+               [0.],
+               [0.]])
         """
 
         self.system.x = initial_state;
@@ -392,9 +561,9 @@ class Sim(_BaseSimulator):
                       plot_height: int | float=10.0, 
                       plot_width: int | float=10.0) -> None:
         """
-        _summary_
+        Plot the reference signal and the system's output.
 
-        _extended_summary_
+        Evaluate the system's tracking performance by plotting the reference signal and the system's output (SISO systems only).
 
         Parameters
         ----------
@@ -424,6 +593,25 @@ class Sim(_BaseSimulator):
 
         plot_width : int | float, default=10.0
             Figure width.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import LinearModel
+        >>> from pynamics.simulations import Sim
+        >>> 
+        >>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+        >>> B = np.array([1, -5, 1]).reshape(-1, 1);
+        >>> C = np.array([0, 0, 1]);
+        >>> D = np.array([0]);
+        >>> model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+        >>>
+        >>> simulation = Sim(model, input_signal=np.ones(int(10/0.001)+1));
+        >>> res = simulation.run();
+        >>> 
+        >>> _ = Sim.tracking_plot(res, "Time", "Ref_1", "y_1");
+        
+        TODO : Add respective image!!!!
         """
         
         _ = plt.figure(figsize=(plot_height, plot_width));
@@ -454,9 +642,10 @@ class Sim(_BaseSimulator):
                             plot_height: int | float=10.0, 
                             plot_width: int | float=10.0) -> None:
         """
-        _summary_
+        Visualise the system's output signals.
 
-        _extended_summary_
+        This method can be use to visualise the system's output signals simultaneously. \
+        It supports MIMO systems.
 
         Parameters
         ----------
@@ -483,6 +672,25 @@ class Sim(_BaseSimulator):
 
         plot_width : int | float, default=10.0
             Figure width.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import LinearModel
+        >>> from pynamics.simulations import Sim
+        >>> 
+        >>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+        >>> B = np.array([1, -5, 1]).reshape(-1, 1);
+        >>> C = np.array([0, 0, 1]);
+        >>> D = np.array([0]);
+        >>> model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+        >>>
+        >>> simulation = Sim(model, input_signal=np.ones(int(10/0.001)+1));
+        >>> res = simulation.run();
+        >>> 
+        >>> _ = Sim.system_outputs_plot(res, "Time", ["y_1"]);
+        
+        TODO : Add respective image!!!!
         """
 
         fig, axes = plt.subplots(len(outputs), 1, sharex=True);
@@ -534,13 +742,72 @@ class Sim(_BaseSimulator):
         """
         Simulate the step response of a dynamical system.
 
-        This method can be used to perform a step response simulation. Keep in mind that, for now, it should only be used \
+        This method can be used to simulate a system's step response. Keep in mind that, for now, it should only be used \
         with single-input systems or controllers needing only one reference signal.
 
+        Parameters
+        ----------
+        system : BaseModel
+            System to simulate. Must be described by a model supported by pynamics.
+            TODO : Add link to 'pynamics' page.
+
+        step_magnitude : int | float, default=1.0
+            The step's magnitude. Unit step by default.
+
+        t0 : float, default=0.0
+            Initial time instant. Must be non-negative.
+
+        tfinal : float, default=0.0
+            Final time instant. Must be non-negative.
+
+        solver : {"Euler", "Modified_Euler", "Heun", "RK4"}, str, default="RK4"
+            Fixed-step solver.
+
+        step_size : float, default=0.001
+            Solver step size. Must be positive.
+
+        mode : {"open_loop", "closed_loop"}, str, default="open_loop"
+            Simulation mode. The controller will not be included in the simulation unless \
+            parameter is set to "closed_loop".
+
+        controller : BaseController | None, optional
+            Controller.
+
+        reference_labels : list[str] | None, optional
+            List of labels for the reference signals.
+                
+        reference_lookahead : int, default=1
+            Number of time steps ahead for which the reference values are known to the controller.
+                
+        noise_power : int | float, default=0.0
+            White noise power. If equal to zero, no noise will be added to the simulation.
+
+        noise_seed : int, default=0
+            Random seed for the noise array.
+        
         Returns
         -------
         Sim
             A simulation class instance.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import LinearModel
+        >>> from pynamics.simulations import Sim
+        >>> 
+        >>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+        >>> B = np.array([1, -5, 1]).reshape(-1, 1);
+        >>> C = np.array([0, 0, 1]);
+        >>> D = np.array([0]);
+        >>> model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+        >>>
+        >>> simulation = Sim.step_response(model, step_magnitude=2);
+        >>> res = simulation.run();
+        >>> 
+        >>> _ = Sim.tracking_plot(res, "Time", "Ref_1", "y_1");
+        
+        TODO : Add respective image!!!!
         """
 
         end = (tfinal - t0) / step_size + 1;
@@ -574,14 +841,78 @@ class Sim(_BaseSimulator):
              noise_power: int | float=0.0, 
              noise_seed: int=0):
         """
-        _summary_
+        Simulate the system's response to a ramp signal.
 
-        _extended_summary_
+        This method can be used to simulate a system's response to a ramp input. Keep in mind that, for now, it should only be used \
+        with single-input systems or controllers needing only one reference signal.
 
+        Parameters
+        ----------
+        system : BaseModel
+            System to simulate. Must be described by a model supported by pynamics.
+            TODO : Add link to 'pynamics' page.
+
+        slope : int | float, default=1.0
+            The ramp's slope. Unit ramp by default.
+
+        t0 : float, default=0.0
+            Initial time instant. Must be non-negative.
+
+        tfinal : float, default=0.0
+            Final time instant. Must be non-negative.
+
+        solver : {"Euler", "Modified_Euler", "Heun", "RK4"}, str, default="RK4"
+            Fixed-step solver.
+
+        step_size : float, default=0.001
+            Solver step size. Must be positive.
+
+        mode : {"open_loop", "closed_loop"}, str, default="open_loop"
+            Simulation mode. The controller will not be included in the simulation unless \
+            parameter is set to "closed_loop".
+
+        controller : BaseController | None, optional
+            Controller.
+
+        reference_labels : list[str] | None, optional
+            List of labels for the reference signals.
+                
+        reference_lookahead : int, default=1
+            Number of time steps ahead for which the reference values are known to the controller.
+                
+        noise_power : int | float, default=0.0
+            White noise power. If equal to zero, no noise will be added to the simulation.
+
+        noise_seed : int, default=0
+            Random seed for the noise array.
+        
         Returns
         -------
         Sim
             A simulation class instance.
+
+        Warnings
+        --------
+        This method seems to have some inaccuracies at the moment. Results might not be as reliable.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from pynamics.models.state_space_models import LinearModel
+        >>> from pynamics.simulations import Sim
+        >>> 
+        >>> A = np.array([[0, 0, -1], [1, 0, -3], [0, 1, -3]]);
+        >>> B = np.array([1, -5, 1]).reshape(-1, 1);
+        >>> C = np.array([0, 0, 1]);
+        >>> D = np.array([0]);
+        >>> model = LinearModel(np.zeros((3, 1)), np.zeros((1, 1)), A, B, C, D);
+        >>>
+        >>> simulation = Sim.ramp(model, slope=1);
+        >>> res = simulation.run();
+        >>> 
+        >>> _ = Sim.tracking_plot(res, "Time", "Ref_1", "y_1");
+        
+        TODO : Add respective image!!!!
         """
 
         reference_signal = slope * np.arange(t0, tfinal + step_size, step_size);

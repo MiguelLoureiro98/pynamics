@@ -213,6 +213,11 @@ class SimulationTests(unittest.TestCase):
 
         np.allclose(self.ramp_data["t"], ramp_res["Time"]);
         np.allclose(self.ramp_data["y"], ramp_res["y_1"]);
+        #plt.plot(self.ramp_data["t"], self.ramp_data["y"], label="Simulink");
+        #plt.plot(ramp_res["Time"], ramp_res["y_1"], label="pynamics");
+        #plt.grid();
+        #plt.legend();
+        #plt.plot();
 
         pd.testing.assert_series_equal(RK4_true["t"], step_res["Time"], check_names=False);
         pd.testing.assert_series_equal(RK4_true["y"], step_res["y_1"], check_names=False);
