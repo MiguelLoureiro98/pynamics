@@ -18,7 +18,7 @@ Please note that this package is NOT appropriate for extensive, extremely precis
 # Installation
 
 ## Using pip
-The easiest way to install [Pynamics](index.md) is to install it directly from PyPi using pip:
+The easiest way to install Pynamics is to install it directly from PyPi using pip:
 
 ```
 pip install pynamics2
