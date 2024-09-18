@@ -13,13 +13,11 @@ theme:
     - navigation.tabs.sticky
     - navigation.sections
     - navigation.path
+    - navigation.indexes
     - navigation.top
     - navigation.footer
-    - toc.follow
     - search.suggest
-    - search.highlight
-    - content.tabs.link
-    - content.code.annotation
+    - search.share
     - content.code.copy
   palette:
     - scheme: default
@@ -43,3 +41,36 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/MiguelLoureiro98
       name: Miguel Loureiro's GitHub page
+
+copyright: Copyright &copy; 2024 Miguel Loureiro
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            show_submodules: true
+            docstring_options:
+              ignore_init_summary: true
+            merge_init_into_class: true
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - toc:
+      toc_depth: 0
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
