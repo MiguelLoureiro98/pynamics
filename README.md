@@ -21,7 +21,7 @@ Please note that this package is NOT appropriate for extensive, extremely precis
 The easiest way to install [Pynamics](index.md) is to install it directly from PyPi using pip:
 
 ```
-pip install pynamics
+pip install pynamics2
 ```
 
 This will install the package along with its dependencies.
@@ -29,7 +29,7 @@ This will install the package along with its dependencies.
 If you wish to contribute to the package, install its development dependencies by typing:
 
 ```
-pip install "pynamics[dev]"
+pip install "pynamics2[dev]"
 ```
 
 ## Using git
