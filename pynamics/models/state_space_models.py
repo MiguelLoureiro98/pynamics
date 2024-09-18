@@ -12,9 +12,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .base import BaseModel
-import numpy as np
-
 """
 This module contains all state-space models supported by this package.
 
@@ -26,6 +23,9 @@ LinearModel
 NonlinearModel
     Implements a generic nonlinear model. Supports time-varying and parameter-varying models (including linear ones).
 """
+
+from .base import BaseModel
+import numpy as np
 
 class LinearModel(BaseModel):
     """
@@ -121,10 +121,9 @@ class LinearModel(BaseModel):
 
     See also
     --------
-    NonlinearModel:
+    [NonlinearModel](nonlinear.md):
         Implements a nonlinear state-space model. Supports linear time-varying systems and linear parameter-varying systems, \
         as well as generic nonlinear systems.
-    TODO : Add page link.
     
     Notes
     -----
@@ -133,6 +132,9 @@ class LinearModel(BaseModel):
 
     $$
     \dot{x}(t) = A \cdot x(t) + B \cdot u(t)
+    $$
+
+    $$
     y(t) = C \cdot x(t) + D \cdot u(t)
     $$
 
@@ -442,11 +444,11 @@ class NonlinearModel(BaseModel):
 
     Parameters
     ----------
-    x : np.ndarray
+    initial_state : np.ndarray
         The system's state vector. Should be an array shaped (n, 1), where n is the \
         number of state variables.
 
-    u : np.ndarray
+    initial_control : np.ndarray
         Input vector. Should be an array shaped (u, 1), where \
         u is the number of input variables.
 
@@ -473,7 +475,7 @@ class NonlinearModel(BaseModel):
     Attributes
     ----------
     x : np.ndarray
-        The system's state. Should be an array shaped [of shape] (n, 1), where n is the number of \
+        The system's state. Should be an array of shape (n, 1), where n is the number of \
         variables.
 
     state_equations : callable
@@ -509,9 +511,8 @@ class NonlinearModel(BaseModel):
 
     See also
     --------
-    LinearModel:
+    [LinearModel](linear.md):
         Implements a linear time-invariant state-space model.
-    TODO : Add link to linear model page.
     
     Notes
     -----
@@ -520,6 +521,9 @@ class NonlinearModel(BaseModel):
 
     $$
     \dot{x}(t) = f(x(t), u(t), t)
+    $$
+
+    $$
     y(t) = g(x(t), u(t), t)
     $$
 
@@ -771,8 +775,8 @@ class NonlinearModel(BaseModel):
         Compute the system's state derivative.
 
         This method computes the system's state derivative via the state \
-        equation: $\dot{x} = A \cdot x + B \cdot u$, where $x$ is the state vector \
-        and $u$ is the input vector.
+        equation: $\dot{x} = f(x(t), u(t), t)$, where $x(t)$ is the state vector, \
+        $u(t)$ is the input vector, $t$ is the time instant, and $f(.)$ are the state equations.
 
         Parameters
         ----------

@@ -6,7 +6,7 @@ It is mainly inteded as a support package for more advanced control design proje
 
 The package provides classes to model a system (linear and nonlinear state-space models) and a simulator class that can be used to run different types of simulations. Limited control capabilities are also provided, namely a controller base class that users can build upon to design their own controllers.
 
-Please not that this package is NOT appropriate for extensive, more precise simulations.
+Please note that this package is NOT appropriate for extensive, extremely precise simulations.
 
 ## Main features
 - **Simulations**: simulate dynamical systems in Python using our simulator class. Only fixed-step solvers are supported at the moment.

@@ -13,9 +13,7 @@
 #   limitations under the License.
 
 """
-This module contains helper functions that make pynamics compatible with the [Python Control Systems Library](https://github.com/python-control/python-control).
-
-TODO: Add pynamics link.
+This module contains helper functions that make [Pynamics](../../index.md) compatible with the [Python Control Systems Library](https://github.com/python-control/python-control).
 
 Functions
 ---------

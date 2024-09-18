@@ -41,8 +41,7 @@ class Sim(_BaseSimulator):
     Parameters
     ----------
     system : BaseModel
-        System to simulate. Must be described by a model supported by pynamics.
-        TODO : Add link to 'pynamics' page.
+        System to simulate. Must be described by a model supported by [Pynamics](../index.md).
 
     input_signal : np.ndarray
         Input signals. These may be reference values or other external inputs (e.g. wind speed in a wind turbine system).
@@ -53,7 +52,7 @@ class Sim(_BaseSimulator):
     tfinal : float, default=0.0
         Final time instant. Must be non-negative.
 
-    solver : {"Euler", "Modified_Euler", "Heun", "RK4"}, str, default="RK4"
+    solver : {"RK4", "Euler", "Modified_Euler", "Heun"}, str, default="RK4"
         Fixed-step solver.
 
     step_size : float, default=0.001
@@ -615,7 +614,7 @@ class Sim(_BaseSimulator):
         >>> 
         >>> _ = Sim.tracking_plot(res, "Time", "Ref_1", "y_1");
         
-        TODO : Add respective image!!!!
+        ![Tracking_plot_img](../images/Tracking_plot_fig.png)
         """
         
         _ = plt.figure(figsize=(plot_height, plot_width));
@@ -694,7 +693,7 @@ class Sim(_BaseSimulator):
         >>> 
         >>> _ = Sim.system_outputs_plot(res, "Time", ["y_1"]);
         
-        TODO : Add respective image!!!!
+        ![System_outputs_img](../images/Outputs_plot_fig.png)
         """
 
         fig, axes = plt.subplots(len(outputs), 1, sharex=True);
@@ -752,8 +751,7 @@ class Sim(_BaseSimulator):
         Parameters
         ----------
         system : BaseModel
-            System to simulate. Must be described by a model supported by pynamics.
-            TODO : Add link to 'pynamics' page.
+            System to simulate. Must be described by a model supported by [Pynamics](../index.md).
 
         step_magnitude : int | float, default=1.0
             The step's magnitude. Unit step by default.
@@ -764,7 +762,7 @@ class Sim(_BaseSimulator):
         tfinal : float, default=0.0
             Final time instant. Must be non-negative.
 
-        solver : {"Euler", "Modified_Euler", "Heun", "RK4"}, str, default="RK4"
+        solver : {"RK4", "Euler", "Modified_Euler", "Heun"}, str, default="RK4"
             Fixed-step solver.
 
         step_size : float, default=0.001
@@ -811,7 +809,7 @@ class Sim(_BaseSimulator):
         >>> 
         >>> _ = Sim.tracking_plot(res, "Time", "Ref_1", "y_1");
         
-        TODO : Add respective image!!!!
+        ![Step_response_img](../images/Step_response_fig.png)
         """
 
         end = (tfinal - t0) / step_size + 1;
@@ -853,8 +851,7 @@ class Sim(_BaseSimulator):
         Parameters
         ----------
         system : BaseModel
-            System to simulate. Must be described by a model supported by pynamics.
-            TODO : Add link to 'pynamics' page.
+            System to simulate. Must be described by a model supported by [Pynamics](../index.md).
 
         slope : int | float, default=1.0
             The ramp's slope. Unit ramp by default.
@@ -865,7 +862,7 @@ class Sim(_BaseSimulator):
         tfinal : float, default=0.0
             Final time instant. Must be non-negative.
 
-        solver : {"Euler", "Modified_Euler", "Heun", "RK4"}, str, default="RK4"
+        solver : {"RK4", "Euler", "Modified_Euler", "Heun"}, str, default="RK4"
             Fixed-step solver.
 
         step_size : float, default=0.001
@@ -897,7 +894,7 @@ class Sim(_BaseSimulator):
 
         Warning
         -------
-        This method seems to have some inaccuracies at the moment. Results might not be as reliable.
+        It seems this method might be somewhat inaccurate at the moment. Results might not be as reliable.
 
         Examples
         --------
@@ -916,7 +913,7 @@ class Sim(_BaseSimulator):
         >>> 
         >>> _ = Sim.tracking_plot(res, "Time", "Ref_1", "y_1");
         
-        TODO : Add respective image!!!!
+        ![Ramp_img](../images/Ramp_fig.png)
         """
 
         reference_signal = slope * np.arange(t0, tfinal + step_size, step_size);
